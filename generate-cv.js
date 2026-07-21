@@ -94,7 +94,9 @@ const certs = [
   'React.js & Next.js',
   'Padrões de Projeto & SOLID',
   'Arquitetura Frontend',
-  'Design de UI/UX'
+  'Design de UI/UX',
+  'Manutenção de Computadores',
+  'Pacote Office & Excel Avançado'
 ];
 doc.font('Helvetica').fontSize(8).fill('#cbd5e1');
 certs.forEach(c => {
