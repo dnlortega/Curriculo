@@ -50,6 +50,14 @@ const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string 
   
   const googleFavicon = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128` : null;
   const uiAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(issuer)}&background=random&color=fff&size=128`;
+
+  if (errorLevel >= 2) {
+    return (
+      <div className={cn("flex items-center justify-center bg-primary/10 text-primary rounded", className)}>
+        <GraduationCap className="w-3/5 h-3/5 opacity-80" />
+      </div>
+    );
+  }
   
   let currentSrc = uiAvatar;
   if (domain) {
@@ -67,9 +75,7 @@ const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string 
       alt={`Logo ${issuer}`} 
       className={cn("rounded bg-background object-cover", className)}
       onError={() => {
-        if (errorLevel < 2) {
-          setErrorLevel(prev => prev + 1);
-        }
+        setErrorLevel(prev => prev + 1);
       }}
     />
   );
@@ -631,33 +637,32 @@ export default function Home() {
           </p>
         </motion.div>
 
-        <motion.div variants={fadeUpVariant} className="w-full max-w-2xl">
-          <Card className="border-primary/20 bg-card/50 backdrop-blur-sm shadow-xl shadow-primary/5">
-            <CardContent className="p-6 sm:p-10 flex flex-col gap-6">
-              <form action="https://formsubmit.co/0ac4e9bdb09ec9ff4761f2fed39d1f2c" method="POST" className="flex flex-col gap-6">
-                {/* Configuration for FormSubmit */}
-                <input type="hidden" name="_subject" value="Novo Contato do Portfólio!" />
-                <input type="hidden" name="_captcha" value="false" />
-                <input type="hidden" name="_template" value="table" />
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">Nome</label>
-                    <input type="text" name="name" required placeholder="Seu nome completo" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">E-mail</label>
-                    <input type="email" name="email" required placeholder="seu@email.com" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Mensagem</label>
-                  <textarea name="message" required rows={4} placeholder="Como posso te ajudar?" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"></textarea>
-                </div>
-                <button type="submit" className={cn(buttonVariants({ size: "lg" }), "w-full gap-2 mt-2")}>
-                  Enviar Mensagem <Send className="w-4 h-4" />
-                </button>
-              </form>
+        <motion.div variants={fadeUpVariant} className="w-full max-w-xl">
+          <Card className="border-primary/20 bg-card/50 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-primary/10 transition-all duration-500 overflow-hidden relative group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-600"></div>
+            <CardContent className="p-8 sm:p-12 flex flex-col items-center text-center gap-8">
+              <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                <MessageCircle className="w-10 h-10 text-green-500" />
+              </div>
+              
+              <div className="space-y-2">
+                <h3 className="text-2xl font-bold text-foreground">Me chame no WhatsApp!</h3>
+                <p className="text-muted-foreground">
+                  Para um contato mais rápido e direto, me mande uma mensagem. Eu costumo responder na mesma hora.
+                </p>
+              </div>
+
+              <a 
+                href="https://wa.me/5514981294913?text=Ol%C3%A1%20Daniel,%20vi%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20conversar!" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={cn(
+                  buttonVariants({ size: "lg" }), 
+                  "w-full sm:w-auto px-12 gap-3 text-lg h-14 bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20"
+                )}
+              >
+                <MessageCircle className="w-5 h-5" /> Enviar Mensagem
+              </a>
             </CardContent>
           </Card>
         </motion.div>
