@@ -87,7 +87,7 @@ drawSideTitle('Formação');
 doc.font('Helvetica-Bold').fontSize(9).fill('#e2e8f0').text('Análise e Desenv. de Sistemas', 25, sideY); sideY += 12;
 doc.font('Helvetica').fontSize(8).fill('#94a3b8').text('UNINTER (2023 - 2025)', 25, sideY); sideY += 25;
 
-drawSideTitle('Certificações (+60)');
+drawSideTitle('Certificados e Cursos');
 const certs = [
   'Formação React.js (Alura)',
   'Next.js 14 App Router (Alura)',
