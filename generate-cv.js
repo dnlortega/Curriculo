@@ -37,8 +37,22 @@ doc.moveDown(2);
 
 doc.fontSize(20).text('Certificações em Destaque');
 doc.moveDown(0.5);
-doc.fontSize(12).text('Mais de 60 certificações tecnológicas nas principais plataformas do mercado:');
-doc.text('• Alura (React, Next.js, Power BI)\n• Xperiun (Desenvolvimento Web e Arquitetura)\n• E muito mais no portfólio online.');
+doc.fontSize(12).fill('#333333').text('Possuo mais de 60 certificações comprovadas. Alguns destaques:');
+doc.moveDown(0.3);
+
+doc.fontSize(13).fill('#000000').text('Frontend & React');
+doc.fontSize(11).fill('#555555').text('• Formação React.js (Hooks, Context, Redux) - Alura\n• Next.js 14 e App Router - Alura\n• UI/UX para Desenvolvedores e Design System');
+doc.moveDown(0.5);
+
+doc.fontSize(13).fill('#000000').text('Arquitetura & Boas Práticas');
+doc.fontSize(11).fill('#555555').text('• Clean Code, SOLID e Padrões de Projeto - Xperiun\n• Arquitetura Frontend e Escalabilidade - Xperiun');
+doc.moveDown(0.5);
+
+doc.fontSize(13).fill('#000000').text('Dados & Lógica');
+doc.fontSize(11).fill('#555555').text('• Dashboards Interativos com Power BI - Alura\n• Lógica de Programação Avançada');
+
+doc.moveDown(1);
+doc.fontSize(11).fill('#111111').text('*Acesse o portfólio online para a lista completa e interativa com códigos de verificação.', { style: 'italic' });
 
 // Footer
 doc.rect(0, 750, 612, 50).fill('#111111');

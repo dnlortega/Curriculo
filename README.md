@@ -40,12 +40,25 @@ Minha stack principal e área de especialização:
 ## 🏆 Certificados e Capacitações (64+)
 
 Sou um profissional incansável quando se trata de especialização. Possuo mais de 60 certificações comprovadas nas mais diversas áreas da tecnologia. 
-No meu portfólio online, você pode pesquisar, filtrar e verificar cada uma delas interativamente. 
+Abaixo estão os principais destaques organizados por trilha de conhecimento:
 
-**Principais Instituições:**
-- **Alura:** Especializações completas em React, Next.js, Hooks, UI/UX, Power BI, entre outros.
-- **Xperiun:** Treinamentos avançados de codificação e metodologias.
-- **Rocketseat / Udemy:** Imersões em tecnologias web.
+**Desenvolvimento Frontend & React:**
+- Formação React.js (Hooks, Context API, Redux) - *Alura*
+- Desenvolvimento com Next.js 14 e App Router - *Alura*
+- Construção de Interfaces Responsivas com Tailwind CSS e Framer Motion
+- UI/UX para Desenvolvedores e Design System
+
+**Arquitetura & Boas Práticas:**
+- Clean Code, SOLID e Padrões de Projeto - *Xperiun*
+- Arquitetura Frontend e Escalabilidade de Sistemas - *Xperiun*
+- Testes Automatizados e TDD (Test Driven Development)
+
+**Dados & Lógica:**
+- Análise de Dados e Dashboards Interativos com Power BI - *Alura*
+- Lógica de Programação Avançada e Algoritmos
+- Gerenciamento de Bancos de Dados Relacionais e NoSQL
+
+*No meu portfólio online, você pode pesquisar, filtrar por tecnologias e verificar o código de autenticidade de cada uma dessas certificações interativamente.*
 
 ---
 
