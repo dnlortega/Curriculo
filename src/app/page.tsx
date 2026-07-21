@@ -157,8 +157,16 @@ export default function Home() {
         </ul>
       </nav>
 
-      {/* Background decoration */}
-      <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] mt-16"></div>
+      {/* BACKGROUND EFFECTS */}
+      <div className="fixed inset-0 w-full h-full -z-20 pointer-events-none overflow-hidden">
+        {/* Subtle grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        
+        {/* Glowing Orbs */}
+        <div className="absolute top-0 left-0 w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+        <div className="absolute top-1/2 right-0 w-[30vw] h-[30vw] bg-purple-600/10 rounded-full blur-[120px] translate-x-1/3 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-1/4 w-[50vw] h-[50vw] bg-blue-600/5 rounded-full blur-[150px] translate-y-1/3" />
+      </div>
       
       {/* HEADER SECTION */}
       <header id="home" className="w-full px-6 md:px-12 lg:px-24 py-24 min-h-screen flex flex-col justify-center pt-32">
