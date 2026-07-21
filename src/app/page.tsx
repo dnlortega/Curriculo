@@ -166,6 +166,16 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setTimeout(() => {
+      // Jump to section right before the loading screen fades out
+      document.querySelector(href)?.scrollIntoView({ behavior: 'auto' });
+      setIsLoading(false);
+    }, 1200);
+  };
+
   // Project Filtering
   const allProjectTags = useMemo(() => {
     const tags = new Set<string>();
@@ -284,6 +294,7 @@ export default function Home() {
             <li key={item.name} className="shrink-0">
               <a
                 href={item.href}
+                onClick={(e) => handleNavClick(e, item.href)}
                 title={item.name}
                 className="p-3 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 block"
               >
@@ -324,6 +335,7 @@ export default function Home() {
           <a
             key={item.name}
             href={item.href}
+            onClick={(e) => handleNavClick(e, item.href)}
             title={item.name}
             className="p-3 flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-all"
           >
