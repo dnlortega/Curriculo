@@ -188,7 +188,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-background relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
+    <main className="min-h-screen relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
       
       {/* FIXED TOP MENU */}
       <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border/50 py-4 px-6 md:px-12 lg:px-24 flex justify-between items-center">
@@ -206,14 +206,14 @@ export default function Home() {
       </nav>
 
       {/* BACKGROUND EFFECTS */}
-      <div className="fixed inset-0 w-full h-full -z-20 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 w-full h-full -z-20 bg-background pointer-events-none overflow-hidden">
         {/* Subtle grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
         
         {/* Glowing Orbs */}
-        <div className="absolute top-0 left-0 w-[40vw] h-[40vw] bg-primary/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />
-        <div className="absolute top-1/2 right-0 w-[30vw] h-[30vw] bg-purple-600/10 rounded-full blur-[120px] translate-x-1/3 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-1/4 w-[50vw] h-[50vw] bg-blue-600/5 rounded-full blur-[150px] translate-y-1/3" />
+        <div className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-primary/15 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+        <div className="absolute top-1/2 right-0 w-[40vw] h-[40vw] bg-purple-600/15 rounded-full blur-[150px] translate-x-1/3 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-1/4 w-[60vw] h-[60vw] bg-blue-600/10 rounded-full blur-[150px] translate-y-1/3" />
       </div>
       
       {/* HEADER SECTION */}
