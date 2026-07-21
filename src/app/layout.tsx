@@ -55,11 +55,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="pt-BR"
-      suppressHydrationWarning
-    >
-      <body className={`${outfit.variable} ${jetbrainsMono.variable} min-h-full flex flex-col bg-background text-foreground antialiased`}>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body suppressHydrationWarning className={`${outfit.variable} ${jetbrainsMono.variable} min-h-full flex flex-col bg-background text-foreground antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
