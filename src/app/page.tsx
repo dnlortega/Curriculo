@@ -6,10 +6,12 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send, Search, ShieldCheck, Hash } from "lucide-react";
+import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send, Search, ShieldCheck, Hash, Menu, X, Moon, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cursos } from "@/data/cursos";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useTheme } from "next-themes";
+import { TypeAnimation } from "react-type-animation";
 
 const Github = ({ className }: { className?: string }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
@@ -149,8 +151,6 @@ export default function Home() {
   const [courseFilter, setCourseFilter] = useState<string>("Todos");
   const [courseSearch, setCourseSearch] = useState<string>("");
   const [visibleCoursesCount, setVisibleCoursesCount] = useState<number>(9);
-  
-  const [projectFilter, setProjectFilter] = useState<string>("Todos");
 
   // Project Filtering
   const allProjectTags = useMemo(() => {
@@ -225,30 +225,91 @@ export default function Home() {
   return (
     <main className="min-h-screen relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
       
-      {/* FLOATING PILL MENU */}
+      {/* FLOATING PILL MENU (DESKTOP) */}
       <motion.nav 
         initial={{ y: -100, opacity: 0, x: "-50%" }}
         animate={{ y: 0, opacity: 1, x: "-50%" }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="fixed top-4 md:top-8 left-1/2 z-50 w-[95%] md:w-auto max-w-[90vw] bg-background/60 backdrop-blur-xl border border-primary/20 rounded-full px-4 md:px-6 py-2.5 flex justify-between md:justify-center items-center shadow-2xl shadow-primary/5 gap-4 md:gap-8"
+        className="fixed top-8 left-1/2 z-50 w-auto bg-background/60 backdrop-blur-xl border border-primary/20 rounded-full px-6 py-2.5 hidden md:flex justify-center items-center shadow-2xl shadow-primary/5 gap-8"
       >
-        <a href="#home" className="font-black text-base md:text-xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 hover:scale-105 transition-transform shrink-0 whitespace-nowrap">
+        <a href="#home" className="font-black text-xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 hover:scale-105 transition-transform shrink-0 whitespace-nowrap">
           Daniel Ortega Pereira
         </a>
         
-        <ul className="flex items-center gap-1 md:gap-2 overflow-x-auto no-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <ul className="flex items-center gap-2">
           {navItems.map((item) => (
             <li key={item.name} className="shrink-0">
               <a 
                 href={item.href} 
-                className="px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 block"
+                className="px-4 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 block"
               >
                 {item.name}
               </a>
             </li>
           ))}
         </ul>
+
+        {/* Desktop Theme Toggle */}
+        {mounted && (
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="p-2 rounded-full hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
+            title="Alternar Tema"
+          >
+            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+        )}
       </motion.nav>
+
+      {/* MOBILE FAB & MENU */}
+      <div className="md:hidden">
+        {/* FAB Button */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="fixed bottom-6 right-6 z-[60] p-4 bg-primary text-primary-foreground rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all"
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 50, scale: 0.9 }}
+              className="fixed bottom-24 right-6 z-[50] bg-background border border-border rounded-2xl shadow-2xl overflow-hidden min-w-[200px]"
+            >
+              <div className="flex flex-col p-2">
+                {navItems.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="px-4 py-3 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-colors"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+                
+                {/* Mobile Theme Toggle */}
+                {mounted && (
+                  <button
+                    onClick={() => {
+                      setTheme(theme === "dark" ? "light" : "dark");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="px-4 py-3 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-colors flex items-center justify-between"
+                  >
+                    Tema
+                    {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* BACKGROUND EFFECTS */}
       <div className="fixed inset-0 w-full h-full -z-20 bg-background pointer-events-none overflow-hidden">
@@ -275,8 +336,20 @@ export default function Home() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-foreground via-foreground/90 to-muted-foreground leading-[1.1]">
               Daniel Ortega Pereira
             </h1>
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-muted-foreground">
-              Desenvolvedor Full Stack & <span className="text-primary">Especialista Next.js</span>
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-muted-foreground min-h-[40px]">
+              <span className="text-primary font-bold">
+                <TypeAnimation
+                  sequence={[
+                    'Desenvolvedor Full Stack', 2000,
+                    'Analista de Sistemas Sênior', 2000,
+                    'Especialista em Dados & BI', 2000,
+                    'Especialista Next.js', 2000,
+                  ]}
+                  wrapper="span"
+                  speed={50}
+                  repeat={Infinity}
+                />
+              </span>
             </h2>
             <p className="text-lg text-muted-foreground/80 mt-6 leading-relaxed max-w-xl mx-auto md:mx-0">
               Profissional de Tecnologia com <strong>17+ anos de vivência corporativa</strong> em sistemas hospitalares e BI. Hoje aplico minha forte expertise analítica (Power BI, DAX, XML) e desenvolvimento moderno (Next.js, React, Tailwind) para construir soluções robustas e de alto impacto.
@@ -345,7 +418,7 @@ export default function Home() {
             <div className="relative pl-8 md:pl-12">
               <div className="absolute w-6 h-6 bg-primary rounded-full -left-[13px] border-4 border-background flex items-center justify-center shadow-md shadow-primary/20"></div>
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
-                <h4 className="text-xl font-bold text-foreground">Estagiário em Dados & IA</h4>
+                <h4 className="text-xl font-bold text-foreground">Analista de Dados & IA (Projeto)</h4>
                 <Badge variant="outline" className="w-fit bg-primary/5 text-primary border-primary/20">Mai 2026 – Jun 2026</Badge>
               </div>
               <h5 className="text-md font-medium text-muted-foreground mb-4 flex items-center gap-2">

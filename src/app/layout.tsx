@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Analytics } from "@vercel/analytics/react";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -13,16 +15,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Daniel Ortega Pereira | Desenvolvedor Full Stack & Especialista Next.js",
-  description: "Portfólio de Daniel Ortega Pereira, desenvolvedor apaixonado por tecnologia, com vasta experiência em Next.js, React, Tailwind CSS e criação de interfaces modernas. Conheça meus projetos.",
-  keywords: ["Daniel Ortega Pereira", "Daniel Ortega", "Desenvolvedor Next.js", "Desenvolvedor React", "Frontend", "Portfólio de Tecnologia"],
+  title: "Daniel Ortega Pereira | Analista Sênior & Desenvolvedor Full Stack",
+  description: "Portfólio de Daniel Ortega Pereira, profissional com 17+ anos de experiência na área de tecnologia, especialista em Next.js, Integração de Sistemas e Análise de Dados (Power BI).",
+  keywords: ["Daniel Ortega Pereira", "Daniel Ortega", "Analista de Sistemas Sênior", "Desenvolvedor Next.js", "Desenvolvedor React", "Power BI", "Integração de Sistemas", "Portfólio de Tecnologia"],
   authors: [{ name: "Daniel Ortega Pereira", url: "https://www.linkedin.com/in/daniel-op" }],
   creator: "Daniel Ortega Pereira",
   openGraph: {
-    title: "Daniel Ortega Pereira | Desenvolvedor Next.js",
-    description: "Conheça o portfólio de Daniel Ortega Pereira e seus principais projetos criados com React e Next.js.",
-    url: "https://vercel.com/dnlortegas-projects",
-    siteName: "Portfólio Daniel Ortega Pereira",
+    title: "Daniel Ortega Pereira | Desenvolvedor & Analista Sênior",
+    description: "Profissional com 17+ anos de experiência na área de tecnologia, especialista em Next.js, Integrações e Dados.",
+    url: "https://daniel-ortega.vercel.app",
+    siteName: "Portfólio de Daniel Ortega",
+    images: [
+      {
+        url: "https://github.com/dnlortega.png",
+        width: 400,
+        height: 400,
+        alt: "Daniel Ortega",
+      },
+    ],
     locale: "pt_BR",
     type: "website",
   },
@@ -47,9 +57,19 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${outfit.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">{children}</body>
+      <body className={`${outfit.variable} ${jetbrainsMono.variable} min-h-full flex flex-col bg-background text-foreground antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Analytics />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

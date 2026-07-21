@@ -24,11 +24,18 @@ if (fs.existsSync('./public/profile.jpg')) {
 // Header Text
 doc.fill('#ffffff').fontSize(32).text('Daniel Ortega Pereira', 160, 40);
 doc.fontSize(14).fill('#94a3b8').text('Desenvolvedor Next.js, React & Tailwind CSS', 160, 80);
-doc.fontSize(10).fill('#cbd5e1').text('dnlortega@gmail.com   |   (14) 98129-4913   |   linkedin.com/in/daniel-op', 160, 105);
+doc.fontSize(10).fill('#cbd5e1').text('Bauru, SP - Disponível para Remoto/Híbrido', 160, 100);
+doc.fontSize(10).fill('#cbd5e1').text('dnlortega@gmail.com   |   (14) 98129-4913', 160, 115);
+
+// Links
+doc.fontSize(10).fill('#3b82f6')
+   .text('LinkedIn: linkedin.com/in/daniel-op', 160, 130, { link: 'https://linkedin.com/in/daniel-op', continued: true })
+   .fill('#cbd5e1').text('   |   ', { continued: true })
+   .fill('#3b82f6').text('GitHub: github.com/dnlortega', { link: 'https://github.com/dnlortega' });
 
 // Reset margins explicitly after header
 doc.x = 50;
-doc.y = 160;
+doc.y = 175;
 doc.moveDown(2);
 
 // Helper for Section Titles
@@ -46,11 +53,22 @@ doc.fontSize(12).fill('#334155').text('Profissional de Tecnologia com mais de 15
 
 doc.moveDown(1.5);
 
+// Section: Projetos e Portfólio (NEW HR FIX)
+createSection('Projetos em Destaque');
+doc.fontSize(13).fill('#0f172a').text('SaaS de Agendamentos para Clínicas');
+doc.fontSize(11).fill('#64748b').text('Tecnologias: React, Next.js, Tailwind CSS, Banco de Dados');
+doc.fontSize(12).fill('#334155').text('Desenvolvimento completo de um sistema de agendamento online com painel administrativo e interface para pacientes.', { lineGap: 2 });
+doc.moveDown(0.5);
+doc.fontSize(13).fill('#0f172a').text('Sistema de Autoatendimento para Restaurantes');
+doc.fontSize(11).fill('#64748b').text('Tecnologias: JavaScript, Integrações API, UI/UX');
+doc.fontSize(12).fill('#334155').text('Criação de interface de quiosque e fluxo de pedidos integrados ao sistema do restaurante para eficiência operacional.', { lineGap: 2 });
+doc.moveDown(1.5);
+
 // Section: Experiência Profissional
 createSection('Experiência Profissional');
 
 doc.fontSize(14).fill('#0f172a').text('DataGuvi', { continued: true }).fill('#64748b').text('  (05/2026 – 06/2026)', { align: 'right' });
-doc.fontSize(11).fill('#3b82f6').text('Estagiário em Dados & IA');
+doc.fontSize(11).fill('#3b82f6').text('Analista de Dados & IA (Projeto)');
 doc.fontSize(12).fill('#334155').text('Foco em transformar dados brutos em decisões estratégicas. Atuação profunda com análise de dados, domínio em ETL (Power Query), modelagem relacional (Star Schema), DAX avançado e criação de dashboards intuitivos com foco em KPIs operacionais e de negócio.', { lineGap: 3 });
 doc.moveDown(1);
 
