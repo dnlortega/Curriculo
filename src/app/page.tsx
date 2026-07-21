@@ -146,9 +146,9 @@ export default function Home() {
       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       
       {/* HEADER SECTION */}
-      <header className="container max-w-6xl mx-auto px-4 py-24 min-h-[80vh] flex flex-col justify-center">
+      <header className="w-full px-6 md:px-12 lg:px-24 py-24 min-h-screen flex flex-col justify-center">
         <motion.div 
-          className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 lg:gap-20"
+          className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-20 w-full"
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
@@ -202,7 +202,7 @@ export default function Home() {
         </motion.div>
       </header>
 
-      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full max-w-6xl opacity-50" />
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full opacity-50" />
 
       {/* PROJECTS SECTION */}
       <motion.section 
@@ -210,7 +210,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="container max-w-5xl mx-auto px-4 py-24 space-y-12 flex flex-col items-center"
+        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center"
       >
         <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
@@ -266,7 +266,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="container max-w-5xl mx-auto px-4 py-24 space-y-12 flex flex-col items-center bg-muted/5 w-full border-y border-border/50"
+        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center bg-muted/5 border-y border-border/50"
       >
         <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
@@ -288,7 +288,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="container max-w-5xl mx-auto px-4 py-16 space-y-8 flex flex-col items-center"
+        className="w-full px-6 md:px-12 lg:px-24 py-16 space-y-8 flex flex-col items-center"
       >
         <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
@@ -338,7 +338,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="container max-w-6xl mx-auto px-4 py-24 space-y-12 flex flex-col items-center"
+        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center"
       >
         <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
@@ -404,7 +404,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="border-t py-12 bg-muted/20 w-full flex flex-col items-center">
-        <div className="container max-w-5xl mx-auto px-4 text-center text-muted-foreground flex flex-col items-center justify-center gap-4">
+        <div className="w-full px-6 md:px-12 lg:px-24 text-center text-muted-foreground flex flex-col items-center justify-center gap-4">
           <p>© {new Date().getFullYear()} Daniel Ortega Pereira. Todos os direitos reservados.</p>
           <div className="flex justify-center gap-4">
             <Link href="https://github.com/dnlortega" className="hover:text-primary transition-colors">
