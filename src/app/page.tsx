@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, MessageCircle, Code2, Briefcase, User, Mail } from "lucide-react";
+import { ExternalLink, MessageCircle, Code2, User } from "lucide-react";
 
 const Github = ({ className }: { className?: string }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
@@ -21,7 +22,7 @@ export default function Home() {
       tags: ["JavaScript", "Next.js", "Scraping", "Integrações"],
       link: "https://vagas-linkedin.vercel.app",
       github: "https://github.com/dnlortega/vagas-linkedin",
-      image: "https://vagas-linkedin.vercel.app/og-image.jpg" // Placeholder if needed, but since it's an aggregator maybe we can use a generic IT icon or placeholder
+      image: "https://api.microlink.io/?url=https://vagas-linkedin.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
     },
     {
       title: "Kanban Tarefas",
@@ -29,6 +30,7 @@ export default function Home() {
       tags: ["TypeScript", "React", "Drag and Drop", "Tailwind CSS"],
       link: "https://kanban-tarefas-black.vercel.app",
       github: "https://github.com/dnlortega/kanban-tarefas",
+      image: "https://api.microlink.io/?url=https://kanban-tarefas-black.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
     },
     {
       title: "Presença Next.js",
@@ -36,6 +38,7 @@ export default function Home() {
       tags: ["TypeScript", "Next.js", "Vercel"],
       link: "https://presenca-nextjs-l6a2.vercel.app",
       github: "https://github.com/dnlortega/presenca-nextjs",
+      image: "https://api.microlink.io/?url=https://presenca-nextjs-l6a2.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
     },
     {
       title: "Condomínio",
@@ -43,6 +46,7 @@ export default function Home() {
       tags: ["TypeScript", "React", "Dashboard"],
       link: "https://recantopassaros.vercel.app",
       github: "https://github.com/dnlortega/condominio",
+      image: "https://api.microlink.io/?url=https://recantopassaros.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
     },
     {
       title: "Barbeiro",
@@ -50,6 +54,7 @@ export default function Home() {
       tags: ["TypeScript", "Frontend", "Agendamento"],
       link: "https://barbeiro-brown.vercel.app",
       github: "https://github.com/dnlortega/barbeiro",
+      image: "https://api.microlink.io/?url=https://barbeiro-brown.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
     },
     {
       title: "Chá de Bebê",
@@ -57,6 +62,7 @@ export default function Home() {
       tags: ["TypeScript", "React", "Lista de Presentes"],
       link: "https://cha-bebe.vercel.app",
       github: "https://github.com/dnlortega/Cha-bebe",
+      image: "https://api.microlink.io/?url=https://cha-bebe.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
     },
     {
       title: "NovaCar",
@@ -64,6 +70,7 @@ export default function Home() {
       tags: ["TypeScript", "Frontend", "Automotivo"],
       link: "https://novacar-five.vercel.app",
       github: "https://github.com/dnlortega/novacar",
+      image: "https://api.microlink.io/?url=https://novacar-five.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
     }
   ];
 
@@ -99,24 +106,15 @@ export default function Home() {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
-          <Button asChild size="lg" className="rounded-full gap-2">
-            <Link href="https://github.com/dnlortega/" target="_blank">
-              <Github className="w-5 h-5" />
-              GitHub
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="rounded-full gap-2 border-primary/20 hover:bg-primary/10">
-            <Link href="https://www.linkedin.com/in/daniel-op" target="_blank">
-              <Linkedin className="w-5 h-5 text-[#0A66C2]" />
-              LinkedIn
-            </Link>
-          </Button>
-          <Button asChild variant="secondary" size="lg" className="rounded-full gap-2">
-            <Link href="https://vercel.com/dnlortegas-projects" target="_blank">
-              <ExternalLink className="w-5 h-5" />
-              Vercel
-            </Link>
-          </Button>
+          <Link href="https://github.com/dnlortega/" target="_blank" className={cn(buttonVariants({ size: "icon" }), "rounded-full w-12 h-12 shadow-md")}>
+            <Github className="w-5 h-5" />
+          </Link>
+          <Link href="https://www.linkedin.com/in/daniel-op" target="_blank" className={cn(buttonVariants({ variant: "outline", size: "icon" }), "rounded-full w-12 h-12 border-primary/20 hover:bg-primary/10 shadow-md")}>
+            <Linkedin className="w-5 h-5 text-[#0A66C2]" />
+          </Link>
+          <Link href="https://vercel.com/dnlortegas-projects" target="_blank" className={cn(buttonVariants({ variant: "secondary", size: "icon" }), "rounded-full w-12 h-12 shadow-md")}>
+            <ExternalLink className="w-5 h-5" />
+          </Link>
         </div>
       </header>
 
@@ -135,12 +133,18 @@ export default function Home() {
           {projects.map((project, index) => (
             <Card key={index} className="flex flex-col overflow-hidden border-primary/10 hover:border-primary/50 transition-colors bg-card/50 backdrop-blur-sm group items-center text-center">
               <div className="h-48 w-full bg-muted/50 relative overflow-hidden flex items-center justify-center border-b border-border/50">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-purple-500/10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                <Briefcase className="w-16 h-16 text-muted-foreground/30 group-hover:scale-110 group-hover:text-primary/50 transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-purple-500/10 opacity-20 group-hover:opacity-40 transition-opacity z-10 pointer-events-none"></div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={project.image} 
+                  alt={`Screenshot do projeto ${project.title}`} 
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" 
+                  loading="lazy"
+                />
               </div>
               <CardHeader className="flex flex-col items-center text-center">
                 <CardTitle className="text-xl group-hover:text-primary transition-colors text-center">{project.title}</CardTitle>
-                <CardDescription className="line-clamp-2 text-center">{project.description}</CardDescription>
+                <CardDescription className="line-clamp-3 text-center">{project.description}</CardDescription>
               </CardHeader>
               <CardContent className="flex-grow w-full flex justify-center">
                 <div className="flex flex-wrap justify-center gap-2">
@@ -151,17 +155,13 @@ export default function Home() {
                   ))}
                 </div>
               </CardContent>
-              <CardFooter className="gap-3 pt-4 border-t border-border/50 w-full flex flex-col sm:flex-row justify-center">
-                <Button asChild size="sm" className="w-full gap-2">
-                  <Link href={project.link} target="_blank">
-                    <ExternalLink className="w-4 h-4" /> Deploy
-                  </Link>
-                </Button>
-                <Button asChild size="sm" variant="outline" className="w-full gap-2">
-                  <Link href={project.github} target="_blank">
-                    <Github className="w-4 h-4" /> Código
-                  </Link>
-                </Button>
+              <CardFooter className="gap-3 pt-4 border-t border-border/50 w-full flex justify-center">
+                <Link href={project.link} target="_blank" className={cn(buttonVariants({ size: "icon", variant: "default" }), "w-10 h-10 rounded-full shadow-sm")} title="Deploy">
+                  <ExternalLink className="w-4 h-4" />
+                </Link>
+                <Link href={project.github} target="_blank" className={cn(buttonVariants({ variant: "outline", size: "icon" }), "w-10 h-10 rounded-full shadow-sm border-primary/20")} title="Código">
+                  <Github className="w-4 h-4" />
+                </Link>
               </CardFooter>
             </Card>
           ))}
@@ -199,16 +199,14 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* FLOATING WHATSAPP BUTTON CENTERED */}
+      {/* FLOATING WHATSAPP BUTTON CENTERED (ICON ONLY) */}
       <Link 
         href="https://wa.me/55014981294913" 
         target="_blank" 
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-3 rounded-full shadow-lg shadow-[#25D366]/20 transition-all hover:scale-105 active:scale-95 group"
+        title="Me mande uma mensagem no WhatsApp"
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full shadow-lg shadow-[#25D366]/30 transition-all hover:scale-110 active:scale-95"
       >
-        <MessageCircle className="w-6 h-6" />
-        <span className="font-bold text-lg whitespace-nowrap">
-          WhatsApp 014 98129-4913
-        </span>
+        <MessageCircle className="w-7 h-7" />
       </Link>
 
     </main>
