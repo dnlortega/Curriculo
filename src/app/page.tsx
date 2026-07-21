@@ -554,7 +554,7 @@ export default function Home() {
         <motion.div variants={fadeUpVariant} className="w-full max-w-2xl">
           <Card className="border-primary/20 bg-card/50 backdrop-blur-sm shadow-xl shadow-primary/5">
             <CardContent className="p-6 sm:p-10 flex flex-col gap-6">
-              <form action="https://formsubmit.co/dnlortega@gmail.com" method="POST" className="flex flex-col gap-6">
+              <form action="https://formsubmit.co/0ac4e9bdb09ec9ff4761f2fed39d1f2c" method="POST" className="flex flex-col gap-6">
                 {/* Configuration for FormSubmit */}
                 <input type="hidden" name="_subject" value="Novo Contato do Portfólio!" />
                 <input type="hidden" name="_captcha" value="false" />
