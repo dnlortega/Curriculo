@@ -214,19 +214,15 @@ export default function Home() {
     hidden: { opacity: 0, y: 40 },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" as const }
-    }
-  };
-
+  // Minimal fade up for sections, no slow staggers
   const staggerContainer = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
+    visible: { opacity: 1 }
+  };
+
+  const fadeUpVariant = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
   };
 
   const navItems = [
@@ -319,27 +315,15 @@ export default function Home() {
         )}
       </nav>
 
-      {/* BACKGROUND EFFECTS */}
+      {/* BACKGROUND EFFECTS (STATIC) */}
       <div className="fixed inset-0 w-full h-full -z-20 bg-background pointer-events-none overflow-hidden">
         {/* Subtle grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
 
-        {/* Floating Glowing Orbs (Normal Speed) */}
-        <motion.div 
-          animate={{ opacity: [0.15, 0.3, 0.15], scale: [1, 1.05, 1] }} 
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" 
-        />
-        <motion.div 
-          animate={{ opacity: [0.1, 0.25, 0.1], scale: [1, 1.1, 1] }} 
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 right-0 w-[40vw] h-[40vw] bg-purple-600/10 rounded-full blur-[150px] translate-x-1/3 -translate-y-1/2" 
-        />
-        <motion.div 
-          animate={{ opacity: [0.1, 0.2, 0.1], scale: [1, 1.05, 1] }} 
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 left-1/4 w-[60vw] h-[60vw] bg-blue-600/10 rounded-full blur-[150px] translate-y-1/3" 
-        />
+        {/* Static Glowing Orbs (No laggy animations) */}
+        <div className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-1/2 right-0 w-[40vw] h-[40vw] bg-purple-600/10 rounded-full blur-[150px] translate-x-1/3 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-1/4 w-[60vw] h-[60vw] bg-blue-600/10 rounded-full blur-[150px] translate-y-1/3" />
       </div>
 
       {/* HEADER SECTION */}
@@ -392,28 +376,19 @@ export default function Home() {
           </motion.div>
 
           {/* Profile Image (Lateral) */}
-          <motion.div variants={fadeUpVariant} className="relative group flex-shrink-0 mb-8 md:mb-0">
+          <div className="relative group flex-shrink-0 mb-8 md:mb-0">
             {/* Decorative background blur */}
-            <div className="absolute -inset-6 bg-gradient-to-tr from-primary/40 via-purple-500/30 to-background rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition duration-1000"></div>
+            <div className="absolute -inset-6 bg-gradient-to-tr from-primary/40 via-purple-500/30 to-background rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition duration-500"></div>
 
-            {/* Outer animated rings */}
-            <div className="absolute inset-0 rounded-full border border-primary/20 scale-[1.15] animate-[spin_10s_linear_infinite] hidden md:block"></div>
-            <div className="absolute inset-0 rounded-full border border-muted-foreground/20 scale-[1.3] animate-[spin_15s_linear_infinite_reverse] hidden md:block"></div>
-
-            <motion.div
-              animate={{ y: [-10, 10, -10] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Image
-                src="/profile.jpg"
-                alt="Daniel Ortega Pereira"
-                width={320}
-                height={320}
-                className="relative rounded-full border-4 border-background object-cover shadow-2xl z-10 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 ring-4 ring-primary/10 group-hover:ring-primary/40 group-hover:scale-105 transition-all duration-700 ease-out"
-                priority
-              />
-            </motion.div>
-          </motion.div>
+            <Image
+              src="/profile.jpg"
+              alt="Daniel Ortega Pereira"
+              width={320}
+              height={320}
+              className="relative rounded-full border-4 border-background object-cover shadow-2xl z-10 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 ring-4 ring-primary/10 hover:ring-primary/40 transition-all duration-300"
+              priority
+            />
+          </div>
 
         </motion.div>
       </header>
@@ -552,16 +527,14 @@ export default function Home() {
           ))}
         </motion.div>
 
-        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
               <motion.div
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                whileHover={{ y: -5, scale: 1.01 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                transition={{ duration: 0.2 }}
                 key={project.title}
                 className="w-full h-full"
               >
@@ -743,12 +716,11 @@ export default function Home() {
           <AnimatePresence mode="popLayout">
             {displayedCourses.map((curso, index) => (
               <motion.div
-                layout
                 key={`${curso.title}-${index}`}
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
                 className="h-full"
               >
                 <Card className="h-full border-primary/10 hover:border-primary/40 transition-all duration-500 bg-gradient-to-br from-card/40 to-card/10 hover:bg-card/60 backdrop-blur-md flex flex-col hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 group relative overflow-hidden">
