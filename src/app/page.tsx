@@ -196,6 +196,8 @@ export default function Home() {
         staggerChildren: 0.1
       }
     }
+  };
+
   const navItems = [
     { name: 'Home', href: '#home' },
     { name: 'Projetos', href: '#projetos' },
