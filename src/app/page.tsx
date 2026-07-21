@@ -569,7 +569,7 @@ export default function Home() {
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
       </motion.section>
 
       {/* SKILLS SECTION */}
