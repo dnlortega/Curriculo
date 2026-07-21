@@ -227,8 +227,8 @@ export default function Home() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="fixed top-4 md:top-8 left-1/2 z-50 w-[95%] md:w-auto max-w-[90vw] bg-background/60 backdrop-blur-xl border border-primary/20 rounded-full px-4 md:px-6 py-2.5 flex justify-between md:justify-center items-center shadow-2xl shadow-primary/5 gap-4 md:gap-8"
       >
-        <a href="#home" className="font-black text-xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 hover:scale-105 transition-transform shrink-0">
-          DO.
+        <a href="#home" className="font-black text-base md:text-xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 hover:scale-105 transition-transform shrink-0 whitespace-nowrap">
+          Daniel Ortega Pereira
         </a>
         
         <ul className="flex items-center gap-1 md:gap-2 overflow-x-auto no-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
