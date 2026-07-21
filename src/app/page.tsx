@@ -415,7 +415,7 @@ export default function Home() {
           <div className="relative border-l-2 border-primary/20 ml-3 md:ml-6 space-y-12">
             
             {/* DataGuvi */}
-            <div className="relative pl-8 md:pl-12">
+            <motion.div whileHover={{ x: 8 }} transition={{ type: "spring", stiffness: 300 }} className="relative pl-8 md:pl-12">
               <div className="absolute w-6 h-6 bg-primary rounded-full -left-[13px] border-4 border-background flex items-center justify-center shadow-md shadow-primary/20"></div>
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
                 <h4 className="text-xl font-bold text-foreground">Analista de Dados & IA (Projeto)</h4>
@@ -427,10 +427,10 @@ export default function Home() {
               <p className="text-muted-foreground/90 leading-relaxed text-sm md:text-base">
                 Foco em transformar dados brutos em decisões estratégicas. Atuação com análise de dados profunda, domínio em <strong>ETL (Power Query)</strong>, modelagem relacional <strong>(Star Schema)</strong>, <strong>DAX avançado</strong> e criação de dashboards intuitivos com foco absoluto em KPIs operacionais e de negócio.
               </p>
-            </div>
+            </motion.div>
 
             {/* Unimed Bauru */}
-            <div className="relative pl-8 md:pl-12">
+            <motion.div whileHover={{ x: 8 }} transition={{ type: "spring", stiffness: 300 }} className="relative pl-8 md:pl-12">
               <div className="absolute w-6 h-6 bg-primary rounded-full -left-[13px] border-4 border-background flex items-center justify-center shadow-md shadow-primary/20"></div>
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
                 <h4 className="text-xl font-bold text-foreground">Assistente de Faturamento (TI & Integração)</h4>
@@ -456,10 +456,10 @@ export default function Home() {
                 <Badge variant="secondary" className="bg-muted/50 text-xs">Gestão de TI</Badge>
                 <Badge variant="secondary" className="bg-muted/50 text-xs">Treinamento Corporativo</Badge>
               </div>
-            </div>
+            </motion.div>
 
             {/* Prefeitura */}
-            <div className="relative pl-8 md:pl-12 opacity-80 hover:opacity-100 transition-opacity">
+            <motion.div whileHover={{ x: 8 }} transition={{ type: "spring", stiffness: 300 }} className="relative pl-8 md:pl-12 opacity-80 hover:opacity-100 transition-opacity">
               <div className="absolute w-4 h-4 bg-muted-foreground/50 rounded-full -left-[9px] border-4 border-background"></div>
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
                 <h4 className="text-lg font-bold text-foreground">Administrativo</h4>
@@ -471,7 +471,7 @@ export default function Home() {
               <p className="text-sm text-muted-foreground/80 leading-relaxed">
                 Gestão rigorosa de documentação municipal, incluindo alvarás de funcionamento, processos de alvarás de construção e expedição de habite-se.
               </p>
-            </div>
+            </motion.div>
 
             {/* Lan House */}
             <div className="relative pl-8 md:pl-12 opacity-80 hover:opacity-100 transition-opacity">
@@ -535,6 +535,7 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
+                whileHover={{ y: -8 }}
                 transition={{ duration: 0.3 }}
                 key={project.title} 
                 className="w-full h-full"
@@ -594,9 +595,14 @@ export default function Home() {
         </motion.div>
         <motion.div variants={fadeUpVariant} className="flex flex-wrap justify-center gap-4 w-full">
           {['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'Shadcn UI', 'Node.js', 'Vercel', 'Git & GitHub'].map(skill => (
-            <div key={skill} className="px-6 py-3 rounded-full border border-primary/20 bg-card/80 backdrop-blur-sm text-foreground font-medium shadow-sm hover:border-primary transition-colors cursor-default text-center hover:scale-105">
+            <motion.div 
+              whileHover={{ scale: 1.1, rotate: [-1, 1, 0] }}
+              transition={{ type: "spring", stiffness: 400 }}
+              key={skill} 
+              className="px-6 py-3 rounded-full border border-primary/20 bg-card/80 backdrop-blur-sm text-foreground font-medium shadow-sm hover:border-primary transition-colors cursor-default text-center hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+            >
               {skill}
-            </div>
+            </motion.div>
           ))}
         </motion.div>
       </motion.section>
