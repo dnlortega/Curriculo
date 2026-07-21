@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send, Search, ShieldCheck, Hash, Menu, X, Moon, Sun, Home as HomeIcon, Briefcase, Zap } from "lucide-react";
+import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send, Search, ShieldCheck, Hash, Menu, X, Moon, Sun, Home as HomeIcon, Briefcase, Zap, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cursos } from "@/data/cursos";
 import { useState, useMemo, useEffect } from "react";
@@ -157,10 +157,13 @@ export default function Home() {
   // Theme state
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Prevent hydration mismatch
+  // Prevent hydration mismatch and handle initial loading
   useEffect(() => {
     setMounted(true);
+    const timer = setTimeout(() => setIsLoading(false), 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   // Project Filtering
@@ -236,6 +239,34 @@ export default function Home() {
 
   return (
     <main className="min-h-screen relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
+
+      {/* INITIAL SPLASH SCREEN */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -50, filter: "blur(10px)" }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background"
+          >
+            <div className="relative flex items-center justify-center">
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl animate-pulse scale-150"></div>
+              <Loader2 className="w-16 h-16 text-primary animate-spin relative z-10" />
+            </div>
+            <h2 className="mt-12 text-lg font-medium tracking-[0.4em] text-foreground/80 animate-pulse uppercase">
+              Carregando
+            </h2>
+            <div className="w-48 h-1 bg-muted rounded-full mt-6 overflow-hidden">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 2, ease: "easeInOut" }}
+                className="h-full bg-primary"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* FLOATING PILL MENU (DESKTOP) */}
       <motion.nav
