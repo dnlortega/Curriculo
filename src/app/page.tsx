@@ -157,23 +157,26 @@ export default function Home() {
   // Theme state
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Prevent hydration mismatch and handle initial loading
+  // Prevent hydration mismatch and handle initial load
   useEffect(() => {
     setMounted(true);
-    const timer = setTimeout(() => setIsLoading(false), 2000);
+    const timer = setTimeout(() => {
+      setIsTransitioning(false);
+      setIsInitialLoad(false);
+    }, 500);
     return () => clearTimeout(timer);
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsTransitioning(true);
     setTimeout(() => {
-      // Jump to section right before the loading screen fades out
       document.querySelector(href)?.scrollIntoView({ behavior: 'auto' });
-      setIsLoading(false);
-    }, 1200);
+      setIsTransitioning(false);
+    }, 300);
   };
 
   // Project Filtering
@@ -250,30 +253,21 @@ export default function Home() {
   return (
     <main className="min-h-screen relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
 
-      {/* INITIAL SPLASH SCREEN */}
+      {/* FAST PAGE TRANSITION EFFECT */}
       <AnimatePresence>
-        {isLoading && (
+        {isTransitioning && (
           <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -50, filter: "blur(10px)" }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background"
+            initial={{ opacity: isInitialLoad ? 1 : 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[100] bg-background/80 flex items-center justify-center pointer-events-none"
           >
-            <div className="relative flex items-center justify-center">
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl animate-pulse scale-150"></div>
-              <Loader2 className="w-16 h-16 text-primary animate-spin relative z-10" />
-            </div>
-            <h2 className="mt-12 text-lg font-medium tracking-[0.4em] text-foreground/80 animate-pulse uppercase">
-              Carregando
-            </h2>
-            <div className="w-48 h-1 bg-muted rounded-full mt-6 overflow-hidden">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 2, ease: "easeInOut" }}
-                className="h-full bg-primary"
-              />
-            </div>
+            <motion.div
+              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 0.8, repeat: Infinity }}
+              className="w-16 h-16 bg-primary rounded-full blur-2xl opacity-50"
+            />
           </motion.div>
         )}
       </AnimatePresence>
