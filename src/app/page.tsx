@@ -44,22 +44,22 @@ const getIssuerDomain = (issuer: string) => {
   return map[issuer] || null;
 };
 
+const getInitialsAvatar = (name: string) => {
+  const initial = name.charAt(0).toUpperCase();
+  const colors = ['#f87171', '#fb923c', '#fbbf24', '#a3e635', '#34d399', '#22d3ee', '#818cf8', '#c084fc', '#f472b6'];
+  const color = colors[name.length % colors.length];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="${color}"/><text x="50" y="68" font-family="Arial, sans-serif" font-weight="bold" font-size="50" fill="#ffffff" text-anchor="middle">${initial}</text></svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+};
+
 const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string }) => {
   const domain = getIssuerDomain(issuer);
   const [errorLevel, setErrorLevel] = useState(0);
   
   const googleFavicon = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128` : null;
-  const uiAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(issuer)}&background=random&color=fff&size=128`;
+  const localAvatar = getInitialsAvatar(issuer);
 
-  if (errorLevel >= 2) {
-    return (
-      <div className={cn("flex items-center justify-center bg-primary/10 text-primary rounded", className)}>
-        <GraduationCap className="w-3/5 h-3/5 opacity-80" />
-      </div>
-    );
-  }
-  
-  let currentSrc = uiAvatar;
+  let currentSrc = localAvatar;
   
   // Hardcoded highly-available logo for UNINTER
   if (issuer.toLowerCase().includes('uninter')) {
