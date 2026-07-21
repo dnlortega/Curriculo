@@ -196,25 +196,42 @@ export default function Home() {
         staggerChildren: 0.1
       }
     }
-  };
+  const navItems = [
+    { name: 'Home', href: '#home' },
+    { name: 'Projetos', href: '#projetos' },
+    { name: 'Habilidades', href: '#habilidades' },
+    { name: 'Formação', href: '#formacao' },
+    { name: 'Certificados', href: '#certificados' },
+    { name: 'Contato', href: '#contato' },
+  ];
 
   return (
     <main className="min-h-screen relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
       
-      {/* FIXED TOP MENU */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border/50 py-4 px-6 md:px-12 lg:px-24 flex justify-between items-center">
-        <a href="#home" className="font-black text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-foreground to-muted-foreground hover:scale-105 transition-transform">
+      {/* FLOATING PILL MENU */}
+      <motion.nav 
+        initial={{ y: -100, opacity: 0, x: "-50%" }}
+        animate={{ y: 0, opacity: 1, x: "-50%" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="fixed top-4 md:top-8 left-1/2 z-50 w-[95%] md:w-auto max-w-[90vw] bg-background/60 backdrop-blur-xl border border-primary/20 rounded-full px-4 md:px-6 py-2.5 flex justify-between md:justify-center items-center shadow-2xl shadow-primary/5 gap-4 md:gap-8"
+      >
+        <a href="#home" className="font-black text-xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 hover:scale-105 transition-transform shrink-0">
           DO.
         </a>
-        <ul className="hidden lg:flex gap-8 text-sm font-medium text-muted-foreground">
-          <li><a href="#home" className="hover:text-primary transition-colors">Home</a></li>
-          <li><a href="#projetos" className="hover:text-primary transition-colors">Projetos</a></li>
-          <li><a href="#habilidades" className="hover:text-primary transition-colors">Habilidades</a></li>
-          <li><a href="#formacao" className="hover:text-primary transition-colors">Formação</a></li>
-          <li><a href="#certificados" className="hover:text-primary transition-colors">Certificados</a></li>
-          <li><a href="#contato" className="hover:text-primary transition-colors">Contato</a></li>
+        
+        <ul className="flex items-center gap-1 md:gap-2 overflow-x-auto no-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          {navItems.map((item) => (
+            <li key={item.name} className="shrink-0">
+              <a 
+                href={item.href} 
+                className="px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 block"
+              >
+                {item.name}
+              </a>
+            </li>
+          ))}
         </ul>
-      </nav>
+      </motion.nav>
 
       {/* BACKGROUND EFFECTS */}
       <div className="fixed inset-0 w-full h-full -z-20 bg-background pointer-events-none overflow-hidden">
