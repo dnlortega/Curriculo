@@ -6,10 +6,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cursos } from "@/data/cursos";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 const Github = ({ className }: { className?: string }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
@@ -123,7 +123,41 @@ export default function Home() {
   ];
 
   const [showAllCourses, setShowAllCourses] = useState(false);
-  const displayedCourses = showAllCourses ? cursos : cursos.slice(0, 9);
+  const [courseFilter, setCourseFilter] = useState<string>("Todos");
+  const [projectFilter, setProjectFilter] = useState<string>("Todos");
+
+  // Project Filtering
+  const allProjectTags = useMemo(() => {
+    const tags = new Set<string>();
+    projects.forEach(p => p.tags.forEach(t => tags.add(t)));
+    return ["Todos", ...Array.from(tags)];
+  }, [projects]);
+
+  const filteredProjects = useMemo(() => {
+    if (projectFilter === "Todos") return projects;
+    return projects.filter(p => p.tags.includes(projectFilter));
+  }, [projects, projectFilter]);
+
+  // Course Filtering
+  const allCourseSkills = useMemo(() => {
+    const skills = new Set<string>();
+    cursos.forEach(c => {
+      if (c.skills) {
+        c.skills.split(',').forEach(s => skills.add(s.trim().replace(' e mais ', '').replace(/[0-9]+ competências/, '').trim()));
+      }
+    });
+    // Limpar strings vazias ou muito longas para os filtros principais
+    const cleanSkills = Array.from(skills).filter(s => s.length > 0 && s.length < 20).slice(0, 8); 
+    return ["Todos", ...cleanSkills];
+  }, []);
+
+  const filteredCourses = useMemo(() => {
+    let filtered = cursos;
+    if (courseFilter !== "Todos") {
+      filtered = cursos.filter(c => c.skills?.includes(courseFilter));
+    }
+    return showAllCourses ? filtered : filtered.slice(0, 9);
+  }, [courseFilter, showAllCourses]);
 
   const fadeUpVariant = {
     hidden: { opacity: 0, y: 40 },
@@ -154,6 +188,7 @@ export default function Home() {
           <li><a href="#habilidades" className="hover:text-primary transition-colors">Habilidades</a></li>
           <li><a href="#formacao" className="hover:text-primary transition-colors">Formação</a></li>
           <li><a href="#certificados" className="hover:text-primary transition-colors">Certificados</a></li>
+          <li><a href="#contato" className="hover:text-primary transition-colors">Contato</a></li>
         </ul>
       </nav>
 
@@ -190,7 +225,7 @@ export default function Home() {
               Múltiplos projetos entregues com alta qualidade e deploy automatizado na Vercel.
             </p>
 
-            <motion.div variants={fadeUpVariant} className="flex flex-wrap items-center justify-center md:justify-start gap-5 pt-8">
+            <motion.div variants={fadeUpVariant} className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-8">
               <Link href="https://github.com/dnlortega/" target="_blank" className={cn(buttonVariants({ size: "icon" }), "rounded-full w-14 h-14 shadow-lg hover:scale-110 transition-transform")} title="GitHub">
                 <Github className="w-6 h-6" />
               </Link>
@@ -199,6 +234,9 @@ export default function Home() {
               </Link>
               <Link href="https://vercel.com/dnlortegas-projects" target="_blank" className={cn(buttonVariants({ variant: "secondary", size: "icon" }), "rounded-full w-14 h-14 shadow-lg hover:scale-110 transition-transform")} title="Vercel Projects">
                 <ExternalLink className="w-6 h-6" />
+              </Link>
+              <Link href="/curriculo.pdf" target="_blank" className={cn(buttonVariants({ variant: "default" }), "rounded-full h-14 px-6 shadow-lg hover:scale-105 transition-transform ml-2 gap-2 text-md")} title="Baixar CV">
+                <Download className="w-5 h-5" /> Baixar CV
               </Link>
             </motion.div>
           </motion.div>
@@ -243,9 +281,35 @@ export default function Home() {
           <p className="text-muted-foreground text-center">Confira algumas das aplicações reais que desenvolvi recentemente.</p>
         </motion.div>
 
-        <motion.div variants={staggerContainer} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-          {projects.map((project, index) => (
-            <motion.div key={index} variants={fadeUpVariant} className="w-full h-full">
+        <motion.div variants={fadeUpVariant} className="flex flex-wrap justify-center gap-2 w-full max-w-4xl">
+          {allProjectTags.map(tag => (
+            <button 
+              key={tag}
+              onClick={() => setProjectFilter(tag)}
+              className={cn(
+                "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 border",
+                projectFilter === tag 
+                  ? "bg-primary text-primary-foreground border-primary shadow-md scale-105" 
+                  : "bg-card/50 border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {tag}
+            </button>
+          ))}
+        </motion.div>
+
+        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, index) => (
+              <motion.div 
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                key={project.title} 
+                className="w-full h-full"
+              >
               <Card className="flex flex-col h-full overflow-hidden border-primary/10 hover:border-primary/50 transition-colors bg-card/50 backdrop-blur-sm group items-center text-center">
                 <div className="h-48 w-full bg-muted/50 relative overflow-hidden flex items-center justify-center border-b border-border/50">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-purple-500/10 opacity-20 group-hover:opacity-40 transition-opacity z-10 pointer-events-none"></div>
@@ -281,6 +345,7 @@ export default function Home() {
               </Card>
             </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
       </motion.section>
 
@@ -374,15 +439,34 @@ export default function Home() {
           <p className="text-muted-foreground text-center">Mais de {cursos.length} capacitações concluídas ao longo da minha jornada.</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-          {displayedCourses.map((curso, index) => (
-            <motion.div 
-              key={`${curso.title}-${index}`} 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: (index % 9) * 0.1 }}
+        <motion.div variants={fadeUpVariant} className="flex flex-wrap justify-center gap-2 w-full max-w-4xl">
+          {allCourseSkills.map(skill => (
+            <button 
+              key={skill}
+              onClick={() => { setCourseFilter(skill); setShowAllCourses(true); }}
+              className={cn(
+                "px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 border",
+                courseFilter === skill 
+                  ? "bg-primary text-primary-foreground border-primary shadow-md scale-105" 
+                  : "bg-card/50 border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-foreground"
+              )}
             >
+              {skill}
+            </button>
+          ))}
+        </motion.div>
+
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+          <AnimatePresence mode="popLayout">
+            {filteredCourses.map((curso, index) => (
+              <motion.div 
+                layout
+                key={`${curso.title}-${index}`} 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+              >
               <Card className="h-full border-border/50 hover:border-primary/40 transition-all duration-300 bg-card/30 hover:bg-card/60 backdrop-blur-sm flex flex-col hover:-translate-y-1 hover:shadow-md">
                 <CardHeader className="p-5 pb-3">
                   <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
@@ -414,9 +498,10 @@ export default function Home() {
               </Card>
             </motion.div>
           ))}
-        </div>
+          </AnimatePresence>
+        </motion.div>
 
-        {cursos.length > 9 && (
+        {cursos.length > 9 && courseFilter === "Todos" && (
           <motion.div variants={fadeUpVariant} className="pt-8">
             <button
               onClick={() => setShowAllCourses(!showAllCourses)}
@@ -433,6 +518,49 @@ export default function Home() {
             </button>
           </motion.div>
         )}
+      </motion.section>
+
+      {/* CONTACT SECTION */}
+      <motion.section 
+        id="contato"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center bg-muted/5 border-t border-border/50"
+      >
+        <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center max-w-2xl">
+          <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
+            <Mail className="w-8 h-8 text-primary" /> Vamos Conversar?
+          </h3>
+          <p className="text-muted-foreground text-center">
+            Estou sempre aberto a novos desafios e oportunidades. Me mande uma mensagem e responderei o mais rápido possível!
+          </p>
+        </motion.div>
+
+        <motion.div variants={fadeUpVariant} className="w-full max-w-2xl">
+          <Card className="border-primary/20 bg-card/50 backdrop-blur-sm shadow-xl shadow-primary/5">
+            <CardContent className="p-6 sm:p-10 flex flex-col gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">Nome</label>
+                  <input type="text" placeholder="Seu nome completo" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">E-mail</label>
+                  <input type="email" placeholder="seu@email.com" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Mensagem</label>
+                <textarea rows={4} placeholder="Como posso te ajudar?" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"></textarea>
+              </div>
+              <button className={cn(buttonVariants({ size: "lg" }), "w-full gap-2 mt-2")}>
+                Enviar Mensagem <Send className="w-4 h-4" />
+              </button>
+            </CardContent>
+          </Card>
+        </motion.div>
       </motion.section>
 
       {/* FOOTER */}
