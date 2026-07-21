@@ -210,11 +210,6 @@ export default function Home() {
 
   const displayedCourses = filteredCourses.slice(0, visibleCoursesCount);
 
-  const fadeUpVariant = {
-    hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-  // Minimal fade up for sections, no slow staggers
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 }
