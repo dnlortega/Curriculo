@@ -46,8 +46,12 @@ const getIssuerDomain = (issuer: string) => {
 
 const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string }) => {
   const domain = getIssuerDomain(issuer);
-  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(issuer)}&background=random&color=fff&size=128`;
-  const logoUrl = domain ? `https://logo.clearbit.com/${domain}` : fallback;
+  
+  const googleFavicon = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128` : null;
+  const uiAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(issuer)}&background=random&color=fff&size=128`;
+  
+  // Try clearbit first, then google favicon, then ui-avatars
+  const logoUrl = domain ? `https://logo.clearbit.com/${domain}` : uiAvatar;
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -56,7 +60,13 @@ const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string 
       alt={`Logo ${issuer}`} 
       className={cn("rounded bg-background object-cover", className)}
       onError={(e) => {
-        e.currentTarget.src = fallback;
+        // If clearbit fails and we have a domain, try google favicon
+        if (domain && e.currentTarget.src !== googleFavicon && e.currentTarget.src !== uiAvatar) {
+          e.currentTarget.src = googleFavicon!;
+        } else {
+          // If google favicon fails or no domain, use ui-avatars
+          e.currentTarget.src = uiAvatar;
+        }
       }}
     />
   );
