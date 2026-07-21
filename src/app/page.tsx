@@ -279,8 +279,7 @@ export default function Home() {
               Desenvolvedor Full Stack & <span className="text-primary">Especialista Next.js</span>
             </h2>
             <p className="text-lg text-muted-foreground/80 mt-6 leading-relaxed max-w-xl mx-auto md:mx-0">
-              Construindo interfaces modernas, rápidas e experiências de usuário incríveis com o ecossistema JavaScript. 
-              Múltiplos projetos entregues com alta qualidade e deploy automatizado na Vercel.
+              Profissional de Tecnologia com <strong>17+ anos de vivência corporativa</strong> em sistemas hospitalares e BI. Hoje aplico minha forte expertise analítica (Power BI, DAX, XML) e desenvolvimento moderno (Next.js, React, Tailwind) para construir soluções robustas e de alto impacto.
             </p>
 
             <motion.div variants={fadeUpVariant} className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-8">
@@ -320,6 +319,105 @@ export default function Home() {
 
         </motion.div>
       </header>
+
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full opacity-50" />
+
+      {/* PROFESSIONAL TRAJECTORY SECTION */}
+      <motion.section 
+        id="experiencia"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center pt-28 bg-muted/5 border-b border-border/50"
+      >
+        <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
+          <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
+            <User className="w-8 h-8 text-primary" /> Trajetória Profissional
+          </h3>
+          <p className="text-muted-foreground text-center max-w-2xl">Mais de 17 anos dedicados à tecnologia, da integração de sistemas complexos à construção de aplicações modernas e análise de dados estruturada.</p>
+        </motion.div>
+
+        <motion.div variants={fadeUpVariant} className="w-full max-w-4xl mt-8">
+          <div className="relative border-l-2 border-primary/20 ml-3 md:ml-6 space-y-12">
+            
+            {/* DataGuvi */}
+            <div className="relative pl-8 md:pl-12">
+              <div className="absolute w-6 h-6 bg-primary rounded-full -left-[13px] border-4 border-background flex items-center justify-center shadow-md shadow-primary/20"></div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
+                <h4 className="text-xl font-bold text-foreground">Estagiário em Dados & IA</h4>
+                <Badge variant="outline" className="w-fit bg-primary/5 text-primary border-primary/20">Mai 2026 – Jun 2026</Badge>
+              </div>
+              <h5 className="text-md font-medium text-muted-foreground mb-4 flex items-center gap-2">
+                <IssuerLogo issuer="DataGuvi" className="w-5 h-5 rounded-sm grayscale" /> DataGuvi
+              </h5>
+              <p className="text-muted-foreground/90 leading-relaxed text-sm md:text-base">
+                Foco em transformar dados brutos em decisões estratégicas. Atuação com análise de dados profunda, domínio em <strong>ETL (Power Query)</strong>, modelagem relacional <strong>(Star Schema)</strong>, <strong>DAX avançado</strong> e criação de dashboards intuitivos com foco absoluto em KPIs operacionais e de negócio.
+              </p>
+            </div>
+
+            {/* Unimed Bauru */}
+            <div className="relative pl-8 md:pl-12">
+              <div className="absolute w-6 h-6 bg-primary rounded-full -left-[13px] border-4 border-background flex items-center justify-center shadow-md shadow-primary/20"></div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
+                <h4 className="text-xl font-bold text-foreground">Assistente de Faturamento (TI & Integração)</h4>
+                <Badge variant="outline" className="w-fit bg-primary/5 text-primary border-primary/20">Mar 2009 – Abr 2026 (17 anos)</Badge>
+              </div>
+              <h5 className="text-md font-medium text-muted-foreground mb-4 flex items-center gap-2">
+                <IssuerLogo issuer="Unimed Bauru" className="w-5 h-5 rounded-sm" /> Hospital Unimed Bauru
+              </h5>
+              <div className="text-muted-foreground/90 leading-relaxed text-sm md:text-base space-y-3">
+                <p>
+                  Responsável central pela conferência e geração de remessas e arquivos <strong>XML</strong> conforme os exigentes padrões da ANS, processando continuamente mais de <strong>2.500 registros mensais</strong> mantendo um recorde de <strong>100% de conformidade</strong>.
+                </p>
+                <p>
+                  Atuei na vanguarda da configuração e validação de XMLs para importação nos sistemas operacionais da operadora, alcançando a marca de <strong>0% de falhas de integração</strong>. 
+                </p>
+                <p>
+                  Liderei a implantação de sistemas corporativos críticos em múltiplas unidades de grande porte (SEDE, HUB, CDU e BENE), sendo responsável direto pelo treinamento das equipes locais e por garantir a adoção completa e fluida das novas tecnologias por parte dos usuários.
+                </p>
+              </div>
+              <div className="flex gap-2 flex-wrap mt-4">
+                <Badge variant="secondary" className="bg-muted/50 text-xs">Integração de Sistemas</Badge>
+                <Badge variant="secondary" className="bg-muted/50 text-xs">Padrão ANS (XML)</Badge>
+                <Badge variant="secondary" className="bg-muted/50 text-xs">Gestão de TI</Badge>
+                <Badge variant="secondary" className="bg-muted/50 text-xs">Treinamento Corporativo</Badge>
+              </div>
+            </div>
+
+            {/* Prefeitura */}
+            <div className="relative pl-8 md:pl-12 opacity-80 hover:opacity-100 transition-opacity">
+              <div className="absolute w-4 h-4 bg-muted-foreground/50 rounded-full -left-[9px] border-4 border-background"></div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
+                <h4 className="text-lg font-bold text-foreground">Administrativo</h4>
+                <Badge variant="outline" className="w-fit border-border">5 anos</Badge>
+              </div>
+              <h5 className="text-md font-medium text-muted-foreground mb-2">
+                Prefeitura Municipal de Bauru
+              </h5>
+              <p className="text-sm text-muted-foreground/80 leading-relaxed">
+                Gestão rigorosa de documentação municipal, incluindo alvarás de funcionamento, processos de alvarás de construção e expedição de habite-se.
+              </p>
+            </div>
+
+            {/* Lan House */}
+            <div className="relative pl-8 md:pl-12 opacity-80 hover:opacity-100 transition-opacity">
+              <div className="absolute w-4 h-4 bg-muted-foreground/50 rounded-full -left-[9px] border-4 border-background"></div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
+                <h4 className="text-lg font-bold text-foreground">Suporte Técnico e Atendimento</h4>
+                <Badge variant="outline" className="w-fit border-border">2 anos</Badge>
+              </div>
+              <h5 className="text-md font-medium text-muted-foreground mb-2">
+                Lan House
+              </h5>
+              <p className="text-sm text-muted-foreground/80 leading-relaxed">
+                Acolhimento ao cliente, manutenção e configuração de hardware/software, gestão de tempo e recursos, e serviços rápidos de design gráfico e emissão de documentos governamentais.
+              </p>
+            </div>
+
+          </div>
+        </motion.div>
+      </motion.section>
 
       <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full opacity-50" />
 

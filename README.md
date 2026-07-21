@@ -13,9 +13,13 @@
 
 ---
 
-## 👨‍💻 Sobre Mim
-Sou um Desenvolvedor apaixonado pelo ecossistema JavaScript/TypeScript, especializado na construção de aplicações escaláveis, rápidas e esteticamente impecáveis usando **Next.js**. 
-Tenho como princípio o aprendizado contínuo e a busca constante pela excelência em UI/UX e código limpo.
+## 🚀 Sobre Mim
+
+Profissional de Tecnologia com **mais de 17 anos de experiência** corporativa. 
+
+Minha trajetória é marcada por quase duas décadas na **Unimed Bauru**, onde atuei fortemente na integração de sistemas hospitalares, configuração massiva de XML para padrões ANS e automação de processos operacionais, garantindo 100% de conformidade.
+
+Hoje, dedico minha sólida experiência analítica e em banco de dados (Power BI, DAX, ETL, Star Schema) no desenvolvimento Web moderno. Sou apaixonado por construir interfaces de altíssima performance utilizando o ecossistema **Next.js, React e Tailwind CSS**.
 
 ## 🎓 Formação Acadêmica
 
