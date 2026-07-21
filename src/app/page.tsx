@@ -541,23 +541,30 @@ export default function Home() {
         <motion.div variants={fadeUpVariant} className="w-full max-w-2xl">
           <Card className="border-primary/20 bg-card/50 backdrop-blur-sm shadow-xl shadow-primary/5">
             <CardContent className="p-6 sm:p-10 flex flex-col gap-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Nome</label>
-                  <input type="text" placeholder="Seu nome completo" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
+              <form action="https://formsubmit.co/dnlortega@gmail.com" method="POST" className="flex flex-col gap-6">
+                {/* Configuration for FormSubmit */}
+                <input type="hidden" name="_subject" value="Novo Contato do Portfólio!" />
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_template" value="table" />
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Nome</label>
+                    <input type="text" name="name" required placeholder="Seu nome completo" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">E-mail</label>
+                    <input type="email" name="email" required placeholder="seu@email.com" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">E-mail</label>
-                  <input type="email" placeholder="seu@email.com" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
+                  <label className="text-sm font-medium text-foreground">Mensagem</label>
+                  <textarea name="message" required rows={4} placeholder="Como posso te ajudar?" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"></textarea>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Mensagem</label>
-                <textarea rows={4} placeholder="Como posso te ajudar?" className="w-full p-3 rounded-md border border-input bg-background hover:border-primary/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"></textarea>
-              </div>
-              <button className={cn(buttonVariants({ size: "lg" }), "w-full gap-2 mt-2")}>
-                Enviar Mensagem <Send className="w-4 h-4" />
-              </button>
+                <button type="submit" className={cn(buttonVariants({ size: "lg" }), "w-full gap-2 mt-2")}>
+                  Enviar Mensagem <Send className="w-4 h-4" />
+                </button>
+              </form>
             </CardContent>
           </Card>
         </motion.div>
