@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send, Search, ShieldCheck, Hash, Menu, X, Moon, Sun } from "lucide-react";
+import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send, Search, ShieldCheck, Hash, Menu, X, Moon, Sun, Home as HomeIcon, Briefcase, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cursos } from "@/data/cursos";
 import { useState, useMemo, useEffect } from "react";
@@ -153,8 +153,7 @@ export default function Home() {
   const [courseSearch, setCourseSearch] = useState<string>("");
   const [visibleCoursesCount, setVisibleCoursesCount] = useState<number>(9);
 
-  // New States for Mobile Menu and Theme
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Theme state
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -225,12 +224,13 @@ export default function Home() {
   };
 
   const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'Projetos', href: '#projetos' },
-    { name: 'Habilidades', href: '#habilidades' },
-    { name: 'Formação', href: '#formacao' },
-    { name: 'Certificados', href: '#certificados' },
-    { name: 'Contato', href: '#contato' },
+    { name: 'Home', href: '#home', icon: <HomeIcon className="w-5 h-5" /> },
+    { name: 'Projetos', href: '#projetos', icon: <Briefcase className="w-5 h-5" /> },
+    { name: 'Experiência', href: '#experiencia', icon: <User className="w-5 h-5" /> },
+    { name: 'Habilidades', href: '#habilidades', icon: <Zap className="w-5 h-5" /> },
+    { name: 'Formação', href: '#formacao', icon: <GraduationCap className="w-5 h-5" /> },
+    { name: 'Certificados', href: '#certificados', icon: <Award className="w-5 h-5" /> },
+    { name: 'Contato', href: '#contato', icon: <Mail className="w-5 h-5" /> },
   ];
 
   return (
@@ -252,9 +252,10 @@ export default function Home() {
             <li key={item.name} className="shrink-0">
               <a 
                 href={item.href} 
-                className="px-4 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 block"
+                title={item.name}
+                className="p-3 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 block"
               >
-                {item.name}
+                {item.icon}
               </a>
             </li>
           ))}
@@ -277,7 +278,7 @@ export default function Home() {
         href="https://wa.me/5514981294913?text=Ol%C3%A1%20Daniel,%20vi%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20conversar!"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-[60] p-3 md:p-4 bg-[#25D366] text-white rounded-full shadow-[0_0_20px_rgba(37,211,102,0.4)] hover:scale-110 active:scale-95 transition-all flex items-center justify-center group"
+        className="fixed bottom-24 md:bottom-6 right-6 z-[60] p-3 md:p-4 bg-[#25D366] text-white rounded-full shadow-[0_0_20px_rgba(37,211,102,0.4)] hover:scale-110 active:scale-95 transition-all flex items-center justify-center group"
         title="Fale comigo no WhatsApp"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 md:w-10 md:h-10">
@@ -285,55 +286,30 @@ export default function Home() {
         </svg>
       </a>
 
-      {/* MOBILE FAB & MENU */}
-      <div className="md:hidden">
-        {/* FAB Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="fixed bottom-6 left-6 z-[60] p-4 bg-primary text-primary-foreground rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all"
-        >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-
-        {/* Mobile Menu Overlay */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 50, scale: 0.9 }}
-              className="fixed bottom-24 left-6 z-[50] bg-background border border-border rounded-2xl shadow-2xl overflow-hidden min-w-[200px]"
-            >
-              <div className="flex flex-col p-2">
-                {navItems.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="px-4 py-3 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-colors"
-                  >
-                    {item.name}
-                  </a>
-                ))}
-                
-                {/* Mobile Theme Toggle */}
-                {mounted && (
-                  <button
-                    onClick={() => {
-                      setTheme(theme === "dark" ? "light" : "dark");
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="px-4 py-3 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-colors flex items-center justify-between"
-                  >
-                    Tema
-                    {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {/* BOTTOM NAVIGATION BAR (MOBILE) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-t border-border/50 flex justify-around items-center p-3 shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
+        {navItems.map((item) => (
+          <a
+            key={item.name}
+            href={item.href}
+            title={item.name}
+            className="p-3 flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-all"
+          >
+            {item.icon}
+          </a>
+        ))}
+        
+        {/* Mobile Theme Toggle */}
+        {mounted && (
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="p-3 flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-all"
+            title="Alternar Tema"
+          >
+            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+        )}
+      </nav>
 
       {/* BACKGROUND EFFECTS */}
       <div className="fixed inset-0 w-full h-full -z-20 bg-background pointer-events-none overflow-hidden">
