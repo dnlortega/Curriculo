@@ -101,13 +101,16 @@ const certs = [
   'Neurolinguística',
   'Gestão de Tempo',
   'O Jeito Disney de Encantar Clientes',
-  'Processos de Materiais Especiais'
+  'Processos de Materiais Especiais',
+  'Departamento Pessoal',
+  'Secretariado & Administração',
+  'Brigada de Emergência'
 ];
 doc.font('Helvetica').fontSize(8).fill('#cbd5e1');
 certs.forEach(c => {
   doc.circle(28, sideY + 3, 2).fill('#3b82f6');
   doc.text(c, 35, sideY);
-  sideY += 14;
+  sideY += 13; // slightly tighter spacing to fit everything perfectly
 });
 
 // ================= MAIN CONTENT (WHITE SECTION) =================
