@@ -80,45 +80,58 @@ export default function Home() {
       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       
       {/* HEADER SECTION */}
-      <header className="container max-w-5xl mx-auto px-4 py-20 flex flex-col items-center justify-center text-center space-y-8 min-h-[70vh]">
-        <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-          <Image 
-            src="/profile.jpg" 
-            alt="Daniel Ortega Pereira" 
-            width={150} 
-            height={150} 
-            className="relative rounded-full border-4 border-background object-cover shadow-2xl"
-          />
-        </div>
-        
-        <div className="space-y-4 max-w-3xl flex flex-col items-center">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/60 text-center">
-            Daniel Ortega Pereira
-          </h1>
-          <h2 className="text-2xl md:text-3xl font-medium text-muted-foreground text-center">
-            Desenvolvedor Full Stack & Especialista em React/Next.js
-          </h2>
-          <p className="text-lg text-muted-foreground/80 max-w-2xl text-center mt-6">
-            Construindo interfaces modernas, rápidas e experiências de usuário incríveis com o ecossistema JavaScript moderno. 
-            Mais de dezenas de projetos entregues com alta qualidade e deploy automatizado na Vercel.
-          </p>
-        </div>
+      <header className="container max-w-6xl mx-auto px-4 py-24 min-h-[80vh] flex flex-col justify-center">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 lg:gap-20">
+          
+          {/* Text Content */}
+          <div className="space-y-6 max-w-2xl text-center md:text-left flex-1">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-foreground via-foreground/90 to-muted-foreground leading-[1.1]">
+              Daniel <br className="hidden md:block"/> Ortega
+            </h1>
+            <h2 className="text-2xl md:text-3xl font-medium text-muted-foreground">
+              Desenvolvedor Full Stack & <span className="text-primary">Especialista Next.js</span>
+            </h2>
+            <p className="text-lg text-muted-foreground/80 mt-6 leading-relaxed max-w-xl mx-auto md:mx-0">
+              Construindo interfaces modernas, rápidas e experiências de usuário incríveis com o ecossistema JavaScript. 
+              Múltiplos projetos entregues com alta qualidade e deploy automatizado na Vercel.
+            </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
-          <Link href="https://github.com/dnlortega/" target="_blank" className={cn(buttonVariants({ size: "icon" }), "rounded-full w-12 h-12 shadow-md")}>
-            <Github className="w-5 h-5" />
-          </Link>
-          <Link href="https://www.linkedin.com/in/daniel-op" target="_blank" className={cn(buttonVariants({ variant: "outline", size: "icon" }), "rounded-full w-12 h-12 border-primary/20 hover:bg-primary/10 shadow-md")}>
-            <Linkedin className="w-5 h-5 text-[#0A66C2]" />
-          </Link>
-          <Link href="https://vercel.com/dnlortegas-projects" target="_blank" className={cn(buttonVariants({ variant: "secondary", size: "icon" }), "rounded-full w-12 h-12 shadow-md")}>
-            <ExternalLink className="w-5 h-5" />
-          </Link>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-5 pt-8">
+              <Link href="https://github.com/dnlortega/" target="_blank" className={cn(buttonVariants({ size: "icon" }), "rounded-full w-14 h-14 shadow-lg hover:scale-110 transition-transform")} title="GitHub">
+                <Github className="w-6 h-6" />
+              </Link>
+              <Link href="https://www.linkedin.com/in/daniel-op" target="_blank" className={cn(buttonVariants({ variant: "outline", size: "icon" }), "rounded-full w-14 h-14 border-primary/20 hover:bg-primary/10 shadow-lg hover:scale-110 transition-transform")} title="LinkedIn">
+                <Linkedin className="w-6 h-6 text-[#0A66C2] dark:text-foreground/80" />
+              </Link>
+              <Link href="https://vercel.com/dnlortegas-projects" target="_blank" className={cn(buttonVariants({ variant: "secondary", size: "icon" }), "rounded-full w-14 h-14 shadow-lg hover:scale-110 transition-transform")} title="Vercel Projects">
+                <ExternalLink className="w-6 h-6" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Profile Image (Lateral) */}
+          <div className="relative group flex-shrink-0 mb-8 md:mb-0">
+            {/* Decorative background blur */}
+            <div className="absolute -inset-6 bg-gradient-to-tr from-primary/40 via-purple-500/30 to-background rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition duration-1000"></div>
+            
+            {/* Outer animated rings */}
+            <div className="absolute inset-0 rounded-full border border-primary/20 scale-[1.15] animate-[spin_10s_linear_infinite] hidden md:block"></div>
+            <div className="absolute inset-0 rounded-full border border-muted-foreground/20 scale-[1.3] animate-[spin_15s_linear_infinite_reverse] hidden md:block"></div>
+            
+            <Image 
+              src="/profile.jpg" 
+              alt="Daniel Ortega Pereira" 
+              width={320} 
+              height={320} 
+              className="relative rounded-full border-4 border-background object-cover shadow-2xl z-10 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 ring-4 ring-primary/10 group-hover:ring-primary/40 group-hover:-translate-y-2 transition-all duration-700"
+              priority
+            />
+          </div>
+
         </div>
       </header>
 
-      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent w-full max-w-5xl" />
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full max-w-6xl opacity-50" />
 
       {/* PROJECTS SECTION */}
       <section className="container max-w-5xl mx-auto px-4 py-24 space-y-12 flex flex-col items-center">
