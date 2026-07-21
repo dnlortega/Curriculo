@@ -1,6 +1,133 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
+const lang = process.argv[2] === 'en' ? 'en' : 'pt';
+
+const texts = {
+  pt: {
+    filename: './public/curriculo.pdf',
+    title: 'Especialista de Dados & Frontend',
+    location: 'Bauru, SP - Brasil',
+    skillsTitle: 'Habilidades',
+    educationTitle: 'Formação',
+    educationCourse: 'Análise e Desenv. de Sistemas',
+    certsTitle: 'Cursos & Soft Skills',
+    certs: [
+      'Power BI Avançado & DAX',
+      'IA Aplicada para Devs',
+      'React.js & Next.js',
+      'Padrões de Projeto & SOLID',
+      'Arquitetura Frontend',
+      'Design de UI/UX',
+      'Manutenção de Computadores',
+      'Pacote Office & Excel Avançado',
+      'Pequenas Melhorias, Grandes Resultados',
+      'Neurolinguística',
+      'Gestão de Tempo',
+      'O Jeito Disney de Encantar Clientes',
+      'Processos de Materiais Especiais',
+      'Departamento Pessoal',
+      'Secretariado & Administração',
+      'Brigada de Emergência'
+    ],
+    profileTitle: 'Perfil Profissional',
+    profileDesc: 'Profissional de Tecnologia com 17 anos de vivência corporativa. Especialista absoluto em automação de processos, geração e validação de padrões ANS (XML) com 100% de conformidade. Hoje aplico minha forte expertise analítica (Power BI) combinada ao desenvolvimento Web avançado (Next.js, React) para arquitetar soluções de alta performance e impacto direto.',
+    expTitle: 'Experiência Profissional',
+    jobs: [
+      {
+        title: 'Analista de Dados & IA (Projeto)',
+        company: 'DataGuvi',
+        date: 'Mai 2026 – Jun 2026',
+        desc: 'Transformação de dados brutos em decisões estratégicas. Domínio em ETL (Power Query), modelagem relacional (Star Schema) e DAX avançado. Criação de dashboards interativos para acompanhamento de KPIs de negócio em tempo real.'
+      },
+      {
+        title: 'Assistente de Faturamento (TI & Integração)',
+        company: 'Hospital Unimed Bauru',
+        date: 'Mar 2009 – Abr 2026 (17 anos)',
+        desc: 'Responsável direto pela conferência e geração de arquivos XML Padrão ANS (2.500+ registros mensais) sem falhas. Implantação e integração de sistemas nas unidades SEDE, HUB e CDU. Treinamento e suporte massivo de novas tecnologias e processos às equipes locais, garantindo adoção total das plataformas.'
+      },
+      {
+        title: 'Administrativo',
+        company: 'Prefeitura de Bauru',
+        date: '5 anos',
+        desc: 'Gestão crítica de documentação municipal, processos de emissão de alvarás de funcionamento, construção e habite-se.'
+      },
+      {
+        title: 'Suporte Técnico',
+        company: 'Lan House',
+        date: '2 anos',
+        desc: 'Manutenção de hardwares, configuração de redes, atendimento técnico ao cliente e rotinas administrativas diversas.'
+      }
+    ],
+    projectsTitle: 'Projetos e Portfólio',
+    projectsSubtitle: 'Vagas LinkedIn & Sistemas Modernos',
+    projectsDesc: 'Desenvolvimento full-stack de sistemas SaaS, painéis administrativos e agregadores de vagas utilizando React 19, Next.js 15, Node.js e Tailwind CSS. Implantação ágil via Vercel com pipelines CI/CD.\n\nCódigo-fonte e aplicações ao vivo disponíveis diretamente no meu portfólio.',
+    footer: 'Gerado via Portfólio Online (Next.js)'
+  },
+  en: {
+    filename: './public/resume-en.pdf',
+    title: 'Data & Frontend Specialist',
+    location: 'Bauru, SP - Brazil',
+    skillsTitle: 'Skills',
+    educationTitle: 'Education',
+    educationCourse: 'Systems Analysis & Development',
+    certsTitle: 'Courses & Soft Skills',
+    certs: [
+      'Advanced Power BI & DAX',
+      'Applied AI for Devs',
+      'React.js & Next.js',
+      'Design Patterns & SOLID',
+      'Frontend Architecture',
+      'UI/UX Design',
+      'Computer Maintenance',
+      'Office Suite & Advanced Excel',
+      'Small Improvements, Big Results',
+      'Neurolinguistics',
+      'Time Management',
+      'The Disney Way of Customer Service',
+      'Special Materials Processes',
+      'HR Department',
+      'Secretarial & Administration',
+      'Emergency Brigade'
+    ],
+    profileTitle: 'Professional Profile',
+    profileDesc: 'Technology Professional with 17 years of corporate experience. Absolute specialist in process automation, generation and validation of ANS standards (XML) with 100% compliance. Today I apply my strong analytical expertise (Power BI) combined with advanced Web development (Next.js, React) to architect high-performance solutions with direct impact.',
+    expTitle: 'Professional Experience',
+    jobs: [
+      {
+        title: 'Data & AI Analyst (Project)',
+        company: 'DataGuvi',
+        date: 'May 2026 – Jun 2026',
+        desc: 'Transformation of raw data into strategic decisions. Mastery in ETL (Power Query), relational modeling (Star Schema) and advanced DAX. Creation of interactive dashboards for real-time tracking of business KPIs.'
+      },
+      {
+        title: 'Billing Assistant (IT & Integration)',
+        company: 'Unimed Bauru Hospital',
+        date: 'Mar 2009 – Apr 2026 (17 years)',
+        desc: 'Directly responsible for checking and generating ANS Standard XML files (2,500+ monthly records) without failures. Implementation and system integration at HEADQUARTERS, HUB and CDU units. Massive training and support of new technologies and processes to local teams, ensuring total platform adoption.'
+      },
+      {
+        title: 'Administrative',
+        company: 'Bauru City Hall',
+        date: '5 years',
+        desc: 'Critical management of municipal documentation, operating licenses emission processes, construction and occupancy permits.'
+      },
+      {
+        title: 'Technical Support',
+        company: 'Lan House',
+        date: '2 years',
+        desc: 'Hardware maintenance, network configuration, technical customer service and various administrative routines.'
+      }
+    ],
+    projectsTitle: 'Projects & Portfolio',
+    projectsSubtitle: 'LinkedIn Jobs & Modern Systems',
+    projectsDesc: 'Full-stack development of SaaS systems, administrative panels and job aggregators using React 19, Next.js 15, Node.js and Tailwind CSS. Agile deployment via Vercel with CI/CD pipelines.\n\nSource code and live applications available directly in my portfolio.',
+    footer: 'Generated via Online Portfolio (Next.js)'
+  }
+};
+
+const t = texts[lang];
+
 // A4 Size: 595.28 x 841.89 points
 const doc = new PDFDocument({ margin: 0, size: 'A4' });
 
@@ -8,7 +135,7 @@ if (!fs.existsSync('./public')){
     fs.mkdirSync('./public');
 }
 
-doc.pipe(fs.createWriteStream('./public/curriculo.pdf'));
+doc.pipe(fs.createWriteStream(t.filename));
 
 // ================= LAYOUT METRICS =================
 const PAGE_W = 595.28;
@@ -47,13 +174,13 @@ if (fs.existsSync('./public/profile.jpg')) {
 // Name & Title
 doc.fill('#ffffff').font('Helvetica-Bold').fontSize(18).text('Daniel Ortega', 0, sideY, { align: 'center', width: SIDEBAR_W });
 sideY += 22;
-doc.font('Helvetica').fontSize(9).fill('#94a3b8').text('Especialista de Dados & Frontend', 0, sideY, { align: 'center', width: SIDEBAR_W });
+doc.font('Helvetica').fontSize(9).fill('#94a3b8').text(t.title, 0, sideY, { align: 'center', width: SIDEBAR_W });
 sideY += 30;
 
 // Contact
 doc.rect(20, sideY, SIDEBAR_W - 40, 1).fill('#334155'); sideY += 15;
 doc.font('Helvetica').fontSize(8).fill('#e2e8f0');
-doc.text('Bauru, SP - Brasil', 25, sideY); sideY += 15;
+doc.text(t.location, 25, sideY); sideY += 15;
 doc.text('(14) 98129-4913', 25, sideY); sideY += 15;
 doc.text('dnlortega@gmail.com', 25, sideY); sideY += 15;
 doc.fill('#3b82f6').text('linkedin.com/in/daniel-op', 25, sideY, { link: 'https://linkedin.com/in/daniel-op' }); sideY += 15;
@@ -75,7 +202,7 @@ function drawSkill(name, percent) {
   sideY += 15;
 }
 
-drawSideTitle('Habilidades');
+drawSideTitle(t.skillsTitle);
 drawSkill('React / Next.js', 0.95);
 drawSkill('TypeScript & JS', 0.90);
 drawSkill('Tailwind & UI/UX', 0.85);
@@ -83,31 +210,13 @@ drawSkill('Power BI & DAX', 0.95);
 drawSkill('ETL & Power Query', 0.90);
 sideY += 10;
 
-drawSideTitle('Formação');
-doc.font('Helvetica-Bold').fontSize(9).fill('#e2e8f0').text('Análise e Desenv. de Sistemas', 25, sideY); sideY += 12;
+drawSideTitle(t.educationTitle);
+doc.font('Helvetica-Bold').fontSize(9).fill('#e2e8f0').text(t.educationCourse, 25, sideY); sideY += 12;
 doc.font('Helvetica').fontSize(8).fill('#94a3b8').text('UNINTER (2023 - 2025)', 25, sideY); sideY += 25;
 
-drawSideTitle('Cursos & Soft Skills');
-const certs = [
-  'Power BI Avançado & DAX',
-  'IA Aplicada para Devs',
-  'React.js & Next.js',
-  'Padrões de Projeto & SOLID',
-  'Arquitetura Frontend',
-  'Design de UI/UX',
-  'Manutenção de Computadores',
-  'Pacote Office & Excel Avançado',
-  'Pequenas Melhorias, Grandes Resultados',
-  'Neurolinguística',
-  'Gestão de Tempo',
-  'O Jeito Disney de Encantar Clientes',
-  'Processos de Materiais Especiais',
-  'Departamento Pessoal',
-  'Secretariado & Administração',
-  'Brigada de Emergência'
-];
+drawSideTitle(t.certsTitle);
 doc.font('Helvetica').fontSize(8).fill('#cbd5e1');
-certs.forEach(c => {
+t.certs.forEach(c => {
   doc.circle(28, sideY + 3, 2).fill('#3b82f6');
   doc.text(c, 35, sideY);
   sideY += 13; // slightly tighter spacing to fit everything perfectly
@@ -125,14 +234,14 @@ function drawMainTitle(title) {
   mainY = doc.y + 15;
 }
 
-drawMainTitle('Perfil Profissional');
+drawMainTitle(t.profileTitle);
 doc.font('Helvetica').fontSize(9.5).fill('#334155').text(
-  'Profissional de Tecnologia com 17 anos de vivência corporativa. Especialista absoluto em automação de processos, geração e validação de padrões ANS (XML) com 100% de conformidade. Hoje aplico minha forte expertise analítica (Power BI) combinada ao desenvolvimento Web avançado (Next.js, React) para arquitetar soluções de alta performance e impacto direto.', 
+  t.profileDesc, 
   mainX, mainY, { width: mainW, align: 'justify', lineGap: 3 }
 );
 mainY = doc.y + 25;
 
-drawMainTitle('Experiência Profissional');
+drawMainTitle(t.expTitle);
 
 // Timeline Effect Variables
 const timelineX = mainX + 5;
@@ -165,52 +274,28 @@ function addTimelineItem(title, company, date, desc) {
   mainY = doc.y + 18;
 }
 
-addTimelineItem(
-  'Analista de Dados & IA (Projeto)', 
-  'DataGuvi', 
-  'Mai 2026 – Jun 2026', 
-  'Transformação de dados brutos em decisões estratégicas. Domínio em ETL (Power Query), modelagem relacional (Star Schema) e DAX avançado. Criação de dashboards interativos para acompanhamento de KPIs de negócio em tempo real.'
-);
-
-addTimelineItem(
-  'Assistente de Faturamento (TI & Integração)', 
-  'Hospital Unimed Bauru', 
-  'Mar 2009 – Abr 2026 (17 anos)', 
-  'Responsável direto pela conferência e geração de arquivos XML Padrão ANS (2.500+ registros mensais) sem falhas. Implantação e integração de sistemas nas unidades SEDE, HUB e CDU. Treinamento e suporte massivo de novas tecnologias e processos às equipes locais, garantindo adoção total das plataformas.'
-);
-
-addTimelineItem(
-  'Administrativo', 
-  'Prefeitura de Bauru', 
-  '5 anos', 
-  'Gestão crítica de documentação municipal, processos de emissão de alvarás de funcionamento, construção e habite-se.'
-);
-
-addTimelineItem(
-  'Suporte Técnico', 
-  'Lan House', 
-  '2 anos', 
-  'Manutenção de hardwares, configuração de redes, atendimento técnico ao cliente e rotinas administrativas diversas.'
-);
+t.jobs.forEach(job => {
+  addTimelineItem(job.title, job.company, job.date, job.desc);
+});
 
 // Draw the last piece of timeline line extending slightly downwards
 doc.moveTo(timelineX, prevY + 8).lineTo(timelineX, mainY).lineWidth(1).stroke('#cbd5e1');
 
 mainY += 10;
 
-drawMainTitle('Projetos e Portfólio');
-doc.font('Helvetica-Bold').fontSize(10.5).fill('#0f172a').text('Vagas LinkedIn & Sistemas Modernos', mainX, mainY, { width: mainW });
+drawMainTitle(t.projectsTitle);
+doc.font('Helvetica-Bold').fontSize(10.5).fill('#0f172a').text(t.projectsSubtitle, mainX, mainY, { width: mainW });
 mainY = doc.y + 3;
 doc.font('Helvetica').fontSize(9).fill('#334155').text(
-  'Desenvolvimento full-stack de sistemas SaaS, painéis administrativos e agregadores de vagas utilizando React 19, Next.js 15, Node.js e Tailwind CSS. Implantação ágil via Vercel com pipelines CI/CD.\n\nCódigo-fonte e aplicações ao vivo disponíveis diretamente no meu portfólio.', 
+  t.projectsDesc, 
   mainX, mainY, { width: mainW, align: 'justify', lineGap: 2 }
 );
 
 // Footer subtle text
 doc.font('Helvetica-Oblique').fontSize(7).fill('#94a3b8').text(
-  'Gerado via Portfólio Online (Next.js)', 
+  t.footer, 
   mainX, PAGE_H - 25, { width: mainW, align: 'right' }
 );
 
 doc.end();
-console.log('1-Page High-End Corporate PDF Generated!');
+console.log(`1-Page High-End Corporate PDF Generated! [Language: ${lang}]`);

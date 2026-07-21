@@ -59,7 +59,7 @@ export default function RootLayout({
       <body suppressHydrationWarning className={`${outfit.variable} ${jetbrainsMono.variable} min-h-full flex flex-col bg-background text-foreground antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
