@@ -157,26 +157,15 @@ export default function Home() {
   // Theme state
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(true);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Prevent hydration mismatch and handle initial load
+  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
-    const timer = setTimeout(() => {
-      setIsTransitioning(false);
-      setIsInitialLoad(false);
-    }, 500);
-    return () => clearTimeout(timer);
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setIsTransitioning(true);
-    setTimeout(() => {
-      document.querySelector(href)?.scrollIntoView({ behavior: 'auto' });
-      setIsTransitioning(false);
-    }, 300);
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   // Project Filtering
@@ -252,25 +241,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
-
-      {/* FAST PAGE TRANSITION EFFECT */}
-      <AnimatePresence>
-        {isTransitioning && (
-          <motion.div
-            initial={{ opacity: isInitialLoad ? 1 : 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[100] bg-background/80 flex items-center justify-center pointer-events-none"
-          >
-            <motion.div
-              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-              className="w-16 h-16 bg-primary rounded-full blur-2xl opacity-50"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* FLOATING PILL MENU (DESKTOP) */}
       <motion.nav
