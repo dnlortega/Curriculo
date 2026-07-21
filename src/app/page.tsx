@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send } from "lucide-react";
+import { ExternalLink, MessageCircle, Code2, User, Award, Calendar, GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send, Search, ShieldCheck, Hash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cursos } from "@/data/cursos";
 import { useState, useMemo } from "react";
@@ -135,8 +135,10 @@ export default function Home() {
     }
   ];
 
-  const [showAllCourses, setShowAllCourses] = useState(false);
   const [courseFilter, setCourseFilter] = useState<string>("Todos");
+  const [courseSearch, setCourseSearch] = useState<string>("");
+  const [visibleCoursesCount, setVisibleCoursesCount] = useState<number>(9);
+  
   const [projectFilter, setProjectFilter] = useState<string>("Todos");
 
   // Project Filtering
@@ -167,10 +169,19 @@ export default function Home() {
   const filteredCourses = useMemo(() => {
     let filtered = cursos;
     if (courseFilter !== "Todos") {
-      filtered = cursos.filter(c => c.skills?.includes(courseFilter));
+      filtered = filtered.filter(c => c.skills?.includes(courseFilter));
     }
-    return showAllCourses ? filtered : filtered.slice(0, 9);
-  }, [courseFilter, showAllCourses]);
+    if (courseSearch.trim() !== "") {
+      const q = courseSearch.toLowerCase();
+      filtered = filtered.filter(c => 
+        c.title.toLowerCase().includes(q) || 
+        (c.issuer && c.issuer.toLowerCase().includes(q))
+      );
+    }
+    return filtered;
+  }, [courseFilter, courseSearch]);
+
+  const displayedCourses = filteredCourses.slice(0, visibleCoursesCount);
 
   const fadeUpVariant = {
     hidden: { opacity: 0, y: 40 },
@@ -449,85 +460,131 @@ export default function Home() {
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
             <Award className="w-8 h-8 text-primary" /> Certificados e Cursos
           </h3>
-          <p className="text-muted-foreground text-center">Mais de {cursos.length} capacitações concluídas ao longo da minha jornada.</p>
+          <p className="text-muted-foreground text-center">Explore meu arsenal de mais de {cursos.length} especializações tecnológicas.</p>
         </motion.div>
 
-        <motion.div variants={fadeUpVariant} className="flex flex-wrap justify-center gap-2 w-full max-w-4xl">
-          {allCourseSkills.map(skill => (
-            <button 
-              key={skill}
-              onClick={() => { setCourseFilter(skill); setShowAllCourses(true); }}
-              className={cn(
-                "px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 border",
-                courseFilter === skill 
-                  ? "bg-primary text-primary-foreground border-primary shadow-md scale-105" 
-                  : "bg-card/50 border-primary/20 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {skill}
-            </button>
-          ))}
+        <motion.div variants={fadeUpVariant} className="flex flex-col items-center gap-6 w-full max-w-5xl">
+          {/* Search Bar */}
+          <div className="relative w-full max-w-md group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Buscar curso, instituição..." 
+              value={courseSearch}
+              onChange={(e) => {
+                setCourseSearch(e.target.value);
+                setVisibleCoursesCount(9);
+              }}
+              className="w-full pl-12 pr-4 py-3 rounded-full border border-primary/20 bg-card/50 backdrop-blur-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm group-hover:shadow-md"
+            />
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {allCourseSkills.map(skill => (
+              <button 
+                key={skill}
+                onClick={() => { 
+                  setCourseFilter(skill); 
+                  setVisibleCoursesCount(9); 
+                }}
+                className={cn(
+                  "px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 border",
+                  courseFilter === skill 
+                    ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105" 
+                    : "bg-card/50 border-primary/10 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {skill}
+              </button>
+            ))}
+          </div>
         </motion.div>
 
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           <AnimatePresence mode="popLayout">
-            {filteredCourses.map((curso, index) => (
+            {displayedCourses.map((curso, index) => (
               <motion.div 
                 layout
                 key={`${curso.title}-${index}`} 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4 }}
+                className="h-full"
               >
-              <Card className="h-full border-border/50 hover:border-primary/40 transition-all duration-300 bg-card/30 hover:bg-card/60 backdrop-blur-sm flex flex-col hover:-translate-y-1 hover:shadow-md">
-                <CardHeader className="p-5 pb-3">
-                  <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
-                    {curso.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-5 pt-0 text-sm text-muted-foreground flex-grow flex flex-col justify-end space-y-3">
-                  {curso.issuer && (
-                    <div className="flex items-center gap-2 text-foreground/80 font-medium">
-                      <IssuerLogo issuer={curso.issuer} className="w-5 h-5 rounded-sm" /> 
-                      {curso.issuer}
-                    </div>
-                  )}
-                  {curso.date && (
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 opacity-70" /> {curso.date}
-                    </div>
-                  )}
-                  {curso.skills && (
-                    <div className="pt-2 flex flex-wrap gap-1.5">
-                      {curso.skills.split(',').slice(0, 3).map((skill, idx) => (
-                        <Badge variant="secondary" key={idx} className="text-[10px] px-2 py-0.5 bg-muted/50">
-                          {skill.trim().replace(' e mais ', ' +')}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                <Card className="h-full border-primary/10 hover:border-primary/40 transition-all duration-500 bg-gradient-to-br from-card/40 to-card/10 hover:bg-card/60 backdrop-blur-md flex flex-col hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 group relative overflow-hidden">
+                  {/* Glowing Edge Effect */}
+                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-purple-500/50 transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out"></div>
+                  
+                  <CardHeader className="p-6 pb-4">
+                    <CardTitle className="text-xl font-bold leading-tight group-hover:text-primary transition-colors duration-300">
+                      {curso.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 pt-0 text-sm flex-grow flex flex-col justify-end space-y-4">
+                    
+                    {/* Issuer & Shield */}
+                    {curso.issuer && (
+                      <div className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border border-border/50 group-hover:border-primary/20 transition-colors">
+                        <IssuerLogo issuer={curso.issuer} className="w-8 h-8 rounded-md shadow-sm" /> 
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-foreground flex items-center gap-1">
+                            {curso.issuer}
+                            <ShieldCheck className="w-4 h-4 text-primary/80" />
+                          </span>
+                          {curso.date && (
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Calendar className="w-3 h-3" /> {curso.date}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Credential */}
+                    {curso.credential && (
+                      <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-primary/5 p-1.5 rounded border border-primary/10 truncate">
+                        <Hash className="w-3 h-3 text-primary shrink-0" />
+                        <span className="truncate" title={curso.credential}>{curso.credential}</span>
+                      </div>
+                    )}
+
+                    {/* Skills Badges */}
+                    {curso.skills && (
+                      <div className="pt-2 flex flex-wrap gap-1.5">
+                        {curso.skills.split(',').slice(0, 3).map((skill, idx) => (
+                          <Badge variant="secondary" key={idx} className="text-[10px] px-2 py-0.5 bg-muted/50 border border-transparent group-hover:border-primary/20 group-hover:bg-primary/5 transition-colors">
+                            {skill.trim().replace(' e mais ', ' +')}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </AnimatePresence>
         </motion.div>
 
-        {cursos.length > 9 && courseFilter === "Todos" && (
+        {/* Empty State for Search */}
+        {displayedCourses.length === 0 && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 text-center text-muted-foreground">
+            Nenhum curso encontrado com esses filtros.
+          </motion.div>
+        )}
+
+        {/* Load More Pagination */}
+        {filteredCourses.length > visibleCoursesCount && (
           <motion.div variants={fadeUpVariant} className="pt-8">
             <button
-              onClick={() => setShowAllCourses(!showAllCourses)}
+              onClick={() => setVisibleCoursesCount(prev => prev + 9)}
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
-                "rounded-full px-8 gap-2 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all duration-300"
+                "rounded-full px-8 gap-2 border-primary/20 hover:bg-primary hover:text-primary-foreground shadow-lg transition-all duration-300 group"
               )}
             >
-              {showAllCourses ? (
-                <>Ver menos <ChevronUp className="w-4 h-4" /></>
-              ) : (
-                <>Ver todos os {cursos.length} cursos <ChevronDown className="w-4 h-4" /></>
-              )}
+              Carregar mais cursos <ChevronDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
             </button>
           </motion.div>
         )}
