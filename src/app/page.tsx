@@ -60,7 +60,11 @@ const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string 
   }
   
   let currentSrc = uiAvatar;
-  if (domain) {
+  
+  // Hardcoded highly-available logo for UNINTER
+  if (issuer.toLowerCase().includes('uninter')) {
+    currentSrc = "https://upload.wikimedia.org/wikipedia/commons/e/ec/Logomarca_da_UNINTER.png";
+  } else if (domain) {
     if (errorLevel === 0) {
       currentSrc = `https://logo.clearbit.com/${domain}`;
     } else if (errorLevel === 1) {
@@ -71,9 +75,10 @@ const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string 
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img 
+      key={currentSrc}
       src={currentSrc} 
       alt={`Logo ${issuer}`} 
-      className={cn("rounded bg-background object-cover", className)}
+      className={cn("rounded bg-background object-contain", className)}
       onError={() => {
         setErrorLevel(prev => prev + 1);
       }}
