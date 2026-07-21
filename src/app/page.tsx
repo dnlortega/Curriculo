@@ -142,11 +142,26 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
+      
+      {/* FIXED TOP MENU */}
+      <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border/50 py-4 px-6 md:px-12 lg:px-24 flex justify-between items-center">
+        <a href="#home" className="font-black text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-foreground to-muted-foreground hover:scale-105 transition-transform">
+          DO.
+        </a>
+        <ul className="hidden lg:flex gap-8 text-sm font-medium text-muted-foreground">
+          <li><a href="#home" className="hover:text-primary transition-colors">Home</a></li>
+          <li><a href="#projetos" className="hover:text-primary transition-colors">Projetos</a></li>
+          <li><a href="#habilidades" className="hover:text-primary transition-colors">Habilidades</a></li>
+          <li><a href="#formacao" className="hover:text-primary transition-colors">Formação</a></li>
+          <li><a href="#certificados" className="hover:text-primary transition-colors">Certificados</a></li>
+        </ul>
+      </nav>
+
       {/* Background decoration */}
-      <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+      <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] mt-16"></div>
       
       {/* HEADER SECTION */}
-      <header className="w-full px-6 md:px-12 lg:px-24 py-24 min-h-screen flex flex-col justify-center">
+      <header id="home" className="w-full px-6 md:px-12 lg:px-24 py-24 min-h-screen flex flex-col justify-center pt-32">
         <motion.div 
           className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-20 w-full"
           initial="hidden"
@@ -206,11 +221,12 @@ export default function Home() {
 
       {/* PROJECTS SECTION */}
       <motion.section 
+        id="projetos"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center"
+        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center pt-28"
       >
         <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
@@ -262,11 +278,12 @@ export default function Home() {
 
       {/* SKILLS SECTION */}
       <motion.section 
+        id="habilidades"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center bg-muted/5 border-y border-border/50"
+        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center bg-muted/5 border-y border-border/50 pt-28"
       >
         <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
@@ -284,11 +301,12 @@ export default function Home() {
 
       {/* ACADEMIC FORMATION SECTION */}
       <motion.section 
+        id="formacao"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="w-full px-6 md:px-12 lg:px-24 py-16 space-y-8 flex flex-col items-center"
+        className="w-full px-6 md:px-12 lg:px-24 py-16 space-y-8 flex flex-col items-center pt-28"
       >
         <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
@@ -334,11 +352,12 @@ export default function Home() {
 
       {/* CERTIFICATIONS SECTION */}
       <motion.section 
+        id="certificados"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center"
+        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center pt-28"
       >
         <motion.div variants={fadeUpVariant} className="space-y-2 text-center flex flex-col items-center">
           <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
@@ -347,9 +366,15 @@ export default function Home() {
           <p className="text-muted-foreground text-center">Mais de {cursos.length} capacitações concluídas ao longo da minha jornada.</p>
         </motion.div>
 
-        <motion.div variants={staggerContainer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
           {displayedCourses.map((curso, index) => (
-            <motion.div key={index} variants={fadeUpVariant}>
+            <motion.div 
+              key={`${curso.title}-${index}`} 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: (index % 9) * 0.1 }}
+            >
               <Card className="h-full border-border/50 hover:border-primary/40 transition-all duration-300 bg-card/30 hover:bg-card/60 backdrop-blur-sm flex flex-col hover:-translate-y-1 hover:shadow-md">
                 <CardHeader className="p-5 pb-3">
                   <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
@@ -381,7 +406,7 @@ export default function Home() {
               </Card>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         {cursos.length > 9 && (
           <motion.div variants={fadeUpVariant} className="pt-8">
