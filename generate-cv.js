@@ -89,12 +89,12 @@ doc.font('Helvetica').fontSize(8).fill('#94a3b8').text('UNINTER (2023 - 2025)', 
 
 drawSideTitle('Certificados e Cursos');
 const certs = [
-  'Formação React.js (Alura)',
-  'Next.js 14 App Router (Alura)',
+  'Power BI Avançado & DAX',
+  'IA Aplicada para Devs',
+  'React.js & Next.js',
   'Padrões de Projeto & SOLID',
-  'Arquitetura Frontend (Xperiun)',
-  'Power BI Avançado (Alura)',
-  'UI/UX para Desenvolvedores'
+  'Arquitetura Frontend',
+  'Design de UI/UX'
 ];
 doc.font('Helvetica').fontSize(8).fill('#cbd5e1');
 certs.forEach(c => {
