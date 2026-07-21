@@ -26,13 +26,18 @@ doc.fill('#ffffff').fontSize(32).text('Daniel Ortega Pereira', 160, 40);
 doc.fontSize(14).fill('#94a3b8').text('Desenvolvedor Next.js, React & Tailwind CSS', 160, 80);
 doc.fontSize(10).fill('#cbd5e1').text('dnlortega@gmail.com   |   (14) 98129-4913   |   linkedin.com/in/daniel-op', 160, 105);
 
-doc.moveDown(5);
+// Reset margins explicitly after header
+doc.x = 50;
+doc.y = 160;
+doc.moveDown(2);
 
 // Helper for Section Titles
 function createSection(title) {
+  doc.x = 50;
   doc.fill('#1e293b').fontSize(20).text(title);
   doc.rect(50, doc.y + 2, 500, 2).fill('#3b82f6'); // Blue accent line
   doc.moveDown(0.8);
+  doc.x = 50; // Ensure text following the title starts at 50
 }
 
 // Section: Objetivo Profissional
