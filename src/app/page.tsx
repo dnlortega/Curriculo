@@ -63,7 +63,7 @@ const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string 
   
   // Hardcoded highly-available logo for UNINTER
   if (issuer.toLowerCase().includes('uninter')) {
-    currentSrc = "https://upload.wikimedia.org/wikipedia/commons/e/ec/Logomarca_da_UNINTER.png";
+    currentSrc = "/uninter-logo.svg";
   } else if (domain) {
     if (errorLevel === 0) {
       currentSrc = `https://logo.clearbit.com/${domain}`;

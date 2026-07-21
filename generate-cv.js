@@ -1,62 +1,80 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
-const doc = new PDFDocument({ margin: 50 });
+const doc = new PDFDocument({ margin: 50, size: 'A4' });
 
-// Ensure public directory exists
 if (!fs.existsSync('./public')){
     fs.mkdirSync('./public');
 }
 
 doc.pipe(fs.createWriteStream('./public/curriculo.pdf'));
 
-// Add styling
-doc.rect(0, 0, 612, 100).fill('#111111');
-doc.fill('#ffffff').fontSize(30).text('Daniel Ortega Pereira', 50, 30);
-doc.fontSize(14).fill('#888888').text('Desenvolvedor Next.js, React & Tailwind CSS', 50, 65);
+// Add styling and elegance
+// Header Background
+doc.rect(0, 0, 612, 160).fill('#0f172a');
 
-doc.moveDown(3);
+// Profile Picture with circular clipping
+if (fs.existsSync('./public/profile.jpg')) {
+  doc.save();
+  doc.circle(90, 80, 50).clip();
+  doc.image('./public/profile.jpg', 40, 30, { width: 100 });
+  doc.restore();
+}
 
-doc.fill('#000000').fontSize(20).text('Sobre Mim', 50, 130);
-doc.fontSize(12).text('Desenvolvedor Full Stack apaixonado pelo ecossistema JavaScript. Especialista em construir interfaces modernas de alta performance com Next.js e Tailwind CSS.', 50, 160, { width: 500 });
+// Header Text
+doc.fill('#ffffff').fontSize(32).text('Daniel Ortega Pereira', 160, 40);
+doc.fontSize(14).fill('#94a3b8').text('Desenvolvedor Next.js, React & Tailwind CSS', 160, 80);
+doc.fontSize(10).fill('#cbd5e1').text('dnlortega@gmail.com   |   (14) 98129-4913   |   linkedin.com/in/daniel-op', 160, 105);
+
+doc.moveDown(5);
+
+// Helper for Section Titles
+function createSection(title) {
+  doc.fill('#1e293b').fontSize(20).text(title);
+  doc.rect(50, doc.y + 2, 500, 2).fill('#3b82f6'); // Blue accent line
+  doc.moveDown(0.8);
+}
+
+// Section: Sobre Mim
+createSection('Sobre Mim');
+doc.fontSize(12).fill('#334155').text('Desenvolvedor Full Stack apaixonado pelo ecossistema JavaScript, especializado em construir aplicações modernas, escaláveis e esteticamente impecáveis utilizando o que há de mais avançado em React, Next.js e Tailwind CSS. Com um olhar clínico para UI/UX, foco em entregar não apenas código, mas experiências ricas para os usuários finais.', { width: 500, lineGap: 4 });
+
+doc.moveDown(1.5);
+
+// Section: Formação Acadêmica
+createSection('Formação Acadêmica');
+doc.fontSize(14).fill('#0f172a').text('Análise e Desenvolvimento de Sistemas');
+doc.fontSize(12).fill('#64748b').text('UNINTER Centro Universitário Internacional (Jan 2023 - Jun 2025)');
+
+doc.moveDown(1.5);
+
+// Section: Habilidades Técnicas
+createSection('Habilidades Técnicas');
+doc.fontSize(12).fill('#334155').text('• Core: React 19, Next.js 15, Framer Motion, JavaScript, TypeScript', { lineGap: 3 });
+doc.text('• Estilização & UI: Tailwind CSS, Shadcn UI, Design Systems, Glassmorphism', { lineGap: 3 });
+doc.text('• Infra & Deploy: Node.js, Vercel, Git, Integração Contínua', { lineGap: 3 });
+doc.text('• Dados: Power BI, Análise de Dados Avançada', { lineGap: 3 });
+
+doc.moveDown(1.5);
+
+// Section: Certificações em Destaque
+createSection('Certificações em Destaque');
+doc.fontSize(12).fill('#334155').text('Possuo mais de 60 certificações comprovadas. Destaques principais:');
+doc.moveDown(0.5);
+
+doc.fontSize(13).fill('#0f172a').text('Frontend & React');
+doc.fontSize(11).fill('#64748b').text('• Formação React.js (Hooks, Context API, Redux) - Alura\n• Desenvolvimento Full Stack com Next.js 14 e App Router - Alura\n• UI/UX para Desenvolvedores', { lineGap: 2 });
+doc.moveDown(0.5);
+
+doc.fontSize(13).fill('#0f172a').text('Arquitetura & Boas Práticas');
+doc.fontSize(11).fill('#64748b').text('• Clean Code, SOLID e Padrões de Projeto em Aplicações - Xperiun\n• Arquitetura Frontend e Escalabilidade de Sistemas - Xperiun', { lineGap: 2 });
+doc.moveDown(0.5);
+
+doc.fontSize(13).fill('#0f172a').text('Dados & Lógica');
+doc.fontSize(11).fill('#64748b').text('• Análise de Dados e Dashboards Interativos com Power BI - Alura\n• Lógica de Programação Avançada', { lineGap: 2 });
 
 doc.moveDown(2);
-
-doc.fontSize(20).text('Formação Acadêmica');
-doc.moveDown(0.5);
-doc.fontSize(14).text('Análise e Desenvolvimento de Sistemas');
-doc.fontSize(12).fill('#555555').text('UNINTER Centro Universitário Internacional (Jan 2023 - Jun 2025)');
-
-doc.moveDown(2);
-
-doc.fill('#000000').fontSize(20).text('Habilidades Técnicas');
-doc.moveDown(0.5);
-doc.fontSize(12).text('• React 19, Next.js 15, Framer Motion\n• Tailwind CSS, Shadcn UI\n• JavaScript, TypeScript\n• Node.js, Vercel, Git');
-
-doc.moveDown(2);
-
-doc.fontSize(20).text('Certificações em Destaque');
-doc.moveDown(0.5);
-doc.fontSize(12).fill('#333333').text('Possuo mais de 60 certificações comprovadas. Alguns destaques:');
-doc.moveDown(0.3);
-
-doc.fontSize(13).fill('#000000').text('Frontend & React');
-doc.fontSize(11).fill('#555555').text('• Formação React.js (Hooks, Context, Redux) - Alura\n• Next.js 14 e App Router - Alura\n• UI/UX para Desenvolvedores e Design System');
-doc.moveDown(0.5);
-
-doc.fontSize(13).fill('#000000').text('Arquitetura & Boas Práticas');
-doc.fontSize(11).fill('#555555').text('• Clean Code, SOLID e Padrões de Projeto - Xperiun\n• Arquitetura Frontend e Escalabilidade - Xperiun');
-doc.moveDown(0.5);
-
-doc.fontSize(13).fill('#000000').text('Dados & Lógica');
-doc.fontSize(11).fill('#555555').text('• Dashboards Interativos com Power BI - Alura\n• Lógica de Programação Avançada');
-
-doc.moveDown(1);
-doc.fontSize(11).fill('#111111').text('*Acesse o portfólio online para a lista completa e interativa com códigos de verificação.', { style: 'italic' });
-
-// Footer
-doc.rect(0, 750, 612, 50).fill('#111111');
-doc.fill('#ffffff').fontSize(10).text('dnlortega@gmail.com  |  linkedin.com/in/daniel-op  |  (14) 98129-4913', 0, 770, { align: 'center' });
+doc.fontSize(10).fill('#94a3b8').text('* Este currículo foi gerado dinamicamente a partir do meu Portfólio Online.', { align: 'center' });
 
 doc.end();
-console.log('PDF Curriculum generated successfully at public/curriculo.pdf!');
+console.log('Elegantly styled PDF Curriculum with Profile Photo generated successfully at public/curriculo.pdf!');
