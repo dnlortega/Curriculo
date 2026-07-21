@@ -235,7 +235,7 @@ export default function Home() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.05
       }
     }
   };
@@ -354,20 +354,20 @@ export default function Home() {
         {/* Subtle grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
 
-        {/* Floating Glowing Orbs */}
+        {/* Floating Glowing Orbs (Fast) */}
         <motion.div 
-          animate={{ x: [0, 60, 0], y: [0, 40, 0], scale: [1, 1.1, 1] }} 
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-primary/15 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" 
+          animate={{ x: [0, 30, 0], y: [0, 20, 0], scale: [1, 1.1, 1] }} 
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" 
         />
         <motion.div 
-          animate={{ x: [0, -50, 0], y: [0, -30, 0], scale: [1, 1.2, 1] }} 
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 right-0 w-[40vw] h-[40vw] bg-purple-600/15 rounded-full blur-[150px] translate-x-1/3 -translate-y-1/2" 
+          animate={{ x: [0, -30, 0], y: [0, -20, 0], scale: [1, 1.15, 1] }} 
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/2 right-0 w-[40vw] h-[40vw] bg-purple-600/10 rounded-full blur-[150px] translate-x-1/3 -translate-y-1/2" 
         />
         <motion.div 
-          animate={{ x: [0, 40, 0], y: [0, -50, 0], scale: [1, 1.15, 1] }} 
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ x: [0, 20, 0], y: [0, -30, 0], scale: [1, 1.1, 1] }} 
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           className="absolute bottom-0 left-1/4 w-[60vw] h-[60vw] bg-blue-600/10 rounded-full blur-[150px] translate-y-1/3" 
         />
       </div>
@@ -424,22 +424,22 @@ export default function Home() {
           {/* Profile Image (Lateral) */}
           <motion.div variants={fadeUpVariant} className="relative group flex-shrink-0 mb-8 md:mb-0">
             {/* Decorative background blur */}
-            <div className="absolute -inset-6 bg-gradient-to-tr from-primary/40 via-purple-500/30 to-background rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition duration-1000"></div>
+            <div className="absolute -inset-6 bg-gradient-to-tr from-primary/40 via-purple-500/30 to-background rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition duration-500"></div>
 
             {/* Outer animated rings */}
-            <div className="absolute inset-0 rounded-full border border-primary/20 scale-[1.15] animate-[spin_10s_linear_infinite] hidden md:block"></div>
-            <div className="absolute inset-0 rounded-full border border-muted-foreground/20 scale-[1.3] animate-[spin_15s_linear_infinite_reverse] hidden md:block"></div>
+            <div className="absolute inset-0 rounded-full border border-primary/20 scale-[1.15] animate-[spin_4s_linear_infinite] hidden md:block"></div>
+            <div className="absolute inset-0 rounded-full border border-muted-foreground/20 scale-[1.3] animate-[spin_6s_linear_infinite_reverse] hidden md:block"></div>
 
             <motion.div
-              animate={{ y: [-10, 10, -10] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ y: [-5, 5, -5] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             >
               <Image
                 src="/profile.jpg"
                 alt="Daniel Ortega Pereira"
                 width={320}
                 height={320}
-                className="relative rounded-full border-4 border-background object-cover shadow-2xl z-10 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 ring-4 ring-primary/10 group-hover:ring-primary/40 transition-all duration-700"
+                className="relative rounded-full border-4 border-background object-cover shadow-2xl z-10 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 ring-4 ring-primary/10 group-hover:ring-primary/40 group-hover:scale-105 transition-all duration-300 ease-out"
                 priority
               />
             </motion.div>
@@ -587,11 +587,11 @@ export default function Home() {
             {filteredProjects.map((project, index) => (
               <motion.div
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ y: -10, rotate: 1, scale: 1.02 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 key={project.title}
                 className="w-full h-full"
               >
@@ -749,8 +749,8 @@ export default function Home() {
           <div className="flex flex-wrap justify-center gap-2">
             {allCourseSkills.map(skill => (
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
                 key={skill}
                 onClick={() => {
                   setCourseFilter(skill);
@@ -778,12 +778,12 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 0.2 }}
                 className="h-full"
               >
-                <Card className="h-full border-primary/10 hover:border-primary/40 transition-all duration-500 bg-gradient-to-br from-card/40 to-card/10 hover:bg-card/60 backdrop-blur-md flex flex-col hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 group relative overflow-hidden">
+                <Card className="h-full border-primary/10 hover:border-primary/40 transition-all duration-300 bg-gradient-to-br from-card/40 to-card/10 hover:bg-card/60 backdrop-blur-md flex flex-col hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 group relative overflow-hidden">
                   {/* Glowing Edge Effect */}
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-purple-500/50 transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out"></div>
+                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-purple-500/50 transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-300 ease-out"></div>
 
                   <CardHeader className="p-6 pb-4">
                     <CardTitle className="text-xl font-bold leading-tight group-hover:text-primary transition-colors duration-300">
