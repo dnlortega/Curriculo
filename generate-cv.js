@@ -87,7 +87,7 @@ drawSideTitle('Formação');
 doc.font('Helvetica-Bold').fontSize(9).fill('#e2e8f0').text('Análise e Desenv. de Sistemas', 25, sideY); sideY += 12;
 doc.font('Helvetica').fontSize(8).fill('#94a3b8').text('UNINTER (2023 - 2025)', 25, sideY); sideY += 25;
 
-drawSideTitle('Certificados e Cursos');
+drawSideTitle('Cursos & Soft Skills');
 const certs = [
   'Power BI Avançado & DAX',
   'IA Aplicada para Devs',
@@ -96,7 +96,12 @@ const certs = [
   'Arquitetura Frontend',
   'Design de UI/UX',
   'Manutenção de Computadores',
-  'Pacote Office & Excel Avançado'
+  'Pacote Office & Excel Avançado',
+  'Pequenas Melhorias, Grandes Resultados',
+  'Neurolinguística',
+  'Gestão de Tempo',
+  'O Jeito Disney de Encantar Clientes',
+  'Processos de Materiais Especiais'
 ];
 doc.font('Helvetica').fontSize(8).fill('#cbd5e1');
 certs.forEach(c => {
