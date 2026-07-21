@@ -19,6 +19,49 @@ const Linkedin = ({ className }: { className?: string }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
 );
 
+const getIssuerDomain = (issuer: string) => {
+  const map: Record<string, string> = {
+    "Unimed Bauru": "unimedbauru.com.br",
+    "HOSPITAL UNIMED BAURU": "unimedbauru.com.br",
+    "Hashtag Treinamentos": "hashtagtreinamentos.com",
+    "Full Stack Club": "fullstackclub.com.br",
+    "Xperiun | Data Analytics": "xperiun.com",
+    "TreinaWeb": "treinaweb.com.br",
+    "Dev em Dobro": "devemdobro.com",
+    "Rocketseat": "rocketseat.com.br",
+    "Lab - Hub Unimed": "unimed.coop.br",
+    "Alura": "alura.com.br",
+    "Daxus (antiga Empowerdata)": "daxus.com.br",
+    "Udemy Alumni": "udemy.com",
+    "Unimed Fesp": "unimedfesp.coop.br",
+    "SESCOOP/SP": "sescoopsp.coop.br",
+    "UNINTER Centro Universitário Internacional": "uninter.com",
+    "Prefeitura Municipal de Bauru": "bauru.sp.gov.br",
+    "Microlins Franchising": "microlins.com.br",
+    "Microcamp": "microcamp.com.br",
+    "SOS Computadores": "sos.com.br"
+  };
+  return map[issuer] || null;
+};
+
+const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string }) => {
+  const domain = getIssuerDomain(issuer);
+  const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(issuer)}&background=random&color=fff&size=128`;
+  const logoUrl = domain ? `https://logo.clearbit.com/${domain}` : fallback;
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img 
+      src={logoUrl} 
+      alt={`Logo ${issuer}`} 
+      className={cn("rounded bg-background object-cover", className)}
+      onError={(e) => {
+        e.currentTarget.src = fallback;
+      }}
+    />
+  );
+};
+
 export default function Home() {
   const projects = [
     {
@@ -258,13 +301,17 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
             <CardHeader className="relative z-10 pb-2">
               <div className="flex justify-between items-start flex-col sm:flex-row gap-4">
-                <div>
-                  <CardTitle className="text-2xl font-bold text-foreground">
-                    Análise e Desenvolvimento de Sistemas
-                  </CardTitle>
-                  <CardDescription className="text-lg mt-1 font-medium text-primary">
-                    UNINTER Centro Universitário Internacional
-                  </CardDescription>
+                <div className="flex gap-4 items-start">
+                  <IssuerLogo issuer="UNINTER Centro Universitário Internacional" className="w-12 h-12 rounded-lg shadow-sm hidden sm:block" />
+                  <div>
+                    <CardTitle className="text-2xl font-bold text-foreground">
+                      Análise e Desenvolvimento de Sistemas
+                    </CardTitle>
+                    <CardDescription className="text-lg mt-1 font-medium text-primary flex items-center gap-2">
+                      <IssuerLogo issuer="UNINTER Centro Universitário Internacional" className="w-5 h-5 sm:hidden" />
+                      UNINTER Centro Universitário Internacional
+                    </CardDescription>
+                  </div>
                 </div>
                 <Badge variant="outline" className="bg-background/50 backdrop-blur whitespace-nowrap border-primary/30 py-1 text-sm font-medium">
                   Jan 2023 – Jun 2025
@@ -312,7 +359,8 @@ export default function Home() {
                 <CardContent className="p-5 pt-0 text-sm text-muted-foreground flex-grow flex flex-col justify-end space-y-3">
                   {curso.issuer && (
                     <div className="flex items-center gap-2 text-foreground/80 font-medium">
-                      <Award className="w-4 h-4 text-primary/70" /> {curso.issuer}
+                      <IssuerLogo issuer={curso.issuer} className="w-5 h-5 rounded-sm" /> 
+                      {curso.issuer}
                     </div>
                   )}
                   {curso.date && (
