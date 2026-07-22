@@ -46,12 +46,12 @@ export function ExperienceSection({ lang }: ExperienceSectionProps) {
         <div className="relative border-l-2 border-primary/20 ml-4 md:ml-6 space-y-12">
           
           {t.experience.jobs.map((job, index) => (
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              key={index} 
+              viewport={{ once: true, margin: "-50px" }}
               className="relative pl-8 md:pl-12 group"
             >
               {/* Timeline Dot (Glowing on hover) */}

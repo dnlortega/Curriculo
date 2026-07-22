@@ -28,7 +28,7 @@ const skillCategories = [
       { name: "TypeScript", slug: "typescript", color: "3178C6" },
       { name: "JavaScript", slug: "javascript", color: "F7DF1E" },
       { name: "HTML5", slug: "html5", color: "E34F26" },
-      { name: "CSS3", slug: "css3", color: "1572B6" },
+      { name: "CSS3", slug: "css", color: "1572B6" },
     ]
   },
   {
@@ -90,27 +90,41 @@ export function SkillsSection({ lang }: SkillsSectionProps) {
               <h4 className="text-xl font-bold text-foreground">{category.title}</h4>
             </div>
 
-            <div className="flex flex-wrap gap-4 justify-start">
-              {category.skills.map((skill, index) => (
+            <motion.div 
+              className="flex flex-wrap justify-center gap-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.05 }
+                }
+              }}
+            >
+              {category.skills.map((skill) => (
                 <motion.div
-                  whileHover={{ scale: 1.1, y: -5 }}
-                  transition={{ type: "spring", stiffness: 400 }}
                   key={skill.name}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border/50 bg-background/80 backdrop-blur-sm text-foreground font-medium shadow-sm hover:border-primary/50 transition-colors cursor-default group"
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.5, y: 20 },
+                    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200 } }
+                  }}
+                  whileHover={{ scale: 1.2, rotate: 5, zIndex: 10 }}
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center border border-border/50 bg-background/80 backdrop-blur-sm shadow-sm hover:border-primary/50 hover:shadow-primary/20 hover:shadow-xl transition-all cursor-default group"
+                  title={skill.name}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={`https://cdn.simpleicons.org/${skill.slug}/${skill.color}`} 
                     alt={skill.name}
                     className={cn(
-                      "w-5 h-5 transition-transform group-hover:scale-110",
+                      "w-7 h-7 sm:w-8 sm:h-8 group-hover:scale-110 transition-transform duration-300 drop-shadow-md",
                       skill.darkInvert ? "dark:invert" : ""
                     )}
                   />
-                  <span className="text-sm">{skill.name}</span>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         ))}
       </div>
