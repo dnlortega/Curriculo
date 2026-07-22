@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Briefcase, ExternalLink } from "lucide-react";
 import { Github } from "@/components/icons";
@@ -20,6 +20,11 @@ export function ProjectsSection({ lang }: ProjectsSectionProps) {
 
   const [projectFilter, setProjectFilter] = useState(t.projects.tags.all);
   
+  // Update filter when language changes to avoid mismatch
+  useEffect(() => {
+    setProjectFilter(t.projects.tags.all);
+  }, [lang, t]);
+
   const allProjectTags = useMemo(() => {
     const tags = new Set<string>();
     t.projects.items.forEach((p: any) => p.tags.forEach((tag: string) => tags.add(tag)));
