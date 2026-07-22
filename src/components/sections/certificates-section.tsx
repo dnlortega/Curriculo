@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Award, Search, ChevronDown, ShieldCheck, Calendar, Hash } from "lucide-react";
 import { translations, Language } from "@/i18n";
-import { cursos } from "@/data/cursos";
+import { getCursos } from "@/data/cursos";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -22,6 +22,8 @@ export function CertificatesSection({ lang }: CertificatesSectionProps) {
   const [courseSearch, setCourseSearch] = useState<string>("");
   const [visibleCoursesCount, setVisibleCoursesCount] = useState<number>(9);
 
+  const cursos = useMemo(() => getCursos(lang), [lang]);
+
   // Update filters when language changes
   useEffect(() => {
     setCourseFilter(t.certificates.filterAll);
@@ -32,12 +34,12 @@ export function CertificatesSection({ lang }: CertificatesSectionProps) {
     const skills = new Set<string>();
     cursos.forEach(c => {
       if (c.skills) {
-        c.skills.split(',').forEach(s => skills.add(s.trim().replace(' e mais ', '').replace(/[0-9]+ competências/, '').trim()));
+        c.skills.split(',').forEach(s => skills.add(s.trim().replace(/ e mais \d+ competências/, '').replace(/ and \d+ more skills/, '').trim()));
       }
     });
     const cleanSkills = Array.from(skills).filter(s => s.length > 0 && s.length < 20).slice(0, 8);
     return [t.certificates.filterAll, ...cleanSkills];
-  }, [t]);
+  }, [t, cursos]);
 
   const filteredCourses = useMemo(() => {
     let filtered = cursos;
@@ -52,7 +54,7 @@ export function CertificatesSection({ lang }: CertificatesSectionProps) {
       );
     }
     return filtered;
-  }, [courseFilter, courseSearch, t]);
+  }, [courseFilter, courseSearch, t, cursos]);
 
   const displayedCourses = filteredCourses.slice(0, visibleCoursesCount);
 
@@ -159,7 +161,7 @@ export function CertificatesSection({ lang }: CertificatesSectionProps) {
                     <div className="pt-2 flex flex-wrap gap-1.5">
                       {curso.skills.split(',').slice(0, 3).map((skill, idx) => (
                         <Badge variant="secondary" key={idx} className="text-[10px] px-2 py-0.5 bg-muted/50 border border-transparent group-hover:border-primary/20 group-hover:bg-primary/5 transition-colors">
-                          {skill.trim().replace(' e mais ', ' +')}
+                          {skill.trim().replace(/ e mais (\d+) competências/, ' +$1').replace(/ and (\d+) more skills/, ' +$1')}
                         </Badge>
                       ))}
                     </div>

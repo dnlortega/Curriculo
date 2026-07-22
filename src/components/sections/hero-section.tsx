@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 import { ExternalLink, Download } from "lucide-react";
 import { Github, Linkedin } from "@/components/icons";
@@ -17,7 +17,7 @@ interface HeroSectionProps {
 export function HeroSection({ lang }: HeroSectionProps) {
   const t = translations[lang];
 
-  const staggerContainer = {
+  const staggerContainer: Variants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
@@ -25,7 +25,7 @@ export function HeroSection({ lang }: HeroSectionProps) {
     }
   };
   
-  const itemVariant = {
+  const itemVariant: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
   };
