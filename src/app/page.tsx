@@ -3,15 +3,18 @@
 import { useState, useEffect } from "react";
 import { Language } from "@/i18n";
 import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import { HeroSection } from "@/components/sections/hero-section";
-import { ExperienceSection } from "@/components/sections/experience-section";
-import { ProjectsSection } from "@/components/sections/projects-section";
-import { SkillsSection } from "@/components/sections/skills-section";
-import { EducationSection } from "@/components/sections/education-section";
-import { CertificatesSection } from "@/components/sections/certificates-section";
-import { ContactSection } from "@/components/sections/contact-section";
 import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
+
+// Dynamic Imports (Lazy Loading) para otimização de bundle e performance
+const ExperienceSection = dynamic(() => import("@/components/sections/experience-section").then(mod => mod.ExperienceSection), { ssr: true });
+const ProjectsSection = dynamic(() => import("@/components/sections/projects-section").then(mod => mod.ProjectsSection), { ssr: true });
+const SkillsSection = dynamic(() => import("@/components/sections/skills-section").then(mod => mod.SkillsSection), { ssr: true });
+const EducationSection = dynamic(() => import("@/components/sections/education-section").then(mod => mod.EducationSection), { ssr: true });
+const CertificatesSection = dynamic(() => import("@/components/sections/certificates-section").then(mod => mod.CertificatesSection), { ssr: true });
+const ContactSection = dynamic(() => import("@/components/sections/contact-section").then(mod => mod.ContactSection), { ssr: true });
+const Footer = dynamic(() => import("@/components/layout/footer").then(mod => mod.Footer), { ssr: true });
 
 export default function Home() {
   // i18n & Theme state
