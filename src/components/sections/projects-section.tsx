@@ -11,35 +11,25 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-interface Project {
-  title: string;
-  description: string;
-  tags: string[];
-  link: string;
-  github: string;
-  image: string;
-}
-
 interface ProjectsSectionProps {
   lang: Language;
-  projects: Project[];
 }
 
-export function ProjectsSection({ lang, projects }: ProjectsSectionProps) {
+export function ProjectsSection({ lang }: ProjectsSectionProps) {
   const t = translations[lang];
 
-  const [projectFilter, setProjectFilter] = useState("Todos");
+  const [projectFilter, setProjectFilter] = useState(t.projects.tags.all);
   
   const allProjectTags = useMemo(() => {
     const tags = new Set<string>();
-    projects.forEach((p) => p.tags.forEach((t) => tags.add(t)));
-    return ["Todos", ...Array.from(tags)];
-  }, [projects]);
+    t.projects.items.forEach((p: any) => p.tags.forEach((tag: string) => tags.add(tag)));
+    return [t.projects.tags.all, ...Array.from(tags)];
+  }, [t]);
 
   const filteredProjects = useMemo(() => {
-    if (projectFilter === "Todos") return projects;
-    return projects.filter((p) => p.tags.includes(projectFilter));
-  }, [projectFilter, projects]);
+    if (projectFilter === t.projects.tags.all) return t.projects.items;
+    return t.projects.items.filter((p: any) => p.tags.includes(projectFilter));
+  }, [projectFilter, t]);
 
   return (
     <section

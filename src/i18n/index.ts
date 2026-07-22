@@ -56,7 +56,65 @@ export const translations = {
       description: 'Aplicações desenvolvidas aplicando as melhores práticas do ecossistema React, Next.js e TypeScript.',
       tags: {
         all: 'Todos'
-      }
+      },
+      items: [
+        {
+          title: "Vagas LinkedIn",
+          description: "Agregador de vagas de TI para Bauru SP. Busca oportunidades no LinkedIn, VagasBauru, Indeed e Catho.",
+          tags: ["JavaScript", "Next.js", "Scraping", "Integrações"],
+          link: "https://vagas-linkedin.vercel.app",
+          github: "https://github.com/dnlortega/vagas-linkedin",
+          image: "https://api.microlink.io/?url=https://vagas-linkedin.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Kanban Tarefas",
+          description: "Sistema de gerenciamento de tarefas em colunas no estilo Kanban, desenvolvido com foco em produtividade.",
+          tags: ["TypeScript", "React", "Drag and Drop", "Tailwind CSS"],
+          link: "https://kanban-tarefas-black.vercel.app",
+          github: "https://github.com/dnlortega/kanban-tarefas",
+          image: "https://api.microlink.io/?url=https://kanban-tarefas-black.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Presença Next.js",
+          description: "Aplicação para controle de presença e lista de convidados em eventos.",
+          tags: ["TypeScript", "Next.js", "Vercel"],
+          link: "https://presenca-nextjs-l6a2.vercel.app",
+          github: "https://github.com/dnlortega/presenca-nextjs",
+          image: "https://api.microlink.io/?url=https://presenca-nextjs-l6a2.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Condomínio",
+          description: "Sistema de gestão e informações para moradores do condomínio Recanto dos Pássaros.",
+          tags: ["TypeScript", "React", "Dashboard"],
+          link: "https://recantopassaros.vercel.app",
+          github: "https://github.com/dnlortega/condominio",
+          image: "https://api.microlink.io/?url=https://recantopassaros.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Barbeiro",
+          description: "Landing page e sistema de agendamento para barbearias.",
+          tags: ["TypeScript", "Frontend", "Agendamento"],
+          link: "https://barbeiro-brown.vercel.app",
+          github: "https://github.com/dnlortega/barbeiro",
+          image: "https://api.microlink.io/?url=https://barbeiro-brown.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Chá de Bebê",
+          description: "Página interativa para lista de presentes e confirmação de presença em Chá de Bebê.",
+          tags: ["TypeScript", "React", "Lista de Presentes"],
+          link: "https://cha-bebe.vercel.app",
+          github: "https://github.com/dnlortega/Cha-bebe",
+          image: "https://api.microlink.io/?url=https://cha-bebe.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "NovaCar",
+          description: "Plataforma de exibição e busca de veículos novos e seminovos.",
+          tags: ["TypeScript", "Frontend", "Automotivo"],
+          link: "https://novacar-five.vercel.app",
+          github: "https://github.com/dnlortega/novacar",
+          image: "https://api.microlink.io/?url=https://novacar-five.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        }
+      ]
     },
     skills: {
       title: 'Habilidades'
@@ -140,7 +198,65 @@ export const translations = {
       description: 'Applications built applying best practices from the React, Next.js, and TypeScript ecosystem.',
       tags: {
         all: 'All'
-      }
+      },
+      items: [
+        {
+          title: "LinkedIn Jobs",
+          description: "IT Job aggregator for Bauru SP. Fetches opportunities from LinkedIn, VagasBauru, Indeed, and Catho.",
+          tags: ["JavaScript", "Next.js", "Scraping", "Integrations"],
+          link: "https://vagas-linkedin.vercel.app",
+          github: "https://github.com/dnlortega/vagas-linkedin",
+          image: "https://api.microlink.io/?url=https://vagas-linkedin.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Kanban Tasks",
+          description: "Kanban-style column task management system, developed with a focus on productivity.",
+          tags: ["TypeScript", "React", "Drag and Drop", "Tailwind CSS"],
+          link: "https://kanban-tarefas-black.vercel.app",
+          github: "https://github.com/dnlortega/kanban-tarefas",
+          image: "https://api.microlink.io/?url=https://kanban-tarefas-black.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Next.js Presence",
+          description: "Application for attendance control and guest list management at events.",
+          tags: ["TypeScript", "Next.js", "Vercel"],
+          link: "https://presenca-nextjs-l6a2.vercel.app",
+          github: "https://github.com/dnlortega/presenca-nextjs",
+          image: "https://api.microlink.io/?url=https://presenca-nextjs-l6a2.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Condominium",
+          description: "Management and information system for residents of the Recanto dos Pássaros condominium.",
+          tags: ["TypeScript", "React", "Dashboard"],
+          link: "https://recantopassaros.vercel.app",
+          github: "https://github.com/dnlortega/condominio",
+          image: "https://api.microlink.io/?url=https://recantopassaros.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Barber",
+          description: "Landing page and scheduling system for barbershops.",
+          tags: ["TypeScript", "Frontend", "Scheduling"],
+          link: "https://barbeiro-brown.vercel.app",
+          github: "https://github.com/dnlortega/barbeiro",
+          image: "https://api.microlink.io/?url=https://barbeiro-brown.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "Baby Shower",
+          description: "Interactive page for gift registry and RSVP for a Baby Shower.",
+          tags: ["TypeScript", "React", "Gift Registry"],
+          link: "https://cha-bebe.vercel.app",
+          github: "https://github.com/dnlortega/Cha-bebe",
+          image: "https://api.microlink.io/?url=https://cha-bebe.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        },
+        {
+          title: "NovaCar",
+          description: "Platform for displaying and searching new and used vehicles.",
+          tags: ["TypeScript", "Frontend", "Automotive"],
+          link: "https://novacar-five.vercel.app",
+          github: "https://github.com/dnlortega/novacar",
+          image: "https://api.microlink.io/?url=https://novacar-five.vercel.app&screenshot=true&meta=false&embed=screenshot.url"
+        }
+      ]
     },
     skills: {
       title: 'Skills'
