@@ -1,95 +1,29 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  ExternalLink, MessageCircle, Code2, User, Award, Calendar, 
-  GraduationCap, ChevronDown, ChevronUp, Download, Mail, Send, 
-  Search, ShieldCheck, Hash, Menu, X, Moon, Sun, Home as HomeIcon, 
-  Briefcase, Zap, Loader2, MapPin, CheckCircle2, Building2, ChevronRight, FileDown
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cursos } from "@/data/cursos";
-import { useState, useMemo, useEffect } from "react";
-import { useTheme } from "next-themes";
-import { TypeAnimation } from "react-type-animation";
-import { translations, Language } from "@/i18n";
+import { useState, useEffect } from "react";
+import { Language } from "@/i18n";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import { HeroSection } from "@/components/sections/hero-section";
+import { ExperienceSection } from "@/components/sections/experience-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
-import { BrazilFlag, USAFlag, Github, Linkedin } from "@/components/icons";
-
-const getIssuerDomain = (issuer: string) => {
-  const map: Record<string, string> = {
-    "Unimed Bauru": "unimedbauru.com.br",
-    "HOSPITAL UNIMED BAURU": "unimedbauru.com.br",
-    "Hashtag Treinamentos": "hashtagtreinamentos.com",
-    "Full Stack Club": "fullstackclub.com.br",
-    "Xperiun | Data Analytics": "xperiun.com",
-    "TreinaWeb": "treinaweb.com.br",
-    "Dev em Dobro": "devemdobro.com",
-    "Rocketseat": "rocketseat.com.br",
-    "Lab - Hub Unimed": "unimed.coop.br",
-    "Alura": "alura.com.br",
-    "Daxus (antiga Empowerdata)": "daxus.com.br",
-    "Udemy Alumni": "udemy.com",
-    "Unimed Fesp": "unimedfesp.coop.br",
-    "SESCOOP/SP": "sescoopsp.coop.br",
-    "UNINTER Centro Universitário Internacional": "uninter.com",
-    "Prefeitura Municipal de Bauru": "bauru.sp.gov.br",
-    "Microlins Franchising": "microlins.com.br",
-    "Microcamp": "microcamp.com.br",
-    "SOS Computadores": "sos.com.br"
-  };
-  return map[issuer] || null;
-};
-
-const getInitialsAvatar = (name: string) => {
-  const initial = name.charAt(0).toUpperCase();
-  const colors = ['#f87171', '#fb923c', '#fbbf24', '#a3e635', '#34d399', '#22d3ee', '#818cf8', '#c084fc', '#f472b6'];
-  const color = colors[name.length % colors.length];
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="${color}"/><text x="50" y="68" font-family="Arial, sans-serif" font-weight="bold" font-size="50" fill="#ffffff" text-anchor="middle">${initial}</text></svg>`;
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-};
-
-const IssuerLogo = ({ issuer, className }: { issuer: string; className?: string }) => {
-  const domain = getIssuerDomain(issuer);
-  const [errorLevel, setErrorLevel] = useState(0);
-
-  const googleFavicon = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128` : null;
-  const localAvatar = getInitialsAvatar(issuer);
-
-  let currentSrc = localAvatar;
-
-  // Hardcoded highly-available logo for UNINTER
-  if (issuer.toLowerCase().includes('uninter')) {
-    currentSrc = "/uninter-logo.svg";
-  } else if (domain) {
-    if (errorLevel === 0) {
-      currentSrc = `https://logo.clearbit.com/${domain}`;
-    } else if (errorLevel === 1) {
-      currentSrc = googleFavicon!;
-    }
-  }
-
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      key={currentSrc}
-      src={currentSrc}
-      alt={`Logo ${issuer}`}
-      className={cn("rounded bg-background object-contain", className)}
-      loading="lazy"
-      onError={() => {
-        setErrorLevel(prev => prev + 1);
-      }}
-    />
-  );
-};
+import { SkillsSection } from "@/components/sections/skills-section";
+import { EducationSection } from "@/components/sections/education-section";
+import { CertificatesSection } from "@/components/sections/certificates-section";
+import { ContactSection } from "@/components/sections/contact-section";
+import { useTheme } from "next-themes";
 
 export default function Home() {
+  // i18n & Theme state
+  const [lang, setLang] = useState<Language>('en');
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const projects = [
     {
       title: "Vagas LinkedIn",
@@ -149,126 +83,28 @@ export default function Home() {
     }
   ];
 
-  const [courseFilter, setCourseFilter] = useState<string>("All");
-  const [courseSearch, setCourseSearch] = useState<string>("");
-  const [visibleCoursesCount, setVisibleCoursesCount] = useState<number>(9);
-
-  // i18n & Theme state
-  const [lang, setLang] = useState<Language>('en');
-  const t = translations[lang];
-  
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  // Prevent hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Update filters when language changes
-  useEffect(() => {
-    setCourseFilter(t.certificates.filterAll);
-  }, [lang, t]);
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  // Course Filtering
-  const allCourseSkills = useMemo(() => {
-    const skills = new Set<string>();
-    cursos.forEach(c => {
-      if (c.skills) {
-        c.skills.split(',').forEach(s => skills.add(s.trim().replace(' e mais ', '').replace(/[0-9]+ competências/, '').trim()));
-      }
-    });
-    const cleanSkills = Array.from(skills).filter(s => s.length > 0 && s.length < 20).slice(0, 8);
-    return [t.certificates.filterAll, ...cleanSkills];
-  }, [t]);
-
-  const filteredCourses = useMemo(() => {
-    let filtered = cursos;
-    if (courseFilter !== t.certificates.filterAll) {
-      filtered = filtered.filter(c => c.skills?.includes(courseFilter));
-    }
-    if (courseSearch.trim() !== "") {
-      const q = courseSearch.toLowerCase();
-      filtered = filtered.filter(c =>
-        c.title.toLowerCase().includes(q) ||
-        (c.issuer && c.issuer.toLowerCase().includes(q))
-      );
-    }
-    return filtered;
-  }, [courseFilter, courseSearch, t]);
-
-  const displayedCourses = filteredCourses.slice(0, visibleCoursesCount);
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 }
-  };
-
-  const fadeUpVariant = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
-  };
-
-  const navItems = [
-    { name: t.nav.home, href: '#home', icon: <HomeIcon className="w-5 h-5" /> },
-    { name: t.nav.projects, href: '#projetos', icon: <Briefcase className="w-5 h-5" /> },
-    { name: t.nav.experience, href: '#experiencia', icon: <User className="w-5 h-5" /> },
-    { name: t.nav.skills, href: '#habilidades', icon: <Zap className="w-5 h-5" /> },
-    { name: t.nav.education, href: '#formacao', icon: <GraduationCap className="w-5 h-5" /> },
-    { name: t.nav.certificates, href: '#certificados', icon: <Award className="w-5 h-5" /> },
-    { name: t.nav.contact, href: '#contato', icon: <Mail className="w-5 h-5" /> },
-  ];
-
   return (
     <main className="min-h-screen relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">
+      
       {/* PROGRAMMER THEMED BACKGROUND */}
       <div className="fixed inset-0 z-[-1] bg-background">
         <div className="absolute h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary opacity-20 blur-[100px]"></div>
       </div>
-      {/* FLOATING PILL MENU (DESKTOP) */}
-      <motion.nav
-        initial={{ y: -100, opacity: 0, x: "-50%" }}
-        animate={{ y: 0, opacity: 1, x: "-50%" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="fixed top-8 left-1/2 z-50 w-auto bg-background/60 backdrop-blur-xl border border-primary/20 rounded-full px-6 py-2.5 hidden md:flex justify-center items-center shadow-2xl shadow-primary/5 gap-8"
-      >
-        <a href="#home" className="font-black text-xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 hover:scale-105 transition-transform shrink-0 whitespace-nowrap">
-          Daniel Ortega Pereira
-        </a>
 
-        <ul className="flex items-center gap-2">
-          {navItems.map((item) => (
-            <li key={item.name} className="shrink-0">
-              <a
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                title={item.name}
-                className="p-3 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300 block"
-              >
-                {item.icon}
-              </a>
-            </li>
-          ))}
-        </ul>
+      {/* BACKGROUND EFFECTS (STATIC) */}
+      <div className="fixed inset-0 w-full h-full -z-20 bg-background pointer-events-none overflow-hidden">
+        {/* Subtle grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
 
-        {/* Desktop Language Toggle */}
-        <button
-          onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}
-          className="w-10 h-10 flex items-center justify-center rounded-full hover:scale-110 transition-transform bg-muted/50 hover:bg-primary/20 shrink-0"
-          title="Change Language"
-        >
-          {lang === 'pt' ? 
-            <USAFlag className="w-6 h-6 block rounded-full shadow-sm" /> : 
-            <BrazilFlag className="w-6 h-6 block rounded-full shadow-sm" />
-          }
-        </button>
-      </motion.nav>
+        {/* Static Glowing Orbs */}
+        <div className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-1/2 right-0 w-[40vw] h-[40vw] bg-purple-600/10 rounded-full blur-[150px] translate-x-1/3 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-1/4 w-[60vw] h-[60vw] bg-blue-600/10 rounded-full blur-[150px] translate-y-1/3" />
+      </div>
+
+      {/* NAVIGATION */}
+      <Navbar lang={lang} setLang={setLang} />
 
       {/* FLOATING WHATSAPP BUTTON (ALL SCREENS) */}
       <a
@@ -283,421 +119,25 @@ export default function Home() {
         </svg>
       </a>
 
-      {/* BOTTOM NAVIGATION BAR (MOBILE) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-t border-border/50 flex justify-around items-center p-3 shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
-        {navItems.map((item) => (
-          <a
-            key={item.name}
-            href={item.href}
-            onClick={(e) => handleNavClick(e, item.href)}
-            title={item.name}
-            className="p-3 flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-xl transition-all"
-          >
-            {item.icon}
-          </a>
-        ))}
-
-        {/* Mobile Language Toggle */}
-        <button
-          onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}
-          className="flex flex-col items-center justify-center gap-1 p-2 text-muted-foreground hover:text-primary transition-colors shrink-0"
-        >
-          {lang === 'pt' ? 
-            <USAFlag className="w-6 h-6 block rounded-full shadow-sm" /> : 
-            <BrazilFlag className="w-6 h-6 block rounded-full shadow-sm" />
-          }
-        </button>
-      </nav>
-
-      {/* BACKGROUND EFFECTS (STATIC) */}
-      <div className="fixed inset-0 w-full h-full -z-20 bg-background pointer-events-none overflow-hidden">
-        {/* Subtle grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808020_1px,transparent_1px),linear-gradient(to_bottom,#80808020_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
-
-        {/* Static Glowing Orbs (No laggy animations) */}
-        <div className="absolute top-0 left-0 w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute top-1/2 right-0 w-[40vw] h-[40vw] bg-purple-600/10 rounded-full blur-[150px] translate-x-1/3 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-1/4 w-[60vw] h-[60vw] bg-blue-600/10 rounded-full blur-[150px] translate-y-1/3" />
-      </div>
-
-      {/* HEADER SECTION */}
-      <header id="home" className="w-full px-6 md:px-12 lg:px-24 py-24 min-h-screen flex flex-col justify-center pt-32">
-        <motion.div
-          className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-20 w-full"
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-        >
-
-          {/* Text Content */}
-          <div className="space-y-6 max-w-2xl text-center md:text-left flex-1">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-foreground via-foreground/90 to-muted-foreground leading-[1.1]">
-              Daniel Ortega Pereira
-            </h1>
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-muted-foreground min-h-[40px]">
-              <span className="text-primary font-bold">
-                <TypeAnimation
-                  key={lang}
-                  sequence={[
-                    t.hero.titles[0], 2000,
-                    t.hero.titles[1], 2000,
-                    t.hero.titles[2], 2000,
-                    t.hero.titles[3], 2000,
-                  ]}
-                  wrapper="span"
-                  speed={50}
-                  repeat={Infinity}
-                />
-              </span>
-            </h2>
-            <p className="text-lg text-muted-foreground/80 mt-6 leading-relaxed max-w-xl mx-auto md:mx-0" dangerouslySetInnerHTML={{ __html: t.hero.description }} />
-
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-8">
-              <Link href="https://github.com/dnlortega/" target="_blank" className={cn(buttonVariants({ size: "icon" }), "rounded-full w-14 h-14 shadow-lg hover:scale-110 transition-transform")} title="GitHub">
-                <Github className="w-6 h-6" />
-              </Link>
-              <Link href="https://www.linkedin.com/in/daniel-op" target="_blank" className={cn(buttonVariants({ variant: "outline", size: "icon" }), "rounded-full w-14 h-14 border-primary/20 hover:bg-primary/10 shadow-lg hover:scale-110 transition-transform")} title="LinkedIn">
-                <Linkedin className="w-6 h-6 text-[#0A66C2] dark:text-foreground/80" />
-              </Link>
-              <Link href="https://vercel.com/dnlortegas-projects" target="_blank" className={cn(buttonVariants({ variant: "secondary", size: "icon" }), "rounded-full w-14 h-14 shadow-lg hover:scale-110 transition-transform")} title="Vercel Projects">
-                <ExternalLink className="w-6 h-6" />
-              </Link>
-              <Link href={lang === 'en' ? "/resume-en.pdf" : "/curriculo.pdf"} target="_blank" className={cn(buttonVariants({ variant: "default" }), "rounded-full h-14 px-6 shadow-lg hover:scale-105 transition-transform ml-2 gap-2 text-md")} title={t.hero.downloadCV}>
-                <Download className="w-5 h-5" /> {t.hero.downloadCV}
-              </Link>
-            </div>
-          </div>
-
-          {/* Profile Image (Lateral) */}
-          <div className="relative group flex-shrink-0 mb-8 md:mb-0">
-            {/* Decorative background blur */}
-            <div className="absolute -inset-6 bg-gradient-to-tr from-primary/40 via-purple-500/30 to-background rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition duration-500"></div>
-
-            <Image
-              src="/profile.jpg"
-              alt="Daniel Ortega Pereira"
-              width={320}
-              height={320}
-              className="relative rounded-full border-4 border-background object-cover shadow-2xl z-10 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 ring-4 ring-primary/10 hover:ring-primary/40 transition-all duration-300"
-              priority
-            />
-          </div>
-
-        </motion.div>
-      </header>
-
+      {/* SECTIONS */}
+      <HeroSection lang={lang} />
       <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full opacity-50" />
-
-      {/* PROFESSIONAL TRAJECTORY SECTION */}
-      <section
-        id="experiencia"
-        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center pt-28 bg-muted/5 border-b border-border/50"
-      >
-        <div className="space-y-2 text-center flex flex-col items-center">
-          <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
-            <User className="w-8 h-8 text-primary" /> {t.experience.title}
-          </h3>
-          <p className="text-muted-foreground text-center max-w-2xl">{t.experience.description}</p>
-        </div>
-
-        <div className="w-full max-w-4xl mt-8">
-          <div className="relative border-l-2 border-primary/20 ml-3 md:ml-6 space-y-12">
-
-            {t.experience.jobs.map((job, index) => (
-              <div key={index} className="relative pl-8 md:pl-12 hover:translate-x-2 transition-transform">
-                <div className="absolute w-6 h-6 bg-primary/20 rounded-full -left-[13px] border-4 border-background flex items-center justify-center shadow-md">
-                  <div className="w-2.5 h-2.5 bg-primary rounded-full"></div>
-                </div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 gap-2">
-                  <h4 className="text-xl font-bold text-foreground">{job.role}</h4>
-                  <Badge variant="outline" className="w-fit bg-primary/5 text-primary border-primary/20">{job.date}</Badge>
-                </div>
-                <h5 className="text-md font-medium text-muted-foreground mb-4 flex items-center gap-2">
-                  <IssuerLogo issuer={job.company} className="w-5 h-5 rounded-sm grayscale" /> {job.company}
-                </h5>
-                <p className="text-muted-foreground leading-relaxed bg-card/30 p-4 rounded-xl border border-border/50" dangerouslySetInnerHTML={{ __html: job.description }} />
-              </div>
-            ))}
-
-          </div>
-        </div>
-      </section>
-
+      
+      <ExperienceSection lang={lang} />
       <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full opacity-50" />
-
-      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full opacity-50" />
-
-      {/* PROJECTS SECTION */}
+      
       <ProjectsSection lang={lang} projects={projects} />
-
-      {/* SKILLS SECTION */}
-      <section
-        id="habilidades"
-        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center bg-muted/5 border-y border-border/50 pt-28"
-      >
-        <div className="space-y-2 text-center flex flex-col items-center">
-          <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
-            <Zap className="w-8 h-8 text-primary" /> {t.skills.title}
-          </h3>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 w-full">
-          {['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'Shadcn UI', 'Node.js', 'Vercel', 'Git & GitHub'].map(skill => (
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: [-1, 1, 0] }}
-              transition={{ type: "spring", stiffness: 400 }}
-              key={skill}
-              className="px-6 py-3 rounded-full border border-primary/20 bg-card/80 backdrop-blur-sm text-foreground font-medium shadow-sm hover:border-primary transition-colors cursor-default text-center hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]"
-            >
-              {skill}
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ACADEMIC FORMATION SECTION */}
-      <section
-        id="formacao"
-        className="w-full px-6 md:px-12 lg:px-24 py-16 space-y-8 flex flex-col items-center pt-28"
-      >
-        <div className="space-y-2 text-center flex flex-col items-center">
-          <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
-            <GraduationCap className="w-8 h-8 text-primary" /> {t.education.title}
-          </h3>
-        </div>
-
-        <div className="w-full max-w-3xl">
-          <Card className="relative overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50 backdrop-blur-sm group hover:border-primary/50 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
-            <CardHeader className="relative z-10 pb-2">
-              <div className="flex justify-between items-start flex-col sm:flex-row gap-4">
-                <div className="flex gap-4 items-start">
-                  <IssuerLogo issuer="UNINTER Centro Universitário Internacional" className="w-12 h-12 rounded-lg shadow-sm hidden sm:block" />
-                  <div>
-                    <CardTitle className="text-2xl font-bold text-foreground">
-                      {t.education.course}
-                    </CardTitle>
-                    <CardDescription className="text-lg mt-1 font-medium text-primary flex items-center gap-2">
-                      <IssuerLogo issuer="UNINTER Centro Universitário Internacional" className="w-5 h-5 sm:hidden" />
-                      UNINTER Centro Universitário Internacional
-                    </CardDescription>
-                  </div>
-                </div>
-                <Badge variant="outline" className="bg-background/50 backdrop-blur whitespace-nowrap border-primary/30 py-1 text-sm font-medium">
-                  {t.education.date}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="relative z-10 pt-4">
-              <p className="text-muted-foreground mb-4">
-                {t.education.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {t.education.badges.map((badge, i) => (
-                  <Badge key={i} variant={i === 2 ? "outline" : "secondary"} className={i === 2 ? "border-primary/20 bg-background" : "bg-primary/10"}>{badge}</Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* CERTIFICATIONS SECTION */}
-      <section
-        id="certificados"
-        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center pt-28"
-      >
-        <div className="space-y-2 text-center flex flex-col items-center">
-          <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
-            <Award className="w-8 h-8 text-primary" /> {t.certificates.title}
-          </h3>
-          <p className="text-muted-foreground text-center">{t.certificates.description.replace('{count}', cursos.length.toString())}</p>
-        </div>
-
-        <div className="flex flex-col items-center gap-6 w-full max-w-5xl">
-          {/* Search Bar */}
-          <div className="relative w-full max-w-md group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <input
-              type="text"
-              placeholder={t.certificates.searchPlaceholder}
-              value={courseSearch}
-              onChange={(e) => {
-                setCourseSearch(e.target.value);
-                setVisibleCoursesCount(9);
-              }}
-              className="w-full pl-12 pr-4 py-3 rounded-full border border-primary/20 bg-card/50 backdrop-blur-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm group-hover:shadow-md"
-            />
-          </div>
-
-          {/* Filter Pills */}
-          <div className="flex flex-wrap justify-center gap-2">
-            {allCourseSkills.map(skill => (
-              <button
-                key={skill}
-                onClick={() => {
-                  setCourseFilter(skill);
-                  setVisibleCoursesCount(9);
-                }}
-                className={cn(
-                  "px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors duration-300 border",
-                  courseFilter === skill
-                    ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
-                    : "bg-card/50 border-primary/10 hover:border-primary/50 hover:bg-primary/5 text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {skill}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-          <AnimatePresence mode="popLayout">
-            {displayedCourses.map((curso, index) => (
-              <motion.div
-                key={`${curso.title}-${index}`}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="h-full"
-              >
-                <Card className="h-full border-primary/10 hover:border-primary/40 transition-all duration-500 bg-gradient-to-br from-card/40 to-card/10 hover:bg-card/60 backdrop-blur-md flex flex-col hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 group relative overflow-hidden">
-                  {/* Glowing Edge Effect */}
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-purple-500/50 transform origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out"></div>
-
-                  <CardHeader className="p-6 pb-4">
-                    <CardTitle className="text-xl font-bold leading-tight group-hover:text-primary transition-colors duration-300">
-                      {curso.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6 pt-0 text-sm flex-grow flex flex-col justify-end space-y-4">
-
-                    {/* Issuer & Shield */}
-                    {curso.issuer && (
-                      <div className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border border-border/50 group-hover:border-primary/20 transition-colors">
-                        <IssuerLogo issuer={curso.issuer} className="w-8 h-8 rounded-md shadow-sm" />
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-foreground flex items-center gap-1">
-                            {curso.issuer}
-                            <ShieldCheck className="w-4 h-4 text-primary/80" />
-                          </span>
-                          {curso.date && (
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Calendar className="w-3 h-3" /> {curso.date}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Credential */}
-                    {curso.credential && (
-                      <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-primary/5 p-1.5 rounded border border-primary/10 truncate">
-                        <Hash className="w-3 h-3 text-primary shrink-0" />
-                        <span className="truncate" title={curso.credential}>{curso.credential}</span>
-                      </div>
-                    )}
-
-                    {/* Skills Badges */}
-                    {curso.skills && (
-                      <div className="pt-2 flex flex-wrap gap-1.5">
-                        {curso.skills.split(',').slice(0, 3).map((skill, idx) => (
-                          <Badge variant="secondary" key={idx} className="text-[10px] px-2 py-0.5 bg-muted/50 border border-transparent group-hover:border-primary/20 group-hover:bg-primary/5 transition-colors">
-                            {skill.trim().replace(' e mais ', ' +')}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-
-        {/* Empty State for Search */}
-        {displayedCourses.length === 0 && (
-          <div className="py-12 text-center text-muted-foreground">
-            {t.certificates.empty}
-          </div>
-        )}
-
-        {/* Load More Pagination */}
-        {filteredCourses.length > visibleCoursesCount && (
-          <div className="pt-8">
-            <button
-              onClick={() => setVisibleCoursesCount(prev => prev + 9)}
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "rounded-full px-8 gap-2 border-primary/20 hover:bg-primary hover:text-primary-foreground shadow-lg transition-all duration-300 group"
-              )}
-            >
-              {t.certificates.loadMore} <ChevronDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
-            </button>
-          </div>
-        )}
-      </section>
-
-      {/* CONTACT SECTION */}
-      <section
-        id="contato"
-        className="w-full px-6 md:px-12 lg:px-24 py-24 space-y-12 flex flex-col items-center bg-muted/5 border-t border-border/50"
-      >
-        <div className="space-y-2 text-center flex flex-col items-center max-w-2xl">
-          <h3 className="text-3xl font-bold tracking-tight inline-flex items-center justify-center gap-3">
-            <Mail className="w-8 h-8 text-primary" /> {t.contact.title}
-          </h3>
-          <p className="text-muted-foreground text-center">
-            {t.contact.description}
-          </p>
-        </div>
-
-        <div className="w-full max-w-xl">
-          <Card className="border-primary/20 bg-card/50 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-primary/10 transition-all duration-500 overflow-hidden relative group">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-600"></div>
-            <CardContent className="p-8 sm:p-12 flex flex-col items-center text-center gap-8">
-              <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                <MessageCircle className="w-10 h-10 text-green-500" />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-foreground">{t.contact.whatsappTitle}</h3>
-                <p className="text-muted-foreground">
-                  {t.contact.whatsappDesc}
-                </p>
-              </div>
-
-              <a
-                href="https://wa.me/5514981294913?text=Ol%C3%A1%20Daniel,%20vi%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20conversar!"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "w-full sm:w-auto px-12 gap-3 text-lg h-14 bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20"
-                )}
-              >
-                <MessageCircle className="w-5 h-5" /> {t.contact.button}
-              </a>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+      
+      <SkillsSection lang={lang} />
+      
+      <EducationSection lang={lang} />
+      
+      <CertificatesSection lang={lang} />
+      
+      <ContactSection lang={lang} />
 
       {/* FOOTER */}
-      <footer className="border-t py-12 bg-muted/20 w-full flex flex-col items-center">
-        <div className="w-full px-6 md:px-12 lg:px-24 text-center text-muted-foreground flex flex-col items-center justify-center gap-4">
-          <p>© {new Date().getFullYear()} Daniel Ortega Pereira. {t.footer}</p>
-          <div className="flex justify-center gap-4">
-            <Link href="https://github.com/dnlortega" className="hover:text-primary transition-colors">
-              <Github className="w-5 h-5" />
-            </Link>
-            <Link href="https://www.linkedin.com/in/daniel-op" className="hover:text-primary transition-colors">
-              <Linkedin className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer lang={lang} />
 
     </main>
   );
