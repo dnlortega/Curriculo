@@ -148,13 +148,6 @@ export function CertificatesSection({ lang }: CertificatesSectionProps) {
                     </div>
                   )}
 
-                  {/* Credential */}
-                  {curso.credential && (
-                    <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground bg-primary/5 p-1.5 rounded border border-primary/10 truncate">
-                      <Hash className="w-3 h-3 text-primary shrink-0" />
-                      <span className="truncate" title={curso.credential}>{curso.credential}</span>
-                    </div>
-                  )}
 
                   {/* Skills Badges */}
                   {curso.skills && (
