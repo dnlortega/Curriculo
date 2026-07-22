@@ -148,20 +148,10 @@ export function CertificatesSection({ lang }: CertificatesSectionProps) {
                     </div>
                   )}
 
-
-                  {/* Skills Badges */}
-                  {curso.skills && (
-                    <div className="pt-2 flex flex-wrap gap-1.5">
-                      {curso.skills.split(',').slice(0, 3).map((skill, idx) => (
-                        <Badge variant="secondary" key={idx} className="text-[10px] px-2 py-0.5 bg-muted/50 border border-transparent group-hover:border-primary/20 group-hover:bg-primary/5 transition-colors">
-                          {skill.trim().replace(/ e mais (\d+) competências/, ' +$1').replace(/ and (\d+) more skills/, ' +$1')}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </motion.div>
+
           ))}
         </AnimatePresence>
       </div>
