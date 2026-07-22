@@ -48,9 +48,9 @@ export function ExperienceSection({ lang }: ExperienceSectionProps) {
           {t.experience.jobs.map((job, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              initial={{ opacity: 0, x: -60, filter: "blur(10px)" }}
+              whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.6, delay: index * 0.15, type: "spring", bounce: 0.2 }}
               viewport={{ once: true, margin: "-50px" }}
               className="relative pl-8 md:pl-12 group"
             >
@@ -60,7 +60,11 @@ export function ExperienceSection({ lang }: ExperienceSectionProps) {
               </div>
 
               {/* Job Card (Glassmorphism) */}
-              <div className="bg-card/40 backdrop-blur-md border border-border/50 group-hover:border-primary/30 p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300">
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="bg-card/40 backdrop-blur-md border border-border/50 group-hover:border-primary/50 p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-colors duration-300 relative z-10"
+              >
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
                   <h4 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">{job.role}</h4>
                   <Badge variant="secondary" className="w-fit bg-primary/10 text-primary border-primary/20 px-3 py-1 font-semibold">{job.date}</Badge>
@@ -75,7 +79,7 @@ export function ExperienceSection({ lang }: ExperienceSectionProps) {
                   className="text-muted-foreground leading-relaxed prose-sm dark:prose-invert max-w-none" 
                   dangerouslySetInnerHTML={{ __html: job.description }} 
                 />
-              </div>
+              </motion.div>
             </motion.div>
           ))}
 

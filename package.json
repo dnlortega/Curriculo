@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node generate-cv.js pt && node generate-cv.js en && next build",
     "start": "next start",
     "lint": "eslint"
   },
