@@ -108,7 +108,7 @@ export const translations = {
         },
         {
           title: "NovaCar",
-          description: "Plataforma de exibição e busca de veículos novos e seminovos.",
+          description: "Landing page e sistema para oficina mecânica (Centro Automotivo).",
           tags: ["TypeScript", "Frontend", "Automotivo"],
           link: "https://novacar-five.vercel.app",
           github: "https://github.com/dnlortega/novacar",
@@ -250,7 +250,7 @@ export const translations = {
         },
         {
           title: "NovaCar",
-          description: "Platform for displaying and searching new and used vehicles.",
+          description: "Landing page and system for an auto repair shop (Automotive Center).",
           tags: ["TypeScript", "Frontend", "Automotive"],
           link: "https://novacar-five.vercel.app",
           github: "https://github.com/dnlortega/novacar",
