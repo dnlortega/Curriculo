@@ -35,6 +35,12 @@ const texts = {
     expTitle: 'Experiência Profissional',
     jobs: [
       {
+        title: 'Desenvolvedor de Sistemas Web',
+        company: 'Trabalho Autônomo',
+        date: 'Jan 2023 – Presente',
+        desc: 'Desenvolvimento de APIs RESTful (Node.js, Python, PHP/Laravel), modelagem de banco de dados e sistemas sob medida. Automação de tarefas, integração com gateways de pagamento/Webhooks via Python e otimização de consultas (DB) focada em estabilidade, segurança e performance.'
+      },
+      {
         title: 'Analista de Dados & IA (Projeto)',
         company: 'DataGuvi',
         date: 'Mai 2026 – Jun 2026',
@@ -94,6 +100,12 @@ const texts = {
     profileDesc: 'Technology Professional with 17 years of corporate experience. Absolute specialist in process automation, generation and validation of ANS standards (XML) with 100% compliance. Today I apply my strong analytical expertise (Power BI) combined with advanced Web development (Next.js, React) to architect high-performance solutions with direct impact.',
     expTitle: 'Professional Experience',
     jobs: [
+      {
+        title: 'Web Systems Developer',
+        company: 'Freelance',
+        date: 'Jan 2023 – Present',
+        desc: 'Development of RESTful APIs (Node.js, Python, PHP/Laravel), database modeling and custom systems. Task automation, integration with payment gateways/Webhooks via Python, and query optimization (DB) focused on stability, security, and performance.'
+      },
       {
         title: 'Data & AI Analyst (Project)',
         company: 'DataGuvi',

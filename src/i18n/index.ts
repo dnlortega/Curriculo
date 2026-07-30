@@ -26,6 +26,12 @@ export const translations = {
       description: 'Mais de 17 anos dedicados à tecnologia, da integração de sistemas complexos à construção de aplicações modernas e análise de dados estruturada.',
       jobs: [
         {
+          role: 'Desenvolvedor de Sistemas Web',
+          company: 'Trabalho Autônomo',
+          date: 'Jan 2023 – Presente',
+          description: '<strong>Desenvolvimento Backend & APIs:</strong> Análise de requisitos, modelagem de banco de dados e construção de APIs RESTful utilizando Node.js, Python e PHP (Laravel).<br/><strong>Projetos Customizados:</strong> Criação de sistemas web e módulos sob medida para atender regras de negócios específicas de cada cliente.<br/><strong>Automação & Integrações:</strong> Desenvolvimento de scripts em Python para automação de tarefas e integração de serviços de terceiros (gateways de pagamento, Webhooks, APIs externas).<br/><strong>Manutenção & Performance:</strong> Otimização de consultas a bancos de dados, refatoração de código e resolução de bugs para garantir a estabilidade e a segurança das aplicações.',
+        },
+        {
           role: 'Analista de Dados & IA (Projeto)',
           company: 'DataGuvi',
           date: 'Mai 2026 – Jun 2026',
@@ -167,6 +173,12 @@ export const translations = {
       title: 'Professional Trajectory',
       description: 'Over 17 years dedicated to technology, from complex systems integration to building modern applications and structured data analysis.',
       jobs: [
+        {
+          role: 'Web Systems Developer',
+          company: 'Freelance',
+          date: 'Jan 2023 – Present',
+          description: '<strong>Backend & APIs Development:</strong> Requirement analysis, database modeling, and building RESTful APIs using Node.js, Python, and PHP (Laravel).<br/><strong>Custom Projects:</strong> Creation of custom web systems and modules to meet specific business rules for each client.<br/><strong>Automation & Integrations:</strong> Python scripting for task automation and third-party service integration (payment gateways, Webhooks, external APIs).<br/><strong>Maintenance & Performance:</strong> Database query optimization, code refactoring, and bug resolution to ensure application stability and security.',
+        },
         {
           role: 'Data & AI Analyst (Project)',
           company: 'DataGuvi',
