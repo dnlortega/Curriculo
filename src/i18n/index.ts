@@ -29,7 +29,7 @@ export const translations = {
           role: 'Desenvolvedor de Sistemas Web',
           company: 'Trabalho Autônomo',
           date: 'Jan 2023 – Presente',
-          description: '<strong>Desenvolvimento Backend & APIs:</strong> Análise de requisitos, modelagem de banco de dados e construção de APIs RESTful utilizando Node.js, Python e PHP (Laravel).<br/><strong>Projetos Customizados:</strong> Criação de sistemas web e módulos sob medida para atender regras de negócios específicas de cada cliente.<br/><strong>Automação & Integrações:</strong> Desenvolvimento de scripts em Python para automação de tarefas e integração de serviços de terceiros (gateways de pagamento, Webhooks, APIs externas).<br/><strong>Manutenção & Performance:</strong> Otimização de consultas a bancos de dados, refatoração de código e resolução de bugs para garantir a estabilidade e a segurança das aplicações.',
+          description: '<strong>Desenvolvimento Backend & APIs:</strong> Modelagem de dados e construção de APIs RESTful (Node.js, Python, PHP/Laravel), com entrega de múltiplos projetos escaláveis para diferentes nichos de mercado.<br/><strong>Projetos Customizados & Impacto:</strong> Criação de sistemas web sob medida, automatizando processos manuais e reduzindo significativamente o tempo de operação dos clientes.<br/><strong>Automação & Integrações:</strong> Scripts Python para integração de gateways de pagamento e Webhooks, otimizando o fluxo de receita.<br/><strong>DevOps & Testes:</strong> Otimização de DBs, refatoração, testes automatizados e esteiras de CI/CD para alta disponibilidade e segurança das aplicações.',
         },
         {
           role: 'Analista de Dados & IA (Projeto)',
@@ -41,7 +41,7 @@ export const translations = {
           role: 'Assistente de Faturamento (TI & Integração)',
           company: 'Hospital Unimed Bauru',
           date: 'Mar 2009 – Abr 2026 (17 anos)',
-          description: 'Responsável direto pela conferência e geração de arquivos XML Padrão ANS (2.500+ registros mensais) sem falhas. Implantação e integração de sistemas nas unidades SEDE, HUB e CDU. Treinamento e suporte massivo de novas tecnologias e processos às equipes locais, garantindo adoção total das plataformas.',
+          description: 'Responsável direto pela conferência e geração de arquivos XML Padrão ANS (2.500+ registros mensais) sem falhas. Implantação e integração de sistemas nas unidades SEDE, HUB e CDU. <strong>Liderança técnica e Mentoria:</strong> Treinamento e suporte massivo de novas tecnologias e processos às equipes locais, traduzindo requisitos de negócio para soluções de TI e garantindo adoção total das plataformas.',
         },
         {
           role: 'Administrativo',
@@ -177,7 +177,7 @@ export const translations = {
           role: 'Web Systems Developer',
           company: 'Freelance',
           date: 'Jan 2023 – Present',
-          description: '<strong>Backend & APIs Development:</strong> Requirement analysis, database modeling, and building RESTful APIs using Node.js, Python, and PHP (Laravel).<br/><strong>Custom Projects:</strong> Creation of custom web systems and modules to meet specific business rules for each client.<br/><strong>Automation & Integrations:</strong> Python scripting for task automation and third-party service integration (payment gateways, Webhooks, external APIs).<br/><strong>Maintenance & Performance:</strong> Database query optimization, code refactoring, and bug resolution to ensure application stability and security.',
+          description: '<strong>Backend & APIs Development:</strong> Database modeling and building RESTful APIs (Node.js, Python, PHP/Laravel), delivering multiple scalable projects for various market niches.<br/><strong>Custom Projects & Impact:</strong> Creation of custom web systems, automating manual processes and significantly reducing operation time for clients.<br/><strong>Automation & Integrations:</strong> Python scripts for payment gateway and Webhooks integration, optimizing revenue workflows.<br/><strong>DevOps & Testing:</strong> DB optimizations, refactoring, automated testing, and CI/CD pipelines to ensure high availability and application security.',
         },
         {
           role: 'Data & AI Analyst (Project)',
@@ -189,7 +189,7 @@ export const translations = {
           role: 'Billing Assistant (IT & Integration)',
           company: 'Hospital Unimed Bauru',
           date: 'Mar 2009 – Apr 2026 (17 years)',
-          description: 'Directly responsible for checking and generating ANS Standard XML files (2,500+ monthly records) without errors. Deployment and integration of systems across SEDE, HUB, and CDU units. Massive training and support of new technologies and processes for local teams, ensuring total adoption of the platforms.',
+          description: 'Directly responsible for checking and generating ANS Standard XML files (2,500+ monthly records) without errors. Deployment and integration of systems across SEDE, HUB, and CDU units. <strong>Technical Leadership & Mentoring:</strong> Massive training and support of new technologies and processes for local teams, translating business requirements into IT solutions and ensuring total platform adoption.',
         },
         {
           role: 'Administrative',

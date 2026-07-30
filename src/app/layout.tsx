@@ -18,7 +18,12 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://daniel-ortega.vercel.app"),
   title: "Daniel Ortega Pereira | Analista Sênior & Desenvolvedor Full Stack",
   description: "Portfólio de Daniel Ortega Pereira, profissional com 17+ anos de experiência na área de tecnologia, especialista em Next.js, Integração de Sistemas e Análise de Dados (Power BI).",
-  keywords: ["Daniel Ortega Pereira", "Daniel Ortega", "Analista de Sistemas Sênior", "Desenvolvedor Next.js", "Desenvolvedor React", "Power BI", "Integração de Sistemas", "Portfólio de Tecnologia"],
+  keywords: [
+    "Daniel Ortega Pereira", "Daniel Ortega", "Desenvolvedor Full Stack Sênior", 
+    "Analista de Sistemas Sênior", "Desenvolvedor Next.js", "Desenvolvedor React", 
+    "Power BI", "Engenheiro de Software", "APIs RESTful", "Node.js", 
+    "Integração de Sistemas", "Portfólio de Tecnologia"
+  ],
   authors: [{ name: "Daniel Ortega Pereira", url: "https://www.linkedin.com/in/daniel-op" }],
   creator: "Daniel Ortega Pereira",
   openGraph: {

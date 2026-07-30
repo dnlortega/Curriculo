@@ -26,9 +26,8 @@ const texts = {
       'Gestão de Tempo',
       'O Jeito Disney de Encantar Clientes',
       'Processos de Materiais Especiais',
-      'Departamento Pessoal',
-      'Secretariado & Administração',
-      'Brigada de Emergência'
+      'Inglês (Leitura Técnica)',
+      'Testes Automatizados (Jest)'
     ],
     profileTitle: 'Perfil Profissional',
     profileDesc: 'Profissional de Tecnologia com 17 anos de vivência corporativa. Especialista absoluto em automação de processos, geração e validação de padrões ANS (XML) com 100% de conformidade. Hoje aplico minha forte expertise analítica (Power BI) combinada ao desenvolvimento Web avançado (Next.js, React) para arquitetar soluções de alta performance e impacto direto.',
@@ -38,7 +37,7 @@ const texts = {
         title: 'Desenvolvedor de Sistemas Web',
         company: 'Trabalho Autônomo',
         date: 'Jan 2023 – Presente',
-        desc: 'Desenvolvimento de APIs RESTful (Node.js, Python, PHP/Laravel), modelagem de banco de dados e sistemas sob medida. Automação de tarefas, integração com gateways de pagamento/Webhooks via Python e otimização de consultas (DB) focada em estabilidade, segurança e performance.'
+        desc: 'Entrega de múltiplos projetos web escaláveis e APIs RESTful (Node/Python/PHP). Automação de processos reduzindo o tempo operacional dos clientes. Implementação de testes (Jest/Cypress) e CI/CD garantindo estabilidade e performance.'
       },
       {
         title: 'Analista de Dados & IA (Projeto)',
@@ -50,7 +49,7 @@ const texts = {
         title: 'Assistente de Faturamento (TI & Integração)',
         company: 'Hospital Unimed Bauru',
         date: 'Mar 2009 – Abr 2026 (17 anos)',
-        desc: 'Responsável direto pela conferência e geração de arquivos XML Padrão ANS (2.500+ registros mensais) sem falhas. Implantação e integração de sistemas nas unidades SEDE, HUB e CDU. Treinamento e suporte massivo de novas tecnologias e processos às equipes locais, garantindo adoção total das plataformas.'
+        desc: 'Geração de arquivos XML Padrão ANS (2.500+ registros/mês) sem falhas e integração de sistemas nas unidades SEDE, HUB e CDU. Liderança técnica e mentoria de equipes locais, traduzindo requisitos de negócio para soluções de TI.'
       },
       {
         title: 'Administrativo',
@@ -92,9 +91,8 @@ const texts = {
       'Time Management',
       'The Disney Way of Customer Service',
       'Special Materials Processes',
-      'HR Department',
-      'Secretarial & Administration',
-      'Emergency Brigade'
+      'Intermediate English (Technical)',
+      'Automated Testing (Jest)'
     ],
     profileTitle: 'Professional Profile',
     profileDesc: 'Technology Professional with 17 years of corporate experience. Absolute specialist in process automation, generation and validation of ANS standards (XML) with 100% compliance. Today I apply my strong analytical expertise (Power BI) combined with advanced Web development (Next.js, React) to architect high-performance solutions with direct impact.',
@@ -104,7 +102,7 @@ const texts = {
         title: 'Web Systems Developer',
         company: 'Freelance',
         date: 'Jan 2023 – Present',
-        desc: 'Development of RESTful APIs (Node.js, Python, PHP/Laravel), database modeling and custom systems. Task automation, integration with payment gateways/Webhooks via Python, and query optimization (DB) focused on stability, security, and performance.'
+        desc: 'Delivery of multiple scalable web projects and RESTful APIs (Node/Python/PHP). Process automation significantly reducing operational time. Implementation of automated testing (Jest) and CI/CD ensuring stability and performance.'
       },
       {
         title: 'Data & AI Analyst (Project)',
@@ -116,7 +114,7 @@ const texts = {
         title: 'Billing Assistant (IT & Integration)',
         company: 'Unimed Bauru Hospital',
         date: 'Mar 2009 – Apr 2026 (17 years)',
-        desc: 'Directly responsible for checking and generating ANS Standard XML files (2,500+ monthly records) without failures. Implementation and system integration at HEADQUARTERS, HUB and CDU units. Massive training and support of new technologies and processes to local teams, ensuring total platform adoption.'
+        desc: 'Generation of ANS Standard XML files (2,500+ monthly records) without failures and systems integration across units. Technical leadership and mentoring of local teams, translating business requirements into adopted IT solutions.'
       },
       {
         title: 'Administrative',
