@@ -278,11 +278,11 @@ sideY += 30;
 // Contact
 doc.rect(20, sideY, SIDEBAR_W - 40, 1).fill('#334155'); sideY += 15;
 doc.font('Helvetica').fontSize(8).fill('#e2e8f0');
-doc.text('📍 ' + t.location, 25, sideY); sideY += 15;
-doc.text('📱 (14) 98129-4913', 25, sideY); sideY += 15;
-doc.text('✉️ dnlortega@gmail.com', 25, sideY); sideY += 15;
-doc.fill('#0070f3').text('🔗 linkedin.com/in/daniel-op', 25, sideY, { link: 'https://linkedin.com/in/daniel-op' }); sideY += 15;
-doc.text('💻 github.com/dnlortega', 25, sideY, { link: 'https://github.com/dnlortega' }); sideY += 25;
+doc.text(t.location, 25, sideY); sideY += 15;
+doc.text('(14) 98129-4913', 25, sideY); sideY += 15;
+doc.text('dnlortega@gmail.com', 25, sideY); sideY += 15;
+doc.fill('#0070f3').text('linkedin.com/in/daniel-op', 25, sideY, { link: 'https://linkedin.com/in/daniel-op' }); sideY += 15;
+doc.text('github.com/dnlortega', 25, sideY, { link: 'https://github.com/dnlortega' }); sideY += 25;
 
 // Helper for Sidebar Titles
 function drawSideTitle(title) {
@@ -388,16 +388,16 @@ mainY = doc.y;
 if (t.recentProjects) {
   t.recentProjects.forEach(proj => {
     doc.font('Helvetica-Bold').fontSize(9).fill('#0f172a').text(`• ${proj.name} `, mainX, mainY, { continued: true });
-    
-    if (proj.url) {
-      doc.font('Helvetica-Oblique').fontSize(8).fill('#0070f3').text(`🔗 ${proj.url.replace('https://', '')}  `, { continued: true, link: proj.url });
-    }
-    
     doc.font('Helvetica-Oblique').fontSize(8).fill('#64748b').text(`| ${proj.tech}`);
     mainY = doc.y + 1;
     
-    doc.font('Helvetica').fontSize(8.5).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1.5 });
-    mainY = doc.y + 5;
+    if (proj.url) {
+      doc.font('Helvetica-Oblique').fontSize(7.5).fill('#0070f3').text(`${proj.url.replace('https://', '')}`, mainX + 10, mainY, { continued: true, link: proj.url, width: mainW - 10, align: 'justify', lineGap: 1 });
+      doc.font('Helvetica').fontSize(8).fill('#334155').text(` - ${proj.desc}`);
+    } else {
+      doc.font('Helvetica').fontSize(8).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1 });
+    }
+    mainY = doc.y + 4;
   });
 }
 
