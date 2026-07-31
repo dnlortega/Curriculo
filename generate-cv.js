@@ -65,8 +65,20 @@ const texts = {
       }
     ],
     projectsTitle: 'Projetos e Portfólio',
-    projectsSubtitle: 'Vagas LinkedIn & Sistemas Modernos',
-    projectsDesc: 'Desenvolvimento full-stack de sistemas SaaS, painéis administrativos e agregadores de vagas utilizando React 19, Next.js 15, Node.js e Tailwind CSS. Implantação ágil via Vercel com pipelines CI/CD.\n\nCódigo-fonte e aplicações ao vivo disponíveis diretamente no meu portfólio.',
+    projectsSubtitle: 'Projetos Recentes',
+    recentProjects: [
+      {
+        name: 'Vagas LinkedIn',
+        tech: 'Next.js 15, React 19, Tailwind, Shadcn',
+        desc: 'Agregador de vagas automatizado. Funções: Web scraping, painel admin, filtros avançados e deploy na Vercel.'
+      },
+      {
+        name: 'Sistemas SaaS & Portfólio',
+        tech: 'Node.js, Power BI, DAX, XML',
+        desc: 'Soluções sob demanda. Funções: CI/CD, dashboards interativos (Tempo Real) e geração/validação de padrões ANS.'
+      }
+    ],
+    projectsDesc: 'Código-fonte e aplicações ao vivo no meu portfólio.',
     footer: 'Gerado via Portfólio Online (Next.js)'
   },
   en: {
@@ -130,8 +142,20 @@ const texts = {
       }
     ],
     projectsTitle: 'Projects & Portfolio',
-    projectsSubtitle: 'LinkedIn Jobs & Modern Systems',
-    projectsDesc: 'Full-stack development of SaaS systems, administrative panels and job aggregators using React 19, Next.js 15, Node.js and Tailwind CSS. Agile deployment via Vercel with CI/CD pipelines.\n\nSource code and live applications available directly in my portfolio.',
+    projectsSubtitle: 'Recent Projects',
+    recentProjects: [
+      {
+        name: 'LinkedIn Jobs',
+        tech: 'Next.js 15, React 19, Tailwind, Shadcn',
+        desc: 'Automated jobs aggregator. Functions: Web scraping, admin panel, advanced filters, and agile Vercel deployment.'
+      },
+      {
+        name: 'SaaS Systems & Portfolio',
+        tech: 'Node.js, Power BI, DAX, XML',
+        desc: 'On-demand solutions. Functions: CI/CD, interactive dashboards (Real-time), and ANS standards generation/validation.'
+      }
+    ],
+    projectsDesc: 'Source code and live applications available in my portfolio.',
     footer: 'Generated via Online Portfolio (Next.js)'
   }
 };
@@ -295,8 +319,19 @@ mainY += 10;
 
 drawMainTitle(t.projectsTitle);
 doc.font('Helvetica-Bold').fontSize(10.5).fill('#0f172a').text(t.projectsSubtitle, mainX, mainY, { width: mainW });
-mainY = doc.y + 3;
-doc.font('Helvetica').fontSize(9).fill('#334155').text(
+mainY = doc.y + 4;
+
+if (t.recentProjects) {
+  t.recentProjects.forEach(proj => {
+    doc.font('Helvetica-Bold').fontSize(9).fill('#0f172a').text(`• ${proj.name} `, mainX, mainY, { continued: true });
+    doc.font('Helvetica-Oblique').fontSize(8).fill('#64748b').text(`| ${proj.tech}`);
+    mainY = doc.y + 2;
+    doc.font('Helvetica').fontSize(8.5).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1.5 });
+    mainY = doc.y + 6;
+  });
+}
+
+doc.font('Helvetica-Oblique').fontSize(8.5).fill('#3b82f6').text(
   t.projectsDesc, 
   mainX, mainY, { width: mainW, align: 'justify', lineGap: 2 }
 );
