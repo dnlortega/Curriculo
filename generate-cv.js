@@ -69,11 +69,13 @@ const texts = {
     recentProjects: [
       {
         name: 'Vagas LinkedIn',
+        url: 'https://vagas-linkedin-sua-url.vercel.app',
         tech: 'Next.js 15, React 19, Tailwind, Shadcn',
         desc: 'Agregador de vagas automatizado. Funções: Web scraping, painel admin, filtros avançados e deploy na Vercel.'
       },
       {
         name: 'Sistemas SaaS & Portfólio',
+        url: 'https://seu-portfolio-sua-url.vercel.app',
         tech: 'Node.js, Power BI, DAX, XML',
         desc: 'Soluções sob demanda. Funções: CI/CD, dashboards interativos (Tempo Real) e geração/validação de padrões ANS.'
       }
@@ -146,11 +148,13 @@ const texts = {
     recentProjects: [
       {
         name: 'LinkedIn Jobs',
+        url: 'https://vagas-linkedin-sua-url.vercel.app',
         tech: 'Next.js 15, React 19, Tailwind, Shadcn',
         desc: 'Automated jobs aggregator. Functions: Web scraping, admin panel, advanced filters, and agile Vercel deployment.'
       },
       {
         name: 'SaaS Systems & Portfolio',
+        url: 'https://seu-portfolio-sua-url.vercel.app',
         tech: 'Node.js, Power BI, DAX, XML',
         desc: 'On-demand solutions. Functions: CI/CD, interactive dashboards (Real-time), and ANS standards generation/validation.'
       }
@@ -323,7 +327,11 @@ mainY = doc.y + 4;
 
 if (t.recentProjects) {
   t.recentProjects.forEach(proj => {
-    doc.font('Helvetica-Bold').fontSize(9).fill('#0f172a').text(`• ${proj.name} `, mainX, mainY, { continued: true });
+    if (proj.url) {
+      doc.font('Helvetica-Bold').fontSize(9).fill('#3b82f6').text(`• ${proj.name} `, mainX, mainY, { continued: true, link: proj.url });
+    } else {
+      doc.font('Helvetica-Bold').fontSize(9).fill('#0f172a').text(`• ${proj.name} `, mainX, mainY, { continued: true });
+    }
     doc.font('Helvetica-Oblique').fontSize(8).fill('#64748b').text(`| ${proj.tech}`);
     mainY = doc.y + 2;
     doc.font('Helvetica').fontSize(8.5).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1.5 });
