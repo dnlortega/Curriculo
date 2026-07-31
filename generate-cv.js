@@ -247,7 +247,7 @@ sidebarGrad.stop(0, '#0f172a').stop(1, '#1e293b');
 doc.rect(0, 0, SIDEBAR_W, PAGE_H).fill(sidebarGrad);
 
 // Main Content subtle watermark effect
-doc.circle(595, 0, 300).fillOpacity(0.02).fill('#3b82f6');
+doc.circle(595, 0, 300).fillOpacity(0.02).fill('#0070f3');
 doc.circle(200, 842, 200).fillOpacity(0.02).fill('#8b5cf6');
 doc.fillOpacity(1); // Reset opacity
 
@@ -263,7 +263,7 @@ if (fs.existsSync('./public/profile.jpg')) {
   doc.restore();
   
   // Decorative ring effect around photo
-  doc.circle(SIDEBAR_W / 2, sideY + 45, 47).lineWidth(2).stroke('#3b82f6');
+  doc.circle(SIDEBAR_W / 2, sideY + 45, 47).lineWidth(2).stroke('#0070f3');
   sideY += 110;
 } else {
   sideY += 40;
@@ -278,15 +278,15 @@ sideY += 30;
 // Contact
 doc.rect(20, sideY, SIDEBAR_W - 40, 1).fill('#334155'); sideY += 15;
 doc.font('Helvetica').fontSize(8).fill('#e2e8f0');
-doc.text(t.location, 25, sideY); sideY += 15;
-doc.text('(14) 98129-4913', 25, sideY); sideY += 15;
-doc.text('dnlortega@gmail.com', 25, sideY); sideY += 15;
-doc.fill('#3b82f6').text('linkedin.com/in/daniel-op', 25, sideY, { link: 'https://linkedin.com/in/daniel-op' }); sideY += 15;
-doc.text('github.com/dnlortega', 25, sideY, { link: 'https://github.com/dnlortega' }); sideY += 25;
+doc.text('📍 ' + t.location, 25, sideY); sideY += 15;
+doc.text('📱 (14) 98129-4913', 25, sideY); sideY += 15;
+doc.text('✉️ dnlortega@gmail.com', 25, sideY); sideY += 15;
+doc.fill('#0070f3').text('🔗 linkedin.com/in/daniel-op', 25, sideY, { link: 'https://linkedin.com/in/daniel-op' }); sideY += 15;
+doc.text('💻 github.com/dnlortega', 25, sideY, { link: 'https://github.com/dnlortega' }); sideY += 25;
 
 // Helper for Sidebar Titles
 function drawSideTitle(title) {
-  doc.rect(20, sideY, 3, 10).fill('#3b82f6');
+  doc.rect(20, sideY, 3, 10).fill('#0070f3');
   doc.font('Helvetica-Bold').fontSize(11).fill('#ffffff').text(title.toUpperCase(), 30, sideY - 1);
   sideY += 20;
 }
@@ -296,7 +296,7 @@ function drawSkill(name, percent) {
   doc.font('Helvetica').fontSize(8).fill('#cbd5e1').text(name, 25, sideY);
   sideY += 12;
   doc.rect(25, sideY, SIDEBAR_W - 50, 4).fill('#334155'); // Track
-  doc.rect(25, sideY, (SIDEBAR_W - 50) * percent, 4).fill('#3b82f6'); // Progress
+  doc.rect(25, sideY, (SIDEBAR_W - 50) * percent, 4).fill('#0070f3'); // Progress
   sideY += 15;
 }
 
@@ -315,7 +315,7 @@ doc.font('Helvetica').fontSize(8).fill('#94a3b8').text('UNINTER (2023 - 2025)', 
 drawSideTitle(t.certsTitle);
 doc.font('Helvetica').fontSize(8).fill('#cbd5e1');
 t.certs.forEach(c => {
-  doc.circle(28, sideY + 3, 2).fill('#3b82f6');
+  doc.circle(28, sideY + 3, 2).fill('#0070f3');
   doc.text(c, 35, sideY);
   sideY += 13; // slightly tighter spacing to fit everything perfectly
 });
@@ -328,7 +328,7 @@ const mainW = 325;
 // Helper for Main Titles
 function drawMainTitle(title) {
   doc.font('Helvetica-Bold').fontSize(16).fill('#0f172a').text(title.toUpperCase(), mainX, mainY);
-  doc.rect(mainX, doc.y + 3, 40, 2).fill('#3b82f6');
+  doc.rect(mainX, doc.y + 3, 40, 2).fill('#0070f3');
   mainY = doc.y + 15;
 }
 
@@ -337,7 +337,7 @@ doc.font('Helvetica').fontSize(9).fill('#334155').text(
   t.profileDesc, 
   mainX, mainY, { width: mainW, align: 'justify', lineGap: 1.5 }
 );
-mainY = doc.y + 15;
+mainY = doc.y + 10;
 
 drawMainTitle(t.expTitle);
 
@@ -347,7 +347,7 @@ let prevY = 0;
 
 function addTimelineItem(title, company, date, desc) {
   // Draw Timeline Dot
-  doc.circle(timelineX, mainY + 4, 4).fill('#ffffff').lineWidth(2).stroke('#3b82f6');
+  doc.circle(timelineX, mainY + 4, 3.5).fill('#ffffff').lineWidth(2).stroke('#0070f3');
   
   // Connect to previous dot if exists
   if (prevY > 0) {
@@ -364,12 +364,12 @@ function addTimelineItem(title, company, date, desc) {
   
   // Sleek tag effect for dates
   const cWidth = doc.widthOfString(company) + 5;
-  doc.font('Helvetica-Bold').fontSize(8.5).fill('#3b82f6').text(company, textX, mainY, { continued: true });
+  doc.font('Helvetica-Bold').fontSize(8.5).fill('#0070f3').text(company, textX, mainY, { continued: true });
   doc.font('Helvetica-Oblique').fontSize(8.5).fill('#64748b').text(`    ${date}`);
   mainY = doc.y + 6;
   
-  doc.font('Helvetica').fontSize(8.5).fill('#334155').text(desc, textX, mainY, { width: textW, align: 'justify', lineGap: 1.5 });
-  mainY = doc.y + 12;
+  doc.font('Helvetica').fontSize(8.5).fill('#334155').text(desc, textX, mainY, { width: textW, align: 'justify', lineGap: 1 });
+  mainY = doc.y + 6;
 }
 
 t.jobs.forEach(job => {
@@ -379,33 +379,29 @@ t.jobs.forEach(job => {
 // Draw the last piece of timeline line extending slightly downwards
 doc.moveTo(timelineX, prevY + 8).lineTo(timelineX, mainY).lineWidth(1).stroke('#cbd5e1');
 
-mainY += 5;
+mainY += 2;
 
 drawMainTitle(t.projectsTitle);
 doc.font('Helvetica-Bold').fontSize(10).fill('#0f172a').text(t.projectsSubtitle, mainX, mainY, { width: mainW });
-mainY = doc.y + 2;
+mainY = doc.y;
 
 if (t.recentProjects) {
   t.recentProjects.forEach(proj => {
+    doc.font('Helvetica-Bold').fontSize(9).fill('#0f172a').text(`• ${proj.name} `, mainX, mainY, { continued: true });
+    
     if (proj.url) {
-      doc.font('Helvetica-Bold').fontSize(9).fill('#3b82f6').text(`• ${proj.name} `, mainX, mainY, { continued: true, link: proj.url });
-    } else {
-      doc.font('Helvetica-Bold').fontSize(9).fill('#0f172a').text(`• ${proj.name} `, mainX, mainY, { continued: true });
+      doc.font('Helvetica-Oblique').fontSize(8).fill('#0070f3').text(`🔗 ${proj.url.replace('https://', '')}  `, { continued: true, link: proj.url });
     }
+    
     doc.font('Helvetica-Oblique').fontSize(8).fill('#64748b').text(`| ${proj.tech}`);
     mainY = doc.y + 1;
     
-    if (proj.url) {
-      doc.font('Helvetica-Oblique').fontSize(7.5).fill('#3b82f6').text(`${proj.url.replace('https://', '')}`, mainX + 10, mainY, { continued: true, link: proj.url, width: mainW - 10, align: 'justify', lineGap: 1 });
-      doc.font('Helvetica').fontSize(8).fill('#334155').text(` - ${proj.desc}`);
-    } else {
-      doc.font('Helvetica').fontSize(8).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1 });
-    }
-    mainY = doc.y + 3;
+    doc.font('Helvetica').fontSize(8.5).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1.5 });
+    mainY = doc.y + 5;
   });
 }
 
-doc.font('Helvetica-Oblique').fontSize(8).fill('#3b82f6').text(
+doc.font('Helvetica-Oblique').fontSize(8).fill('#0070f3').text(
   t.projectsDesc, 
   mainX, mainY, { width: mainW, align: 'justify', lineGap: 1 }
 );
