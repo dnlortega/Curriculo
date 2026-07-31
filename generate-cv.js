@@ -382,7 +382,13 @@ if (t.recentProjects) {
     }
     doc.font('Helvetica-Oblique').fontSize(8).fill('#64748b').text(`| ${proj.tech}`);
     mainY = doc.y + 1;
-    doc.font('Helvetica').fontSize(8).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1 });
+    
+    if (proj.url) {
+      doc.font('Helvetica-Oblique').fontSize(7.5).fill('#3b82f6').text(`${proj.url.replace('https://', '')}`, mainX + 10, mainY, { continued: true, link: proj.url, width: mainW - 10, align: 'justify', lineGap: 1 });
+      doc.font('Helvetica').fontSize(8).fill('#334155').text(` - ${proj.desc}`);
+    } else {
+      doc.font('Helvetica').fontSize(8).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1 });
+    }
     mainY = doc.y + 3;
   });
 }
