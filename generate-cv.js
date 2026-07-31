@@ -81,7 +81,7 @@ const texts = {
       }
     ],
     projectsDesc: 'Código-fonte e aplicações ao vivo no meu portfólio.',
-    footer: 'Gerado via Portfólio Online (Next.js)'
+    footer: 'Versão Online: curriculo-gules-seven.vercel.app'
   },
   en: {
     filename: './public/resume-en.pdf',
@@ -160,7 +160,7 @@ const texts = {
       }
     ],
     projectsDesc: 'Source code and live applications available in my portfolio.',
-    footer: 'Generated via Online Portfolio (Next.js)'
+    footer: 'Online Version: curriculo-gules-seven.vercel.app'
   }
 };
 
@@ -345,9 +345,9 @@ doc.font('Helvetica-Oblique').fontSize(8.5).fill('#3b82f6').text(
 );
 
 // Footer subtle text
-doc.font('Helvetica-Oblique').fontSize(7).fill('#94a3b8').text(
+doc.font('Helvetica-Oblique').fontSize(8).fill('#94a3b8').text(
   t.footer, 
-  mainX, PAGE_H - 25, { width: mainW, align: 'right' }
+  mainX, PAGE_H - 25, { width: mainW, align: 'right', link: 'https://curriculo-gules-seven.vercel.app/' }
 );
 
 doc.end();
