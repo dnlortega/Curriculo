@@ -69,37 +69,37 @@ const texts = {
     recentProjects: [
       {
         name: 'Vagas LinkedIn (SaaS & IA)',
-        url: 'https://vagas-linkedin-sua-url.vercel.app',
+        url: 'https://vagas-linkedin.vercel.app',
         tech: 'Next.js 16, React 19, Gemini AI, Tailwind, Shadcn',
         desc: 'Agregador com web scraping, painel admin, filtros e integração IA.'
       },
       {
         name: 'Finance AI',
-        url: 'https://financeai-sua-url.vercel.app',
+        url: 'https://financeai.vercel.app',
         tech: 'Next.js 15, Prisma, Stripe, Clerk Auth',
         desc: 'Plataforma SaaS de gestão financeira com inteligência artificial e pagamentos.'
       },
       {
         name: 'Barbeiro (Agendamentos)',
-        url: 'https://barbeiro-sua-url.vercel.app',
+        url: 'https://barbeiro.vercel.app',
         tech: 'Next.js 16, Prisma, Neon Serverless, NextAuth',
         desc: 'Sistema completo de agendamentos com notificações e tema escuro.'
       },
       {
         name: 'E-commerce Moderno',
-        url: 'https://loja-sua-url.vercel.app',
+        url: 'https://loja.vercel.app',
         tech: 'Next.js 16, GraphQL, Prisma, Zustand, Stripe',
         desc: 'Loja virtual com carrinho, checkout e gerenciamento de estado global.'
       },
       {
         name: 'Condomínio (Tempo Real)',
-        url: 'https://condominio-sua-url.vercel.app',
+        url: 'https://condominio.vercel.app',
         tech: 'Next.js 16, WebSockets, Prisma, JWT',
         desc: 'Gestão de moradores com chat em tempo real e painel administrativo.'
       },
       {
         name: 'Task Manager (Kanban)',
-        url: 'https://tarefas-sua-url.vercel.app',
+        url: 'https://tarefas.vercel.app',
         tech: 'Next.js 16, Dnd-kit, Tailwind, Analytics',
         desc: 'Gerenciador de tarefas com arrastar-e-soltar e análise de produtividade.'
       }
@@ -172,37 +172,37 @@ const texts = {
     recentProjects: [
       {
         name: 'LinkedIn Jobs (SaaS & AI)',
-        url: 'https://vagas-linkedin-sua-url.vercel.app',
+        url: 'https://vagas-linkedin.vercel.app',
         tech: 'Next.js 16, React 19, Gemini AI, Tailwind, Shadcn',
         desc: 'Aggregator with web scraping, admin panel, advanced filters, and AI integration.'
       },
       {
         name: 'Finance AI',
-        url: 'https://financeai-sua-url.vercel.app',
+        url: 'https://financeai.vercel.app',
         tech: 'Next.js 15, Prisma, Stripe, Clerk Auth',
         desc: 'SaaS platform for financial management with artificial intelligence and payments.'
       },
       {
         name: 'Barbershop (Scheduling)',
-        url: 'https://barbeiro-sua-url.vercel.app',
+        url: 'https://barbeiro.vercel.app',
         tech: 'Next.js 16, Prisma, Neon Serverless, NextAuth',
         desc: 'Complete scheduling system with notifications and dark mode.'
       },
       {
         name: 'Modern E-commerce',
-        url: 'https://loja-sua-url.vercel.app',
+        url: 'https://loja.vercel.app',
         tech: 'Next.js 16, GraphQL, Prisma, Zustand, Stripe',
         desc: 'Full virtual store with cart, checkout, and global state management.'
       },
       {
         name: 'Condominium (Real-Time)',
-        url: 'https://condominio-sua-url.vercel.app',
+        url: 'https://condominio.vercel.app',
         tech: 'Next.js 16, WebSockets, Prisma, JWT',
         desc: 'Resident management with real-time chat and administrative panel.'
       },
       {
         name: 'Task Manager (Kanban)',
-        url: 'https://tarefas-sua-url.vercel.app',
+        url: 'https://tarefas.vercel.app',
         tech: 'Next.js 16, Dnd-kit, Tailwind, Analytics',
         desc: 'Task manager with drag-and-drop and productivity analysis.'
       }
