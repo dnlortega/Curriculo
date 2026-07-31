@@ -102,6 +102,12 @@ const texts = {
         url: 'https://tarefas.vercel.app',
         tech: 'Next.js 16, Dnd-kit, Tailwind, Analytics',
         desc: 'Gerenciador de tarefas com arrastar-e-soltar e análise de produtividade.'
+      },
+      {
+        name: 'Chá de Bebê Interativo',
+        url: 'https://cha-bebe.vercel.app',
+        tech: 'Next.js 16, Prisma, Framer Motion, Tailwind',
+        desc: 'Plataforma interativa com animações (Framer Motion) e banco de dados.'
       }
     ],
     projectsDesc: 'Código-fonte e aplicações ao vivo no meu portfólio.',
@@ -205,6 +211,12 @@ const texts = {
         url: 'https://tarefas.vercel.app',
         tech: 'Next.js 16, Dnd-kit, Tailwind, Analytics',
         desc: 'Task manager with drag-and-drop and productivity analysis.'
+      },
+      {
+        name: 'Interactive Baby Shower',
+        url: 'https://cha-bebe.vercel.app',
+        tech: 'Next.js 16, Prisma, Framer Motion, Tailwind',
+        desc: 'Interactive platform with advanced animations (Framer Motion) and database.'
       }
     ],
     projectsDesc: 'Source code and live applications available in my portfolio.',
