@@ -321,11 +321,11 @@ function drawMainTitle(title) {
 }
 
 drawMainTitle(t.profileTitle);
-doc.font('Helvetica').fontSize(9.5).fill('#334155').text(
+doc.font('Helvetica').fontSize(9).fill('#334155').text(
   t.profileDesc, 
-  mainX, mainY, { width: mainW, align: 'justify', lineGap: 3 }
+  mainX, mainY, { width: mainW, align: 'justify', lineGap: 1.5 }
 );
-mainY = doc.y + 25;
+mainY = doc.y + 15;
 
 drawMainTitle(t.expTitle);
 
@@ -356,8 +356,8 @@ function addTimelineItem(title, company, date, desc) {
   doc.font('Helvetica-Oblique').fontSize(8.5).fill('#64748b').text(`    ${date}`);
   mainY = doc.y + 6;
   
-  doc.font('Helvetica').fontSize(9).fill('#334155').text(desc, textX, mainY, { width: textW, align: 'justify', lineGap: 2 });
-  mainY = doc.y + 18;
+  doc.font('Helvetica').fontSize(8.5).fill('#334155').text(desc, textX, mainY, { width: textW, align: 'justify', lineGap: 1.5 });
+  mainY = doc.y + 12;
 }
 
 t.jobs.forEach(job => {
@@ -367,11 +367,11 @@ t.jobs.forEach(job => {
 // Draw the last piece of timeline line extending slightly downwards
 doc.moveTo(timelineX, prevY + 8).lineTo(timelineX, mainY).lineWidth(1).stroke('#cbd5e1');
 
-mainY += 10;
+mainY += 5;
 
 drawMainTitle(t.projectsTitle);
-doc.font('Helvetica-Bold').fontSize(10.5).fill('#0f172a').text(t.projectsSubtitle, mainX, mainY, { width: mainW });
-mainY = doc.y + 4;
+doc.font('Helvetica-Bold').fontSize(10).fill('#0f172a').text(t.projectsSubtitle, mainX, mainY, { width: mainW });
+mainY = doc.y + 2;
 
 if (t.recentProjects) {
   t.recentProjects.forEach(proj => {
@@ -381,15 +381,15 @@ if (t.recentProjects) {
       doc.font('Helvetica-Bold').fontSize(9).fill('#0f172a').text(`• ${proj.name} `, mainX, mainY, { continued: true });
     }
     doc.font('Helvetica-Oblique').fontSize(8).fill('#64748b').text(`| ${proj.tech}`);
-    mainY = doc.y + 2;
-    doc.font('Helvetica').fontSize(8.5).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1.5 });
-    mainY = doc.y + 6;
+    mainY = doc.y + 1;
+    doc.font('Helvetica').fontSize(8).fill('#334155').text(proj.desc, mainX + 10, mainY, { width: mainW - 10, align: 'justify', lineGap: 1 });
+    mainY = doc.y + 3;
   });
 }
 
-doc.font('Helvetica-Oblique').fontSize(8.5).fill('#3b82f6').text(
+doc.font('Helvetica-Oblique').fontSize(8).fill('#3b82f6').text(
   t.projectsDesc, 
-  mainX, mainY, { width: mainW, align: 'justify', lineGap: 2 }
+  mainX, mainY, { width: mainW, align: 'justify', lineGap: 1 }
 );
 
 // Footer subtle text
