@@ -133,6 +133,54 @@ const initialServices: Service[] = [
     category: "Trânsito",
     region: "Fortaleza-CE",
     history: generateHistory("operational", 110)
+  },
+  {
+    id: "tse",
+    name: "TSE (e-Título)",
+    description: "Serviços eleitorais e biometria",
+    status: "operational",
+    uptime: "99.8%",
+    responseTime: 95,
+    lastIncident: "Nenhum nos últimos 30 dias",
+    category: "Cidadania",
+    region: "Brasília-DF",
+    history: generateHistory("operational", 95)
+  },
+  {
+    id: "cadunico",
+    name: "CadÚnico",
+    description: "Cadastro de Programas Sociais",
+    status: "operational",
+    uptime: "99.2%",
+    responseTime: 310,
+    lastIncident: "Lentidão recorrente no mês",
+    category: "Social",
+    region: "Nacional",
+    history: generateHistory("operational", 310)
+  },
+  {
+    id: "prouni",
+    name: "PROUNI / FIES",
+    description: "Sistemas de acesso ao ensino superior",
+    status: "degraded",
+    uptime: "95.5%",
+    responseTime: 980,
+    lastIncident: "Atual: Alta carga de usuários",
+    category: "Educação",
+    region: "Nacional",
+    history: generateHistory("degraded", 980)
+  },
+  {
+    id: "assinatura",
+    name: "Assinatura Gov.br",
+    description: "Portal de Assinaturas Eletrônicas",
+    status: "operational",
+    uptime: "99.99%",
+    responseTime: 55,
+    lastIncident: "Nenhum nos últimos 90 dias",
+    category: "Identidade",
+    region: "São Paulo-SP",
+    history: generateHistory("operational", 55)
   }
 ];
 

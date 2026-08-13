@@ -9,7 +9,11 @@ const URLS: Record<string, string> = {
   "cnh": "https://portalservicos.senatran.serpro.gov.br/",
   "esocial": "https://login.esocial.gov.br/",
   "sougov": "https://sougov.economia.gov.br/",
-  "enem": "https://enem.inep.gov.br/participante/"
+  "enem": "https://enem.inep.gov.br/participante/",
+  "tse": "https://www.tse.jus.br/",
+  "cadunico": "https://cadunico.dataprev.gov.br/",
+  "prouni": "https://acessounico.mec.gov.br/prouni",
+  "assinatura": "https://assinador.iti.br/"
 };
 
 export const dynamic = 'force-dynamic';
