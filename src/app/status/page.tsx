@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, AlertTriangle, Activity, Server, Clock, RefreshCw, BarChart3, Globe2, ShieldAlert, Zap, Terminal, Volume2, VolumeX } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, Activity, Server, Clock, RefreshCw, BarChart3, Globe2, ShieldAlert, Zap, Terminal, Volume2, VolumeX, Maximize, Skull } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
@@ -19,7 +19,10 @@ interface Service {
   lastIncident: string;
   category: string;
   region: string;
+  history: ServiceStatus[];
 }
+
+const generateHistory = (base: ServiceStatus) => Array(15).fill(base);
 
 const initialServices: Service[] = [
   {
@@ -31,7 +34,8 @@ const initialServices: Service[] = [
     responseTime: 124,
     lastIncident: "Nenhum nos últimos 30 dias",
     category: "Previdência",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational")
   },
   {
     id: "meu-sus",
@@ -42,7 +46,8 @@ const initialServices: Service[] = [
     responseTime: 850,
     lastIncident: "Atual: Falha para logar",
     category: "Saúde",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational").map((s, i) => i === 0 ? "degraded" : s)
   },
   {
     id: "govbr",
@@ -53,51 +58,56 @@ const initialServices: Service[] = [
     responseTime: 45,
     lastIncident: "Nenhum nos últimos 90 dias",
     category: "Identidade",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational")
   },
   {
     id: "ecac",
-    name: "e-CAC (Receita Federal)",
+    name: "e-CAC",
     description: "Centro Virtual de Atendimento ao Contribuinte",
     status: "operational",
     uptime: "99.5%",
     responseTime: 210,
     lastIncident: "Manutenção programada há 2 dias",
     category: "Tributos",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational")
   },
   {
     id: "ctps",
-    name: "Carteira de Trabalho Digital",
+    name: "CTPS Digital",
     description: "Acesso aos dados trabalhistas",
     status: "degraded",
     uptime: "95.2%",
     responseTime: 840,
     lastIncident: "Atual: Lentidão no login",
     category: "Trabalho",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational").map((s, i) => i === 0 ? "degraded" : s)
   },
   {
     id: "cnh",
-    name: "CNH Digital / Senatran",
+    name: "CNH Digital",
     description: "Documentos de trânsito e veículos",
     status: "operational",
     uptime: "99.9%",
     responseTime: 115,
     lastIncident: "Nenhum nos últimos 15 dias",
     category: "Trânsito",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational")
   },
   {
     id: "esocial",
     name: "e-Social",
-    description: "Sistema de Escrituração Digital das Obrigações Fiscais",
+    description: "Sistema de Escrituração Digital das Obrigações",
     status: "operational",
     uptime: "98.7%",
     responseTime: 320,
     lastIncident: "Falha de comunicação há 5 dias",
     category: "Trabalho",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational")
   },
   {
     id: "sougov",
@@ -108,18 +118,20 @@ const initialServices: Service[] = [
     responseTime: 0,
     lastIncident: "Atual: Sistema indisponível",
     category: "Servidores",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational").map((s, i) => i < 3 ? "outage" : s)
   },
   {
     id: "enem",
-    name: "Página do Participante (Enem)",
+    name: "Página do Enem",
     description: "Acesso aos resultados e inscrições",
     status: "operational",
     uptime: "99.1%",
     responseTime: 65,
     lastIncident: "Pico de acessos há 20 dias",
     category: "Educação",
-    region: "Nacional"
+    region: "Nacional",
+    history: generateHistory("operational")
   }
 ];
 
@@ -143,17 +155,27 @@ export default function GovStatusPage() {
   const [lastUpdate, setLastUpdate] = useState<string>("");
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<number>(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
+  const [logs, setLogs] = useState<string[]>([]);
+  const [chaosMode, setChaosMode] = useState(false);
+  
   const prevStatuses = useRef<Record<string, ServiceStatus>>({});
 
   useEffect(() => {
     setMounted(true);
     setLastUpdate(new Date().toLocaleTimeString('pt-BR'));
     
-    // Initialize prevStatuses
     const initialObj: Record<string, ServiceStatus> = {};
     initialServices.forEach(s => initialObj[s.id] = s.status);
     prevStatuses.current = initialObj;
+    
+    addLog("[SYS] Dashboard initialization complete. Monitoring started.");
   }, []);
+
+  const addLog = (msg: string) => {
+    const time = new Date().toLocaleTimeString('pt-BR', { hour12: false });
+    setLogs(prev => [`[${time}] ${msg}`, ...prev].slice(0, 50));
+  };
 
   const playAlertSound = useCallback(() => {
     if (isMuted) return;
@@ -163,7 +185,7 @@ export default function GovStatusPage() {
       const gainNode = audioCtx.createGain();
       
       oscillator.type = 'square';
-      oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // 880Hz beep
+      oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
       oscillator.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.1);
       
       gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
@@ -186,6 +208,8 @@ export default function GovStatusPage() {
       const prev = prevStatuses.current[service.id];
       if (prev && prev !== service.status) {
         changed = true;
+        const alertType = service.status === 'outage' ? '[CRITICAL]' : service.status === 'degraded' ? '[WARN]' : '[OK]';
+        addLog(`${alertType} Node ${service.id.toUpperCase()} changed state to ${service.status.toUpperCase()}`);
       }
       prevStatuses.current[service.id] = service.status;
     });
@@ -195,24 +219,64 @@ export default function GovStatusPage() {
     }
   }, [services, playAlertSound, mounted]);
 
-  const refreshStatus = useCallback(() => {
+  const triggerChaos = () => {
+    setChaosMode(true);
+    addLog("[SYS] CHAOS MODE ENGAGED. Simulating massive cyberattack...");
+    refreshStatus(true);
+  };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        addLog(`[ERR] Fullscreen failed: ${err.message}`);
+      });
+      addLog("[SYS] Fullscreen mode enabled");
+    } else {
+      document.exitFullscreen();
+      addLog("[SYS] Fullscreen mode disabled");
+    }
+  };
+
+  const refreshStatus = useCallback(async (isChaos = chaosMode) => {
     setIsRefreshing(true);
-    setTimeout(() => {
-      setServices(prev => prev.map(service => {
-        if (Math.random() > 0.8) {
-          const statuses: ServiceStatus[] = ["operational", "degraded", "outage"];
-          const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
-          const newResponseTime = newStatus === "outage" ? 0 : Math.floor(Math.random() * 800) + 40;
-          return { ...service, status: newStatus, responseTime: newResponseTime };
-        }
-        const flux = Math.floor(Math.random() * 50) - 25;
-        const newResponseTime = service.status === "outage" ? 0 : Math.max(20, service.responseTime + flux);
-        return { ...service, responseTime: newResponseTime };
-      }));
+    
+    try {
+      if (isChaos) {
+        setServices(prev => prev.map(service => {
+          const isFailing = Math.random() > 0.5;
+          const newStatus = isFailing ? "outage" : "operational";
+          const newResponseTime = isFailing ? 0 : Math.floor(Math.random() * 200) + 20;
+          return { 
+            ...service, 
+            status: newStatus, 
+            responseTime: newResponseTime,
+            history: [newStatus, ...service.history].slice(0, 15)
+          };
+        }));
+      } else {
+        const res = await fetch('/api/ping');
+        const data = await res.json();
+        
+        setServices(prev => prev.map(service => {
+          const apiData = data.find((d: any) => d.id === service.id);
+          const newStatus = apiData ? apiData.status : service.status;
+          const newResponseTime = apiData ? apiData.responseTime : service.responseTime;
+          
+          return {
+            ...service,
+            status: newStatus,
+            responseTime: newResponseTime,
+            history: [newStatus as ServiceStatus, ...service.history].slice(0, 15)
+          };
+        }));
+      }
+    } catch (e) {
+      addLog("[ERR] Failed to fetch backend status.");
+    } finally {
       setLastUpdate(new Date().toLocaleTimeString('pt-BR'));
       setIsRefreshing(false);
-    }, 1000);
-  }, []);
+    }
+  }, [chaosMode]);
 
   useEffect(() => {
     if (autoRefreshInterval === 0) return;
@@ -231,7 +295,8 @@ export default function GovStatusPage() {
           badgeClass: "bg-emerald-950/30 text-emerald-400 border-emerald-900/50 font-bold",
           color: "text-emerald-400",
           bgGradient: "bg-zinc-900/50 hover:bg-zinc-900/80 border-emerald-900/30",
-          shadow: "hover:shadow-[0_0_15px_rgba(52,211,153,0.1)]"
+          shadow: "hover:shadow-[0_0_15px_rgba(52,211,153,0.1)]",
+          barColor: "bg-emerald-500"
         };
       case "degraded":
         return {
@@ -240,7 +305,8 @@ export default function GovStatusPage() {
           badgeClass: "bg-yellow-950/30 text-yellow-400 border-yellow-900/50 font-bold animate-pulse",
           color: "text-yellow-400",
           bgGradient: "bg-zinc-900/50 hover:bg-zinc-900/80 border-yellow-900/50",
-          shadow: "hover:shadow-[0_0_15px_rgba(250,204,21,0.15)]"
+          shadow: "hover:shadow-[0_0_15px_rgba(250,204,21,0.15)]",
+          barColor: "bg-yellow-400"
         };
       case "outage":
         return {
@@ -249,11 +315,18 @@ export default function GovStatusPage() {
           badgeClass: "bg-red-950/30 text-red-500 border-red-900/50 font-bold animate-pulse",
           color: "text-red-500",
           bgGradient: "bg-red-950/10 hover:bg-red-950/20 border-red-900/50",
-          shadow: "hover:shadow-[0_0_15px_rgba(239,68,68,0.2)]"
+          shadow: "hover:shadow-[0_0_15px_rgba(239,68,68,0.2)]",
+          barColor: "bg-red-500"
         };
     }
   };
 
+  const filteredServices = categoryFilter === "ALL" 
+    ? services 
+    : services.filter(s => s.category.toUpperCase() === categoryFilter);
+
+  const categories = ["ALL", ...Array.from(new Set(services.map(s => s.category.toUpperCase())))];
+  
   const operationalCount = services.filter(s => s.status === "operational").length;
   const isAllOperational = operationalCount === services.length;
   const hasOutage = services.some(s => s.status === "outage");
@@ -268,9 +341,23 @@ export default function GovStatusPage() {
   if (!mounted) return null;
 
   return (
-    <div className="h-screen w-full bg-zinc-950 text-zinc-300 font-mono overflow-hidden flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200">
-      {/* Background Grid Pattern */}
-      <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:16px_16px]" />
+    <div className={`h-screen w-full bg-zinc-950 text-zinc-300 font-mono overflow-hidden flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200 ${chaosMode ? 'animate-[shake_0.5s_ease-in-out_infinite]' : ''}`}>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes shake {
+          0% { transform: translate(1px, 1px) rotate(0deg); }
+          10% { transform: translate(-1px, -2px) rotate(-1deg); }
+          20% { transform: translate(-3px, 0px) rotate(1deg); }
+          30% { transform: translate(3px, 2px) rotate(0deg); }
+          40% { transform: translate(1px, -1px) rotate(1deg); }
+          50% { transform: translate(-1px, 2px) rotate(-1deg); }
+          60% { transform: translate(-3px, 1px) rotate(0deg); }
+          70% { transform: translate(3px, 1px) rotate(-1deg); }
+          80% { transform: translate(-1px, -1px) rotate(1deg); }
+          90% { transform: translate(1px, 2px) rotate(0deg); }
+          100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+      `}} />
+      <div className={`fixed inset-0 pointer-events-none bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:16px_16px] ${chaosMode ? 'bg-red-950/20' : ''}`} />
       
       <header className="z-50 w-full border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
         <div className="container mx-auto px-4 h-10 flex items-center justify-between max-w-7xl">
@@ -279,6 +366,21 @@ export default function GovStatusPage() {
             <span className="font-bold text-xs tracking-widest text-zinc-100">GOV.BR_STATUS_MONITOR</span>
           </div>
           <div className="flex items-center gap-3 text-[10px]">
+            <button 
+              onClick={triggerChaos}
+              className={`px-2 py-0.5 border transition-colors flex items-center gap-1.5 ${chaosMode ? 'bg-red-600 text-white border-red-500 animate-pulse' : 'bg-zinc-900 border-zinc-700 hover:bg-red-950/30 hover:border-red-900/50 hover:text-red-400 text-zinc-500'}`}
+              title="Engage Chaos Mode"
+            >
+              <Skull className="w-3 h-3" />
+              <span className="hidden sm:inline-block">CHAOS</span>
+            </button>
+            <button
+              onClick={toggleFullscreen}
+              className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 transition-colors flex items-center gap-1.5 text-zinc-400"
+              title="Fullscreen"
+            >
+              <Maximize className="w-3 h-3" />
+            </button>
             <select 
               className="bg-zinc-900 border border-zinc-700 rounded-none px-1 py-0.5 outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer appearance-none text-zinc-300"
               value={autoRefreshInterval}
@@ -290,19 +392,12 @@ export default function GovStatusPage() {
               <option value={60}>SYNC_FREQ: 60s</option>
             </select>
             <button 
-              onClick={refreshStatus}
+              onClick={() => refreshStatus()}
               disabled={isRefreshing}
               className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 transition-colors disabled:opacity-50 flex items-center gap-1.5"
             >
               <RefreshCw className={`w-3 h-3 text-emerald-500 ${isRefreshing ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline-block tracking-widest">FORCE_SYNC</span>
-            </button>
-            <button
-              onClick={() => setIsMuted(!isMuted)}
-              className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
-              title={isMuted ? "Unmute Alerts" : "Mute Alerts"}
-            >
-              {isMuted ? <VolumeX className="w-3 h-3 text-zinc-500" /> : <Volume2 className="w-3 h-3 text-emerald-500" />}
             </button>
           </div>
         </div>
@@ -353,7 +448,7 @@ export default function GovStatusPage() {
               {affectedServices.length > 0 && (
                 <div className="border-l border-zinc-800 pl-4">
                   <p className="text-[10px] font-bold text-zinc-400 mb-1 tracking-widest uppercase">Alert_Log:</p>
-                  <div className="flex flex-col gap-0.5">
+                  <div className="flex flex-col gap-0.5 max-h-[40px] overflow-hidden">
                     {affectedServices.map(svc => (
                       <div key={svc.id} className="flex items-center gap-1 text-[10px]">
                         <span className={`${svc.status === 'outage' ? 'text-red-500' : 'text-yellow-400'}`}>
@@ -369,10 +464,21 @@ export default function GovStatusPage() {
           </Card>
         </motion.div>
 
-        <div className="mb-1 flex items-center justify-between border-b border-zinc-800 pb-1">
-          <h3 className="text-xs font-bold tracking-widest text-zinc-300 uppercase">
-            &gt; Network_Nodes
-          </h3>
+        <div className="mb-2 flex flex-wrap items-center justify-between border-b border-zinc-800 pb-1 gap-2">
+          <div className="flex items-center gap-2">
+            <h3 className="text-xs font-bold tracking-widest text-zinc-300 uppercase mr-2">
+              &gt; Filters:
+            </h3>
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setCategoryFilter(cat)}
+                className={`text-[9px] px-2 py-0.5 uppercase tracking-widest transition-colors ${categoryFilter === cat ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+              >
+                [{cat}]
+              </button>
+            ))}
+          </div>
           <div className="flex items-center gap-3 text-[10px] font-medium">
             <span className="text-emerald-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" /> OP</span>
             <span className="text-yellow-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-yellow-400 rounded-full" /> DEG</span>
@@ -386,11 +492,12 @@ export default function GovStatusPage() {
           animate="show"
           className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2"
         >
-          {services.map((service) => {
+          <AnimatePresence>
+          {filteredServices.map((service) => {
             const config = getStatusConfig(service.status);
             return (
               <Dialog key={service.id}>
-                <DialogTrigger render={<motion.button variants={itemVariants} className="cursor-pointer h-full w-full text-left appearance-none border-none bg-transparent p-0 m-0 focus:outline-none" />}>
+                <DialogTrigger render={<motion.button layout variants={itemVariants} initial="hidden" animate="show" exit={{ opacity: 0, scale: 0.9 }} className="cursor-pointer h-full w-full text-left appearance-none border-none bg-transparent p-0 m-0 focus:outline-none" />}>
                   <Card className={`h-full rounded-none border transition-all duration-300 group ${config.bgGradient} ${config.shadow}`}>
                     <CardHeader className="p-2 pb-1">
                       <div className="flex justify-between items-start mb-1">
@@ -405,8 +512,8 @@ export default function GovStatusPage() {
                         {service.name}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-2 pt-1">
-                      <div className="flex justify-between items-end border-t border-zinc-800/50 pt-1 mt-1">
+                    <CardContent className="p-2 pt-1 flex flex-col justify-between">
+                      <div className="flex justify-between items-end border-t border-zinc-800/50 pt-1 mt-1 mb-1.5">
                         <div className="flex flex-col">
                           <span className="text-[8px] text-zinc-600 uppercase tracking-widest">PING</span>
                           <span className={`text-[10px] font-bold ${service.responseTime > 500 ? 'text-yellow-400' : 'text-zinc-300'}`}>
@@ -419,6 +526,15 @@ export default function GovStatusPage() {
                             {service.uptime}
                           </span>
                         </div>
+                      </div>
+                      <div className="flex items-center gap-[2px] h-3 w-full opacity-70 group-hover:opacity-100 transition-opacity">
+                        {service.history.slice(0, 15).reverse().map((h, i) => (
+                          <div 
+                            key={i} 
+                            className={`h-full flex-1 rounded-sm ${getStatusConfig(h).barColor}`} 
+                            title={h}
+                          />
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
@@ -499,9 +615,16 @@ export default function GovStatusPage() {
               </Dialog>
             );
           })}
+          </AnimatePresence>
         </motion.div>
       </main>
+
+      <footer className="h-6 w-full border-t border-zinc-800 bg-black flex items-center px-4 overflow-hidden z-50">
+        <div className="text-[10px] text-zinc-500 flex items-center whitespace-nowrap overflow-hidden">
+          <span className="font-bold text-emerald-500 mr-2">&gt; SYS_LOG:</span>
+          {logs[0] || "No new events"}
+        </div>
+      </footer>
     </div>
   );
 }
-
