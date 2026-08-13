@@ -186,41 +186,74 @@ const initialServices: Service[] = [
 
 const TacticalMap = ({ services }: { services: Service[] }) => {
   const nodes = [
-    { id: 'DF', x: 50, y: 55, label: 'Brasília-DF', regions: ['Brasília-DF', 'Nacional'] },
-    { id: 'SP', x: 65, y: 75, label: 'São Paulo-SP', regions: ['São Paulo-SP'] },
-    { id: 'RJ', x: 75, y: 70, label: 'Rio-RJ', regions: ['Rio de Janeiro-RJ'] },
-    { id: 'CE', x: 80, y: 25, label: 'Fortaleza-CE', regions: ['Fortaleza-CE'] },
-    { id: 'AM', x: 25, y: 30, label: 'Manaus-AM', regions: [] }
+    { id: 'DF', x: 50, y: 45, label: 'Brasília-DF', regions: ['Brasília-DF', 'Nacional'] },
+    { id: 'SP', x: 65, y: 70, label: 'São Paulo-SP', regions: ['São Paulo-SP'] },
+    { id: 'RJ', x: 75, y: 65, label: 'Rio-RJ', regions: ['Rio de Janeiro-RJ'] },
+    { id: 'MG', x: 60, y: 55, label: 'Minas Gerais-MG', regions: [] },
+    { id: 'RS', x: 55, y: 85, label: 'Porto Alegre-RS', regions: [] },
+    { id: 'CE', x: 80, y: 20, label: 'Fortaleza-CE', regions: ['Fortaleza-CE'] },
+    { id: 'PE', x: 85, y: 30, label: 'Recife-PE', regions: [] },
+    { id: 'BA', x: 75, y: 40, label: 'Salvador-BA', regions: [] },
+    { id: 'AM', x: 25, y: 25, label: 'Manaus-AM', regions: [] },
+    { id: 'PA', x: 45, y: 25, label: 'Belém-PA', regions: [] }
   ];
 
   return (
     <div className="relative w-full h-full bg-zinc-950/50 border border-zinc-800 rounded-none overflow-hidden min-h-[80px] sm:min-h-[100px]">
-      <svg className="absolute inset-0 w-full h-full" viewBox="15 15 70 70" preserveAspectRatio="xMidYMid meet">
+      <svg className="absolute inset-0 w-full h-full" viewBox="10 10 80 80" preserveAspectRatio="xMidYMid meet">
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes dash { to { stroke-dashoffset: -100; } }
+          @keyframes scan { 
+            0% { transform: translateY(-10px); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(90px); opacity: 0; }
+          }
+        `}} />
+        {/* Scanner Line */}
+        <line x1="0" y1="0" x2="100" y2="0" stroke="rgba(16, 185, 129, 0.2)" strokeWidth="0.5" className="animate-[scan_3s_linear_infinite]" />
+        
         {/* Network connections */}
-        <path d="M50 55 L65 75 L75 70 L50 55 L80 25 L25 30 L50 55" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5" />
-        <path d="M25 30 L80 25" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" strokeDasharray="1 1" />
+        <path d="M50 45 L60 55 L65 70 L75 65 L60 55 L75 40 L85 30 L80 20 M50 45 L45 25 L25 25 M65 70 L55 85" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" />
+        <path d="M50 45 L65 70 M50 45 L80 20 M50 45 L25 25" fill="none" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="0.2" strokeDasharray="1 3" className="animate-[dash_10s_linear_infinite]" />
         
         {nodes.map(node => {
-          const relevantServices = services.filter(s => node.regions.includes(s.region));
+          const relevantServices = services.filter(s => node.regions.includes(s.region) || (node.id === 'DF' && s.region === 'Nacional'));
           const hasOutage = relevantServices.some(s => s.status === 'outage');
           const hasDegraded = relevantServices.some(s => s.status === 'degraded');
-          const nodeColor = hasOutage ? '#ef4444' : hasDegraded ? '#facc15' : '#34d399';
+          const isActive = relevantServices.length > 0;
+          const nodeColor = hasOutage ? '#ef4444' : hasDegraded ? '#facc15' : isActive ? '#34d399' : '#3f3f46';
           
           return (
             <g key={node.id}>
               {hasOutage && (
-                <circle cx={node.x} cy={node.y} r="4" fill="none" stroke={nodeColor} strokeWidth="0.5" className="animate-ping opacity-75" />
+                <>
+                  <circle cx={node.x} cy={node.y} r="5" fill="none" stroke={nodeColor} strokeWidth="0.3" className="animate-ping opacity-75" />
+                  <rect x={node.x - 3} y={node.y - 3} width="6" height="6" fill="none" stroke={nodeColor} strokeWidth="0.5" className="animate-pulse" />
+                </>
               )}
-              <circle cx={node.x} cy={node.y} r="1.5" fill={nodeColor} />
-              <text x={node.x + 3} y={node.y + 1} fontSize="3" fill="#a1a1aa" className="font-mono">{node.id}</text>
+              {hasDegraded && !hasOutage && (
+                <circle cx={node.x} cy={node.y} r="4" fill="none" stroke={nodeColor} strokeWidth="0.2" className="animate-ping opacity-30" style={{ animationDuration: '3s' }} />
+              )}
+              <circle cx={node.x} cy={node.y} r={isActive ? "1.5" : "1"} fill={nodeColor} />
+              
+              {hasOutage ? (
+                <text x={node.x + 4} y={node.y + 1} fontSize="3" fill="#ef4444" className="font-mono font-bold animate-pulse">[{node.id}]</text>
+              ) : (
+                <text x={node.x + 3} y={node.y + 1} fontSize="2.5" fill={isActive ? "#a1a1aa" : "#52525b"} className="font-mono">{node.id}</text>
+              )}
             </g>
           );
         })}
       </svg>
-      <div className="absolute top-2 left-2 flex flex-col gap-1">
-        <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">TACTICAL_MAP</span>
-        <span className="text-[6px] text-zinc-600 font-mono">NODE_OVERVIEW: BR</span>
+      <div className="absolute top-2 left-2 flex flex-col gap-0.5 pointer-events-none">
+        <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1">
+          <span className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
+          GEO_TRACKING_SYS
+        </span>
+        <span className="text-[6px] text-zinc-500 font-mono tracking-wider ml-2">SECTOR: BR_TERRITORY</span>
       </div>
+      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_2px]" />
     </div>
   );
 };
@@ -587,10 +620,10 @@ export default function GovStatusPage() {
             ))}
             
             <Dialog>
-              <DialogTrigger asChild>
-                <button className={`ml-2 text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 uppercase tracking-widest transition-colors border ${selectedNodes.length > 0 ? 'bg-emerald-900/50 border-emerald-500 text-emerald-400' : 'border-zinc-700 text-zinc-400 hover:bg-zinc-800'}`}>
-                  + TARGET_NODES {selectedNodes.length > 0 && `(${selectedNodes.length})`}
-                </button>
+              <DialogTrigger render={
+                <button className={`ml-2 text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 uppercase tracking-widest transition-colors border ${selectedNodes.length > 0 ? 'bg-emerald-900/50 border-emerald-500 text-emerald-400' : 'border-zinc-700 text-zinc-400 hover:bg-zinc-800'}`} />
+              }>
+                + TARGET_NODES {selectedNodes.length > 0 && `(${selectedNodes.length})`}
               </DialogTrigger>
               <DialogContent className="sm:max-w-[400px] rounded-none border-zinc-700 bg-zinc-950 font-mono text-zinc-300">
                 <DialogHeader>
