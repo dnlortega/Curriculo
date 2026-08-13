@@ -109,7 +109,6 @@ export default async function DashboardPage() {
                   <TableHead>Dispositivo</TableHead>
                   <TableHead>Leitura / Tempo</TableHead>
                   <TableHead>IP</TableHead>
-                  <TableHead className="text-right">Foto</TableHead>
                   <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -182,20 +181,6 @@ export default async function DashboardPage() {
                       </TableCell>
                       <TableCell className="text-muted-foreground text-xs font-mono bg-muted/30 px-2 py-1 rounded">
                         {log.ip}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {log.photoUrl ? (
-                          <div className="flex justify-end">
-                            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 shadow-sm relative group cursor-pointer hover:border-primary transition-colors">
-                              <img src={log.photoUrl} alt="Selfie do visitante" className="w-full h-full object-cover" />
-                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span className="text-[10px] text-white font-bold uppercase">Ver</span>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground italic">Sem foto</span>
-                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <DeleteLogButton id={log.id} />
