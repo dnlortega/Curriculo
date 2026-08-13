@@ -5,7 +5,7 @@ import { CheckCircle2, XCircle, AlertTriangle, Activity, Server, Clock, RefreshC
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type ServiceStatus = "operational" | "degraded" | "outage";
 
@@ -141,13 +141,14 @@ export default function GovStatusPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>("");
+  const [autoRefreshInterval, setAutoRefreshInterval] = useState<number>(0);
 
   useEffect(() => {
     setMounted(true);
     setLastUpdate(new Date().toLocaleTimeString('pt-BR'));
   }, []);
 
-  const refreshStatus = () => {
+  const refreshStatus = useCallback(() => {
     setIsRefreshing(true);
     setTimeout(() => {
       setServices(prev => prev.map(service => {
@@ -165,7 +166,15 @@ export default function GovStatusPage() {
       setLastUpdate(new Date().toLocaleTimeString('pt-BR'));
       setIsRefreshing(false);
     }, 1500);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (autoRefreshInterval === 0) return;
+    const interval = setInterval(() => {
+      refreshStatus();
+    }, autoRefreshInterval * 1000);
+    return () => clearInterval(interval);
+  }, [autoRefreshInterval, refreshStatus]);
 
   const getStatusConfig = (status: ServiceStatus) => {
     switch (status) {
@@ -220,15 +229,28 @@ export default function GovStatusPage() {
             <Activity className="w-6 h-6 text-blue-600 dark:text-blue-500" />
             <span className="font-bold text-lg tracking-tight">GovStatus Pro</span>
           </div>
-          <button 
-            onClick={refreshStatus}
-            disabled={isRefreshing}
-            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 flex items-center gap-2 text-sm font-medium"
-            title="Atualizar Status"
-          >
-            <span className="hidden sm:inline-block">Sincronizar</span>
-            <RefreshCw className={`w-5 h-5 text-slate-500 ${isRefreshing ? 'animate-spin' : ''}`} />
-          </button>
+          <div className="flex items-center gap-3">
+            <select 
+              className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm font-medium rounded-full px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer appearance-none text-slate-700 dark:text-slate-300"
+              value={autoRefreshInterval}
+              onChange={(e) => setAutoRefreshInterval(Number(e.target.value))}
+              title="Atualização automática"
+            >
+              <option value={0}>Auto: Desligado</option>
+              <option value={10}>A cada 10s</option>
+              <option value={30}>A cada 30s</option>
+              <option value={60}>A cada 1 min</option>
+            </select>
+            <button 
+              onClick={refreshStatus}
+              disabled={isRefreshing}
+              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 flex items-center gap-2 text-sm font-medium"
+              title="Atualizar Status"
+            >
+              <span className="hidden sm:inline-block">Sincronizar</span>
+              <RefreshCw className={`w-5 h-5 text-slate-500 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
         </div>
       </header>
 
