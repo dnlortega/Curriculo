@@ -195,7 +195,7 @@ const TacticalMap = ({ services }: { services: Service[] }) => {
 
   return (
     <div className="relative w-full h-full bg-zinc-950/50 border border-zinc-800 rounded-none overflow-hidden min-h-[120px]">
-      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+      <svg className="absolute inset-0 w-full h-full" viewBox="15 15 70 70" preserveAspectRatio="xMidYMid meet">
         {/* Network connections */}
         <path d="M50 55 L65 75 L75 70 L50 55 L80 25 L25 30 L50 55" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5" />
         <path d="M25 30 L80 25" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" strokeDasharray="1 1" />
@@ -426,7 +426,7 @@ export default function GovStatusPage() {
   const overallStatus = isAllOperational 
     ? { title: "SYSTEMS_NOMINAL", icon: <CheckCircle2 className="w-10 h-10 text-emerald-400" />, color: "text-emerald-400", bg: "bg-emerald-950/10", border: "border-emerald-900/50" }
     : hasOutage 
-      ? { title: "[!] CRITICAL_FAILURE_DETECTED", icon: <XCircle className="w-10 h-10 text-red-500 animate-pulse" />, color: "text-red-500 animate-pulse drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]", bg: "bg-red-950/20", border: "border-red-600" }
+      ? { title: "[!] CRITICAL_FAILURE_DETECTED", icon: <XCircle className="w-10 h-10 text-red-500" />, color: "text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,1)] font-black", bg: "bg-red-950/20 animate-[pulse_2s_ease-in-out_infinite]", border: "border-red-600 shadow-[inset_0_0_20px_rgba(239,68,68,0.2)]" }
       : { title: "PARTIAL_DEGRADATION", icon: <AlertTriangle className="w-10 h-10 text-yellow-400" />, color: "text-yellow-400", bg: "bg-yellow-950/10", border: "border-yellow-900/50" };
 
   return (
