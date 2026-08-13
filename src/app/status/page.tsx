@@ -340,7 +340,7 @@ export default function GovStatusPage() {
             const config = getStatusConfig(service.status);
             return (
               <Dialog key={service.id}>
-                <DialogTrigger render={<motion.div variants={itemVariants} className="cursor-pointer h-full" />}>
+                <DialogTrigger render={<motion.button variants={itemVariants} className="cursor-pointer h-full w-full text-left appearance-none border-none bg-transparent p-0 m-0 focus:outline-none" />}>
                   <Card className={`h-full overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-slate-200 dark:border-slate-800 group bg-gradient-to-br ${config.bgGradient} dark:bg-slate-900`}>
                     <CardHeader className="pb-4">
                       <div className="flex justify-between items-start mb-2">
