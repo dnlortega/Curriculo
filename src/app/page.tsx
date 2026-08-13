@@ -7,6 +7,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import { Tracker } from "@/components/Tracker";
+import { Chatbot } from "@/components/Chatbot";
 
 // Dynamic Imports (Lazy Loading) para otimização de bundle e performance
 const ExperienceSection = dynamic(() => import("@/components/sections/experience-section").then(mod => mod.ExperienceSection), { ssr: true });
@@ -85,6 +86,7 @@ export default function Home() {
       <Footer lang={lang} />
 
       <Tracker />
+      <Chatbot />
     </main>
   );
 }

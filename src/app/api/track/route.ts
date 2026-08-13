@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     // Save to Prisma
-    const accessLog = await prisma.accessLog.create({
+    const savedLog = await prisma.accessLog.create({
       data: {
         ip,
         country,
@@ -74,7 +74,27 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ success: true, log: accessLog });
+    // Send Telegram Notification (if configured)
+    if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+      const tgMsg = `🚨 *Novo Acesso no Portfólio!*\n\n` +
+                    `📍 *Local:* ${city}, ${country}\n` +
+                    `💻 *Dispositivo:* ${device} (${os})\n` +
+                    `🌐 *Origem:* ${advancedObj.referrer || 'Acesso Direto'}\n` +
+                    `🕵️ *IP:* ${ip}\n` +
+                    (lat && lng ? `🗺️ [Abrir no Maps](https://www.google.com/maps/search/?api=1&query=${lat},${lng})` : '');
+      
+      fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: process.env.TELEGRAM_CHAT_ID,
+          text: tgMsg,
+          parse_mode: 'Markdown',
+        }),
+      }).catch(e => console.error("Telegram error:", e));
+    }
+
+    return NextResponse.json({ success: true, log: savedLog });
   } catch (error) {
     console.error("Failed to track access:", error);
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

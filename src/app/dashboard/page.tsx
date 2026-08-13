@@ -8,6 +8,7 @@ import { ClearAllLogsButton } from '@/components/ClearAllLogsButton';
 import { DeleteLogButton } from '@/components/DeleteLogButton';
 import { LogDetailsDialog } from '@/components/LogDetailsDialog';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ExportCsvButton } from '@/components/ExportCsvButton';
 import { Badge } from '@/components/ui/badge';
 
 export const dynamic = 'force-dynamic';
@@ -57,6 +58,7 @@ export default async function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
+            <ExportCsvButton logs={logs} />
             <ClearAllLogsButton />
           </div>
         </div>
