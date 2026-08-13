@@ -15,6 +15,27 @@ import { SettingsPanel } from '@/components/SettingsPanel';
 
 export const dynamic = 'force-dynamic';
 
+function getLocationInfo(city: string | null, countryCode: string | null) {
+  const isCityUnknown = !city || city === 'Desconhecido';
+  const isCountryUnknown = !countryCode || countryCode === 'Desconhecido';
+  
+  if (isCityUnknown && isCountryUnknown) return { text: 'Localização Oculta', flag: '🌍' };
+  
+  let flag = '🌍';
+  let countryName = countryCode;
+  
+  if (!isCountryUnknown && countryCode!.length === 2) {
+    try {
+      const codePoints = countryCode!.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
+      flag = String.fromCodePoint(...codePoints);
+      countryName = new Intl.DisplayNames(['pt-BR'], { type: 'region' }).of(countryCode!) || countryCode;
+    } catch(e) {}
+  }
+  
+  if (isCityUnknown) return { text: countryName, flag };
+  return { text: `${city} - ${countryName}`, flag };
+}
+
 export default async function DashboardPage() {
   const cookieStore = await cookies();
   const isAuthenticated = cookieStore.get('admin_session')?.value === 'authenticated';
@@ -122,6 +143,8 @@ export default async function DashboardPage() {
                     if (log.advancedDetails) adv = JSON.parse(log.advancedDetails);
                   } catch (e) {}
 
+                  const locInfo = getLocationInfo(log.city, log.country);
+
                   return (
                   <TableRow key={log.id} className="hover:bg-muted/40 transition-colors group">
                     {/* Sessão */}
@@ -154,16 +177,14 @@ export default async function DashboardPage() {
                     <TableCell className="align-top">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1.5 text-[13px]">
-                          <MapPin className="w-3.5 h-3.5 text-red-500/80" />
-                          <span className={log.city === 'Desconhecido' ? 'text-muted-foreground italic' : 'font-medium'}>
-                            {log.city !== 'Desconhecido' && log.country !== 'Desconhecido' 
-                              ? `${log.city}, ${log.country}` 
-                              : 'Oculta'}
+                          <span className="text-base">{locInfo.flag}</span>
+                          <span className={locInfo.text === 'Localização Oculta' ? 'text-muted-foreground italic' : 'font-medium truncate max-w-[150px]'} title={locInfo.text}>
+                            {locInfo.text}
                           </span>
                         </div>
                         {adv['Coordenadas (GPS)'] && (
-                          <a href={adv['Google Maps']} target="_blank" rel="noreferrer" className="text-[10px] text-blue-500 hover:text-blue-400 hover:underline pl-5 transition-colors flex items-center gap-1">
-                            Abrir no Maps
+                          <a href={adv['Google Maps']} target="_blank" rel="noreferrer" className="text-[10px] text-blue-500 hover:text-blue-400 hover:underline pl-6 transition-colors flex items-center gap-1">
+                            📍 Abrir no Maps
                           </a>
                         )}
                       </div>
