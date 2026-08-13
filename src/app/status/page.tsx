@@ -530,7 +530,7 @@ export default function GovStatusPage() {
                     {overallStatus.icon}
                   </motion.div>
                   <div>
-                    <h2 className={`text-sm font-bold tracking-widest ${overallStatus.color}`}>
+                    <h2 className={`text-[10px] sm:text-sm font-bold tracking-wider sm:tracking-widest leading-tight ${overallStatus.color}`}>
                       {overallStatus.title}
                     </h2>
                     <div className="flex items-center gap-4 mt-1">
