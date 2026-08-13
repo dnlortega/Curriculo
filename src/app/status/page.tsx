@@ -378,7 +378,7 @@ export default function GovStatusPage() {
   const overallStatus = isAllOperational 
     ? { title: "SYSTEMS_NOMINAL", icon: <CheckCircle2 className="w-10 h-10 text-emerald-400" />, color: "text-emerald-400", bg: "bg-emerald-950/10", border: "border-emerald-900/50" }
     : hasOutage 
-      ? { title: "CRITICAL_FAILURE_DETECTED", icon: <XCircle className="w-10 h-10 text-red-500" />, color: "text-red-500", bg: "bg-red-950/10", border: "border-red-900/50" }
+      ? { title: "[!] CRITICAL_FAILURE_DETECTED", icon: <XCircle className="w-10 h-10 text-red-500 animate-pulse" />, color: "text-red-500 animate-pulse drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]", bg: "bg-red-950/20", border: "border-red-600" }
       : { title: "PARTIAL_DEGRADATION", icon: <AlertTriangle className="w-10 h-10 text-yellow-400" />, color: "text-yellow-400", bg: "bg-yellow-950/10", border: "border-yellow-900/50" };
 
   return (
@@ -422,6 +422,13 @@ export default function GovStatusPage() {
               title="Fullscreen"
             >
               <Maximize className="w-3 h-3" />
+            </button>
+            <button
+              onClick={() => setIsMuted(!isMuted)}
+              className={`px-2 py-0.5 border transition-colors flex items-center gap-1.5 ${isMuted ? 'bg-zinc-900 border-zinc-700 text-zinc-500' : 'bg-emerald-950/30 border-emerald-900/50 text-emerald-400 hover:bg-emerald-900/40'}`}
+              title={isMuted ? "Unmute Alerts" : "Mute Alerts"}
+            >
+              {isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
             </button>
             <select 
               className="bg-zinc-900 border border-zinc-700 rounded-none px-1 py-0.5 outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer appearance-none text-zinc-300 max-w-[80px] sm:max-w-none text-[8px] sm:text-[10px]"
