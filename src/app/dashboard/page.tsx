@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MapPin, Monitor, Clock, UserCheck } from 'lucide-react';
-import Image from 'next/image';
 
 // In a real app, this should be outside or instantiated differently to avoid connection limits
 // But for Next.js 15 Server Components, we can do this for simplicity in this example
@@ -92,11 +91,10 @@ export default async function DashboardPage() {
                         {log.photoUrl ? (
                           <div className="flex justify-end">
                             <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 group-hover:border-primary transition-colors">
-                              <Image 
+                              <img 
                                 src={log.photoUrl} 
                                 alt="Selfie" 
-                                fill 
-                                className="object-cover"
+                                className="object-cover w-full h-full"
                               />
                             </div>
                           </div>

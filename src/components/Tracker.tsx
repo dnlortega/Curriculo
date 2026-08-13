@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 import { Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
