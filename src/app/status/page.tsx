@@ -1,11 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, AlertTriangle, Activity, Server, Clock, RefreshCw, BarChart3, Globe2, ShieldAlert, Zap, Terminal } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, Activity, Server, Clock, RefreshCw, BarChart3, Globe2, ShieldAlert, Zap, Terminal, Volume2, VolumeX } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 type ServiceStatus = "operational" | "degraded" | "outage";
 
@@ -142,11 +142,58 @@ export default function GovStatusPage() {
   const [mounted, setMounted] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>("");
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<number>(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const prevStatuses = useRef<Record<string, ServiceStatus>>({});
 
   useEffect(() => {
     setMounted(true);
     setLastUpdate(new Date().toLocaleTimeString('pt-BR'));
+    
+    // Initialize prevStatuses
+    const initialObj: Record<string, ServiceStatus> = {};
+    initialServices.forEach(s => initialObj[s.id] = s.status);
+    prevStatuses.current = initialObj;
   }, []);
+
+  const playAlertSound = useCallback(() => {
+    if (isMuted) return;
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.type = 'square';
+      oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // 880Hz beep
+      oscillator.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.1);
+      
+      gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.1);
+    } catch (e) {
+      console.warn("Audio play failed", e);
+    }
+  }, [isMuted]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    let changed = false;
+    services.forEach(service => {
+      const prev = prevStatuses.current[service.id];
+      if (prev && prev !== service.status) {
+        changed = true;
+      }
+      prevStatuses.current[service.id] = service.status;
+    });
+
+    if (changed) {
+      playAlertSound();
+    }
+  }, [services, playAlertSound, mounted]);
 
   const refreshStatus = useCallback(() => {
     setIsRefreshing(true);
@@ -249,6 +296,13 @@ export default function GovStatusPage() {
             >
               <RefreshCw className={`w-3 h-3 text-emerald-500 ${isRefreshing ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline-block tracking-widest">FORCE_SYNC</span>
+            </button>
+            <button
+              onClick={() => setIsMuted(!isMuted)}
+              className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
+              title={isMuted ? "Unmute Alerts" : "Mute Alerts"}
+            >
+              {isMuted ? <VolumeX className="w-3 h-3 text-zinc-500" /> : <Volume2 className="w-3 h-3 text-emerald-500" />}
             </button>
           </div>
         </div>
