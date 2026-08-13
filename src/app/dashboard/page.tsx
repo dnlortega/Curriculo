@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MapPin, Monitor, Clock, UserCheck } from 'lucide-react';
+import { ClearAllLogsButton } from '@/components/ClearAllLogsButton';
+import { DeleteLogButton } from '@/components/DeleteLogButton';
 
 // In a real app, this should be outside or instantiated differently to avoid connection limits
 // But for Next.js 15 Server Components, we can do this for simplicity in this example
@@ -25,9 +27,12 @@ export default async function DashboardPage() {
             Monitore quem visitou o seu currículo.
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full font-medium">
-          <UserCheck className="w-5 h-5" />
-          <span>{logs.length} Registros Recentes</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full font-medium">
+            <UserCheck className="w-5 h-5" />
+            <span>{logs.length} Registros Recentes</span>
+          </div>
+          {logs.length > 0 && <ClearAllLogsButton />}
         </div>
       </div>
 
@@ -48,6 +53,7 @@ export default async function DashboardPage() {
                   <TableHead>Dispositivo</TableHead>
                   <TableHead>IP</TableHead>
                   <TableHead className="text-right">Foto</TableHead>
+                  <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -101,6 +107,9 @@ export default async function DashboardPage() {
                         ) : (
                           <span className="text-xs text-muted-foreground italic">Sem foto</span>
                         )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DeleteLogButton id={log.id} />
                       </TableCell>
                     </TableRow>
                   ))

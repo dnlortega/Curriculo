@@ -56,3 +56,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    const all = searchParams.get('all');
+
+    if (all === 'true') {
+      await prisma.accessLog.deleteMany();
+      return NextResponse.json({ success: true, message: "Todos os logs foram apagados." });
+    } else if (id) {
+      await prisma.accessLog.delete({ where: { id } });
+      return NextResponse.json({ success: true, message: "Log apagado com sucesso." });
+    }
+
+    return NextResponse.json({ success: false, error: "Missing parameters" }, { status: 400 });
+  } catch (error) {
+    console.error("Failed to delete log:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+  }
+}
