@@ -1,4 +1,4 @@
-import { google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
@@ -27,10 +27,14 @@ export async function POST(req: Request) {
     return new NextResponse('API Key do Gemini não configurada pelo dono no Dashboard.', { status: 500 });
   }
 
+  const customGoogle = createGoogleGenerativeAI({
+    apiKey: geminiKey,
+  });
+
   const { messages } = await req.json();
 
   const result = await streamText({
-    model: google('gemini-1.5-flash', { apiKey: geminiKey }),
+    model: customGoogle('gemini-1.5-flash'),
     messages,
     system: CONTEXT,
   });
