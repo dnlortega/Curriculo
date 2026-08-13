@@ -246,6 +246,7 @@ export default function GovStatusPage() {
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<number>(0);
   const [isMuted, setIsMuted] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
+  const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [logs, setLogs] = useState<string[]>([]);
   const [chaosMode, setChaosMode] = useState(false);
   
@@ -412,11 +413,13 @@ export default function GovStatusPage() {
     }
   };
 
-  const filteredServices = categoryFilter === "ALL" 
-    ? services 
-    : services.filter(s => s.category.toUpperCase() === categoryFilter);
-
   const categories = ["ALL", ...Array.from(new Set(services.map(s => s.category.toUpperCase())))];
+  
+  const filteredServices = services.filter(s => {
+    const matchCategory = categoryFilter === "ALL" || s.category.toUpperCase() === categoryFilter;
+    const matchNode = selectedNodes.length === 0 || selectedNodes.includes(s.id);
+    return matchCategory && matchNode;
+  });
   
   const operationalCount = services.filter(s => s.status === "operational").length;
   const isAllOperational = operationalCount === services.length;
@@ -582,6 +585,42 @@ export default function GovStatusPage() {
                 [{cat}]
               </button>
             ))}
+            
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className={`ml-2 text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 uppercase tracking-widest transition-colors border ${selectedNodes.length > 0 ? 'bg-emerald-900/50 border-emerald-500 text-emerald-400' : 'border-zinc-700 text-zinc-400 hover:bg-zinc-800'}`}>
+                  + TARGET_NODES {selectedNodes.length > 0 && `(${selectedNodes.length})`}
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[400px] rounded-none border-zinc-700 bg-zinc-950 font-mono text-zinc-300">
+                <DialogHeader>
+                  <DialogTitle className="text-xs tracking-widest uppercase text-emerald-500 mb-2">TARGET_SELECTION_MATRIX</DialogTitle>
+                </DialogHeader>
+                <div className="grid grid-cols-2 gap-2 mt-2 max-h-[300px] overflow-y-auto">
+                  {services.map(svc => {
+                    const isSelected = selectedNodes.includes(svc.id);
+                    return (
+                      <button 
+                        key={svc.id} 
+                        onClick={() => {
+                          setSelectedNodes(prev => 
+                            isSelected ? prev.filter(id => id !== svc.id) : [...prev, svc.id]
+                          );
+                        }} 
+                        className={`text-[10px] text-left px-2 py-1.5 border transition-colors truncate ${isSelected ? 'bg-emerald-950/40 border-emerald-900/80 text-emerald-400' : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-300'}`}
+                      >
+                        {isSelected ? '[x]' : '[ ]'} {svc.name}
+                      </button>
+                    )
+                  })}
+                </div>
+                <div className="flex justify-end mt-4">
+                  <button onClick={() => setSelectedNodes([])} className="text-[10px] text-zinc-500 hover:text-red-400 uppercase tracking-widest">
+                    [ CLEAR_TARGETS ]
+                  </button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 text-[8px] sm:text-[10px] font-medium self-end sm:self-auto">
             <span className="text-emerald-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" /> OP</span>
