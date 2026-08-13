@@ -4,7 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Tracker } from "@/components/Tracker";
 const outfit = Outfit({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -73,7 +72,6 @@ export default function RootLayout({
           {children}
           <Analytics />
           <SpeedInsights />
-          <Tracker />
         </ThemeProvider>
       </body>
     </html>
