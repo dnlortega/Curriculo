@@ -6,8 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
 type ServiceStatus = "operational" | "degraded" | "outage";
+
+interface PingHistory {
+  time: string;
+  ping: number;
+  status: ServiceStatus;
+}
 
 interface Service {
   id: string;
@@ -19,10 +26,16 @@ interface Service {
   lastIncident: string;
   category: string;
   region: string;
-  history: ServiceStatus[];
+  history: PingHistory[];
 }
 
-const generateHistory = (base: ServiceStatus) => Array(15).fill(base);
+const generateHistory = (base: ServiceStatus, basePing: number): PingHistory[] => {
+  return Array(20).fill(null).map((_, i) => ({
+    time: new Date(Date.now() - (19 - i) * 5000).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' }),
+    ping: base === 'outage' ? 0 : basePing + Math.floor(Math.random() * 20) - 10,
+    status: base
+  }));
+};
 
 const initialServices: Service[] = [
   {
@@ -35,7 +48,7 @@ const initialServices: Service[] = [
     lastIncident: "Nenhum nos últimos 30 dias",
     category: "Previdência",
     region: "Nacional",
-    history: generateHistory("operational")
+    history: generateHistory("operational", 124)
   },
   {
     id: "meu-sus",
@@ -47,7 +60,7 @@ const initialServices: Service[] = [
     lastIncident: "Atual: Falha para logar",
     category: "Saúde",
     region: "Nacional",
-    history: generateHistory("operational").map((s, i) => i === 0 ? "degraded" : s)
+    history: generateHistory("degraded", 850)
   },
   {
     id: "govbr",
@@ -59,81 +72,110 @@ const initialServices: Service[] = [
     lastIncident: "Nenhum nos últimos 90 dias",
     category: "Identidade",
     region: "Nacional",
-    history: generateHistory("operational")
-  },
-  {
-    id: "ecac",
-    name: "e-CAC",
-    description: "Centro Virtual de Atendimento ao Contribuinte",
-    status: "operational",
-    uptime: "99.5%",
-    responseTime: 210,
-    lastIncident: "Manutenção programada há 2 dias",
-    category: "Tributos",
-    region: "Nacional",
-    history: generateHistory("operational")
-  },
-  {
-    id: "ctps",
-    name: "CTPS Digital",
-    description: "Acesso aos dados trabalhistas",
-    status: "degraded",
-    uptime: "95.2%",
-    responseTime: 840,
-    lastIncident: "Atual: Lentidão no login",
-    category: "Trabalho",
-    region: "Nacional",
-    history: generateHistory("operational").map((s, i) => i === 0 ? "degraded" : s)
-  },
-  {
-    id: "cnh",
-    name: "CNH Digital",
-    description: "Documentos de trânsito e veículos",
-    status: "operational",
-    uptime: "99.9%",
-    responseTime: 115,
-    lastIncident: "Nenhum nos últimos 15 dias",
-    category: "Trânsito",
-    region: "Nacional",
-    history: generateHistory("operational")
+    history: generateHistory("operational", 45)
   },
   {
     id: "esocial",
     name: "e-Social",
-    description: "Sistema de Escrituração Digital das Obrigações",
+    description: "Sistema de escrituração digital",
     status: "operational",
-    uptime: "98.7%",
-    responseTime: 320,
-    lastIncident: "Falha de comunicação há 5 dias",
+    uptime: "99.5%",
+    responseTime: 210,
+    lastIncident: "Ontem, 14:30 - Lentidão na consulta",
     category: "Trabalho",
-    region: "Nacional",
-    history: generateHistory("operational")
-  },
-  {
-    id: "sougov",
-    name: "SouGov.br",
-    description: "Serviços aos servidores públicos federais",
-    status: "outage",
-    uptime: "96.4%",
-    responseTime: 0,
-    lastIncident: "Atual: Sistema indisponível",
-    category: "Servidores",
-    region: "Nacional",
-    history: generateHistory("operational").map((s, i) => i < 3 ? "outage" : s)
+    region: "Brasília-DF",
+    history: generateHistory("operational", 210)
   },
   {
     id: "enem",
-    name: "Página do Enem",
-    description: "Acesso aos resultados e inscrições",
+    name: "SiSU / Enem",
+    description: "Sistema de seleção unificada",
     status: "operational",
-    uptime: "99.1%",
+    uptime: "98.5%",
     responseTime: 65,
-    lastIncident: "Pico de acessos há 20 dias",
+    lastIncident: "Há 15 dias - Sobrecarga",
     category: "Educação",
+    region: "São Paulo-SP",
+    history: generateHistory("operational", 65)
+  },
+  {
+    id: "ecac",
+    name: "Receita Federal (e-CAC)",
+    description: "Serviços fiscais e tributários",
+    status: "outage",
+    uptime: "99.1%",
+    responseTime: 0,
+    lastIncident: "Atual: Fora do ar",
+    category: "Finanças",
     region: "Nacional",
-    history: generateHistory("operational")
+    history: generateHistory("outage", 0)
+  },
+  {
+    id: "ctps",
+    name: "Carteira Digital",
+    description: "CTPS Digital e Seguro Desemprego",
+    status: "operational",
+    uptime: "99.9%",
+    responseTime: 180,
+    lastIncident: "Há 45 dias - API Instável",
+    category: "Trabalho",
+    region: "Rio de Janeiro-RJ",
+    history: generateHistory("operational", 180)
+  },
+  {
+    id: "cnh",
+    name: "CNH Digital (Senatran)",
+    description: "Documentos de trânsito",
+    status: "operational",
+    uptime: "99.7%",
+    responseTime: 110,
+    lastIncident: "Nenhum nos últimos 30 dias",
+    category: "Trânsito",
+    region: "Fortaleza-CE",
+    history: generateHistory("operational", 110)
   }
 ];
+
+const TacticalMap = ({ services }: { services: Service[] }) => {
+  const nodes = [
+    { id: 'DF', x: 50, y: 55, label: 'Brasília-DF', regions: ['Brasília-DF', 'Nacional'] },
+    { id: 'SP', x: 65, y: 75, label: 'São Paulo-SP', regions: ['São Paulo-SP'] },
+    { id: 'RJ', x: 75, y: 70, label: 'Rio-RJ', regions: ['Rio de Janeiro-RJ'] },
+    { id: 'CE', x: 80, y: 25, label: 'Fortaleza-CE', regions: ['Fortaleza-CE'] },
+    { id: 'AM', x: 25, y: 30, label: 'Manaus-AM', regions: [] }
+  ];
+
+  return (
+    <div className="relative w-full h-full bg-zinc-950/50 border border-zinc-800 rounded-none overflow-hidden min-h-[120px]">
+      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+        {/* Network connections */}
+        <path d="M50 55 L65 75 L75 70 L50 55 L80 25 L25 30 L50 55" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5" />
+        <path d="M25 30 L80 25" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" strokeDasharray="1 1" />
+        
+        {nodes.map(node => {
+          const relevantServices = services.filter(s => node.regions.includes(s.region));
+          const hasOutage = relevantServices.some(s => s.status === 'outage');
+          const hasDegraded = relevantServices.some(s => s.status === 'degraded');
+          const nodeColor = hasOutage ? '#ef4444' : hasDegraded ? '#facc15' : '#34d399';
+          
+          return (
+            <g key={node.id}>
+              {hasOutage && (
+                <circle cx={node.x} cy={node.y} r="4" fill="none" stroke={nodeColor} strokeWidth="0.5" className="animate-ping opacity-75" />
+              )}
+              <circle cx={node.x} cy={node.y} r="1.5" fill={nodeColor} />
+              <text x={node.x + 3} y={node.y + 1} fontSize="3" fill="#a1a1aa" className="font-mono">{node.id}</text>
+            </g>
+          );
+        })}
+      </svg>
+      <div className="absolute top-2 left-2 flex flex-col gap-1">
+        <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">TACTICAL_MAP</span>
+        <span className="text-[6px] text-zinc-600 font-mono">NODE_OVERVIEW: BR</span>
+      </div>
+    </div>
+  );
+};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -244,13 +286,14 @@ export default function GovStatusPage() {
       if (isChaos) {
         setServices(prev => prev.map(service => {
           const isFailing = Math.random() > 0.5;
-          const newStatus = isFailing ? "outage" : "operational";
+          const newStatus: ServiceStatus = isFailing ? "outage" : "operational";
           const newResponseTime = isFailing ? 0 : Math.floor(Math.random() * 200) + 20;
+          const now = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' });
           return { 
             ...service, 
             status: newStatus, 
             responseTime: newResponseTime,
-            history: [newStatus, ...service.history].slice(0, 15)
+            history: [...service.history, { time: now, ping: newResponseTime, status: newStatus }].slice(-20)
           };
         }));
       } else {
@@ -258,15 +301,15 @@ export default function GovStatusPage() {
         const data = await res.json();
         
         setServices(prev => prev.map(service => {
-          const apiData = data.find((d: any) => d.id === service.id);
-          const newStatus = apiData ? apiData.status : service.status;
-          const newResponseTime = apiData ? apiData.responseTime : service.responseTime;
+          const apiStatus = data.find((d: any) => d.id === service.id);
+          if (!apiStatus) return service;
           
+          const now = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' });
           return {
             ...service,
-            status: newStatus,
-            responseTime: newResponseTime,
-            history: [newStatus as ServiceStatus, ...service.history].slice(0, 15)
+            status: apiStatus.status as ServiceStatus,
+            responseTime: apiStatus.responseTime,
+            history: [...service.history, { time: now, ping: apiStatus.responseTime, status: apiStatus.status as ServiceStatus }].slice(-20)
           };
         }));
       }
@@ -419,49 +462,55 @@ export default function GovStatusPage() {
               <p>SESSION_ID: 0x8F9A2 | UPTIME: 99.9%</p>
             </div>
           </div>
-
-          <Card className={`rounded-none border shadow-2xl transition-all duration-500 ${overallStatus.border} ${overallStatus.bg}`}>
-            <div className="p-2 sm:p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <motion.div
-                  animate={isRefreshing ? { scale: [1, 1.1, 1], opacity: [1, 0.5, 1] } : {}}
-                  transition={{ duration: 1, repeat: isRefreshing ? Infinity : 0 }}
-                  className="shrink-0"
-                >
-                  {overallStatus.icon}
-                </motion.div>
-                <div>
-                  <h2 className={`text-sm font-bold tracking-widest ${overallStatus.color}`}>
-                    {overallStatus.title}
-                  </h2>
-                  <div className="flex items-center gap-4 mt-1">
-                    <span className="text-[10px] text-zinc-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> PING: {lastUpdate}
-                    </span>
-                    <span className="text-[10px] text-zinc-400 flex items-center gap-1">
-                      <Server className="w-3 h-3" /> NODES: {operationalCount}/{services.length}
-                    </span>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <Card className={`col-span-1 md:col-span-2 rounded-none border shadow-2xl transition-all duration-500 ${overallStatus.border} ${overallStatus.bg}`}>
+              <div className="p-2 sm:p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 h-full">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <motion.div
+                    animate={isRefreshing ? { scale: [1, 1.1, 1], opacity: [1, 0.5, 1] } : {}}
+                    transition={{ duration: 1, repeat: isRefreshing ? Infinity : 0 }}
+                    className="shrink-0"
+                  >
+                    {overallStatus.icon}
+                  </motion.div>
+                  <div>
+                    <h2 className={`text-sm font-bold tracking-widest ${overallStatus.color}`}>
+                      {overallStatus.title}
+                    </h2>
+                    <div className="flex items-center gap-4 mt-1">
+                      <span className="text-[10px] text-zinc-400 flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> PING: {lastUpdate}
+                      </span>
+                      <span className="text-[10px] text-zinc-400 flex items-center gap-1">
+                        <Server className="w-3 h-3" /> NODES: {operationalCount}/{services.length}
+                      </span>
+                    </div>
                   </div>
                 </div>
+
+                {affectedServices.length > 0 && (
+                  <div className="w-full sm:w-auto border-t sm:border-t-0 sm:border-l border-zinc-800 pt-2 sm:pt-0 sm:pl-4">
+                    <p className="text-[8px] font-bold text-zinc-500 mb-0 tracking-widest uppercase">Alert_Log:</p>
+                    <div className="flex flex-col gap-0 max-h-[35px] overflow-y-auto sm:overflow-hidden">
+                      {affectedServices.map(svc => (
+                        <div key={svc.id} className="flex items-center gap-1 text-[8px]">
+                          <span className={`${svc.status === 'outage' ? 'text-red-500' : 'text-yellow-400'}`}>
+                            {svc.status === 'outage' ? '[ERR]' : '[WARN]'}
+                          </span>
+                          <span className="text-zinc-400">{svc.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
+            </Card>
 
-              {affectedServices.length > 0 && (
-                <div className="w-full sm:w-auto border-t sm:border-t-0 sm:border-l border-zinc-800 pt-2 sm:pt-0 sm:pl-4">
-                  <p className="text-[8px] font-bold text-zinc-500 mb-0 tracking-widest uppercase">Alert_Log:</p>
-                  <div className="flex flex-col gap-0 max-h-[35px] overflow-y-auto sm:overflow-hidden">
-                    {affectedServices.map(svc => (
-                      <div key={svc.id} className="flex items-center gap-1 text-[8px]">
-                        <span className={`${svc.status === 'outage' ? 'text-red-500' : 'text-yellow-400'}`}>
-                          {svc.status === 'outage' ? '[ERR]' : '[WARN]'}
-                        </span>
-                        <span className="text-zinc-400">{svc.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+            <div className="col-span-1 hidden md:block">
+              <TacticalMap services={services} />
             </div>
-          </Card>
+          </div>
         </motion.div>
 
         <div className="mb-2 flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-1 gap-2 shrink-0">
@@ -527,14 +576,19 @@ export default function GovStatusPage() {
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-[2px] h-3 w-full opacity-70 group-hover:opacity-100 transition-opacity">
-                        {service.history.slice(0, 15).reverse().map((h, i) => (
-                          <div 
-                            key={i} 
-                            className={`h-full flex-1 rounded-sm ${getStatusConfig(h).barColor}`} 
-                            title={h}
-                          />
-                        ))}
+                      <div className="h-10 w-full mt-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={service.history}>
+                            <Area 
+                              type="monotone" 
+                              dataKey="ping" 
+                              stroke={service.status === 'outage' ? '#ef4444' : service.status === 'degraded' ? '#facc15' : '#10b981'} 
+                              fill={service.status === 'outage' ? '#7f1d1d' : service.status === 'degraded' ? '#713f12' : '#064e3b'}
+                              strokeWidth={1}
+                              isAnimationActive={false}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
                       </div>
                     </CardContent>
                   </Card>
@@ -575,7 +629,7 @@ export default function GovStatusPage() {
                     </div>
                   </div>
 
-                  <div className="border border-zinc-800 bg-zinc-900/50 p-3 text-[10px]">
+                  <div className="border border-zinc-800 bg-zinc-900/50 p-3 text-[10px] mb-4">
                     <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
                       <span className="text-zinc-500">REGION_LOCK</span>
                       <span className="text-zinc-300 font-bold">{service.region}</span>
@@ -594,22 +648,33 @@ export default function GovStatusPage() {
                         {service.status === 'outage' ? 'ERR_CONNECTION' : `CPU: ${Math.max(5, service.responseTime % 100)}% | RAM: ${(service.responseTime % 8) + 2}GB`}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
-                      <span className="text-zinc-500">SECURITY</span>
-                      <span className="text-zinc-300 font-mono">TLS 1.3 / AES-256-GCM</span>
-                    </div>
-                    <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
-                      <span className="text-zinc-500">DATABASE_SYNC</span>
-                      <span className={`font-mono ${service.status === 'operational' ? 'text-emerald-400' : 'text-yellow-400'}`}>
-                        {service.status === 'operational' ? 'OK (2ms lag)' : 'DEGRADED'}
-                      </span>
-                    </div>
                     <div className="flex justify-between items-start py-1.5">
                       <span className="text-zinc-500">LAST_INCIDENT</span>
                       <span className={`font-bold text-right max-w-[200px] ${service.status !== 'operational' ? config.color : 'text-zinc-300'}`}>
                         {service.lastIncident}
                       </span>
                     </div>
+                  </div>
+
+                  <div className="h-32 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={service.history} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
+                        <XAxis dataKey="time" tick={{ fontSize: 8, fill: '#71717a' }} stroke="#3f3f46" />
+                        <YAxis tick={{ fontSize: 8, fill: '#71717a' }} stroke="#3f3f46" />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: '#09090b', border: '1px solid #27272a', fontSize: '10px' }}
+                          itemStyle={{ color: '#e4e4e7' }}
+                        />
+                        <Area 
+                          type="stepAfter" 
+                          dataKey="ping" 
+                          stroke={config.color.replace('text-', 'text-').split('-')[1] === 'emerald' ? '#10b981' : config.color.replace('text-', 'text-').split('-')[1] === 'yellow' ? '#facc15' : '#ef4444'} 
+                          fill={config.color.replace('text-', 'text-').split('-')[1] === 'emerald' ? '#064e3b' : config.color.replace('text-', 'text-').split('-')[1] === 'yellow' ? '#713f12' : '#7f1d1d'}
+                          strokeWidth={2}
+                          isAnimationActive={false}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
                   </div>
                 </DialogContent>
               </Dialog>
