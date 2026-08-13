@@ -22,13 +22,13 @@ function getLocationInfo(city: string | null, countryCode: string | null) {
   if (isCityUnknown && isCountryUnknown) return { text: 'Localização Oculta', flag: '🌍' };
   
   let flag = '🌍';
-  let countryName = countryCode;
+  let countryName = countryCode || 'Desconhecido';
   
   if (!isCountryUnknown && countryCode!.length === 2) {
     try {
       const codePoints = countryCode!.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
       flag = String.fromCodePoint(...codePoints);
-      countryName = new Intl.DisplayNames(['pt-BR'], { type: 'region' }).of(countryCode!) || countryCode;
+      countryName = new Intl.DisplayNames(['pt-BR'], { type: 'region' }).of(countryCode!) || countryCode!;
     } catch(e) {}
   }
   
