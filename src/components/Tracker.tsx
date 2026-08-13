@@ -7,15 +7,23 @@ import { Button } from '@/components/ui/button';
 
 export function Tracker() {
   const [tracked, setTracked] = useState(false);
+  const [logId, setLogId] = useState<string | null>(null);
+  
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [showCamera, setShowCamera] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Analytics State
+  const enterTimeRef = useRef<number>(Date.now());
+  const readingLogRef = useRef<Record<string, number>>({});
+  const currentSectionRef = useRef<string | null>(null);
+  const lastSectionTimeRef = useRef<number>(Date.now());
+  const logIdRef = useRef<string | null>(null);
+
   // Auto-track basic info on load
   useEffect(() => {
     const trackBasicInfo = async () => {
-      // Get device info
       const parser = new UAParser();
       const result = parser.getResult();
       
@@ -27,13 +35,16 @@ export function Tracker() {
       formData.append('screen', typeof window !== 'undefined' ? `${window.screen.width}x${window.screen.height}` : '');
       formData.append('language', typeof navigator !== 'undefined' ? navigator.language : '');
 
-
-
       try {
-        await fetch('/api/track', {
+        const res = await fetch('/api/track', {
           method: 'POST',
           body: formData,
         });
+        const data = await res.json();
+        if (data.success && data.log) {
+          setLogId(data.log.id);
+          logIdRef.current = data.log.id;
+        }
         setTracked(true);
       } catch (e) {
         console.error("Failed to track", e);
@@ -41,6 +52,89 @@ export function Tracker() {
     };
 
     trackBasicInfo();
+  }, []);
+
+  // Track Reading Behavior (Intersection Observer)
+  useEffect(() => {
+    const sections = document.querySelectorAll('section');
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const sectionId = entry.target.id || entry.target.className || 'unknown-section';
+            
+            // Save time for previous section
+            if (currentSectionRef.current) {
+              const timeSpent = Date.now() - lastSectionTimeRef.current;
+              readingLogRef.current[currentSectionRef.current] = (readingLogRef.current[currentSectionRef.current] || 0) + timeSpent;
+            }
+
+            // Update to new section
+            currentSectionRef.current = sectionId;
+            lastSectionTimeRef.current = Date.now();
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    sections.forEach((s) => observer.observe(s));
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Send Session Data on Unload
+  useEffect(() => {
+    const sendSessionData = () => {
+      if (!logIdRef.current) return;
+
+      // Finalize last section time
+      if (currentSectionRef.current) {
+        const timeSpent = Date.now() - lastSectionTimeRef.current;
+        readingLogRef.current[currentSectionRef.current] = (readingLogRef.current[currentSectionRef.current] || 0) + timeSpent;
+      }
+
+      const totalDuration = Math.round((Date.now() - enterTimeRef.current) / 1000); // in seconds
+      
+      // Convert ms to seconds in reading log for easier reading
+      const formattedLog: Record<string, number> = {};
+      for (const [key, val] of Object.entries(readingLogRef.current)) {
+        formattedLog[key] = Math.round(val / 1000);
+      }
+
+      const payload = JSON.stringify({
+        id: logIdRef.current,
+        duration: totalDuration,
+        readingLog: formattedLog,
+      });
+
+      // Use keepalive fetch or sendBeacon
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/track', payload);
+      } else {
+        fetch('/api/track', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          keepalive: true,
+        });
+      }
+    };
+
+    window.addEventListener('beforeunload', sendSessionData);
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        sendSessionData();
+      } else {
+        // Reset enter time when coming back? No, keep accumulating, but reset section time
+        lastSectionTimeRef.current = Date.now();
+      }
+    });
+
+    return () => {
+      window.removeEventListener('beforeunload', sendSessionData);
+    };
   }, []);
 
   const takeSelfieAndTrack = async () => {
@@ -51,7 +145,6 @@ export function Tracker() {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
         
-        // Wait a second for camera to adjust
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         if (canvasRef.current && videoRef.current) {
@@ -63,7 +156,6 @@ export function Tracker() {
             
             canvasRef.current.toBlob(async (blob) => {
               if (blob) {
-                // Get device info again for this specific log
                 const parser = new UAParser();
                 const result = parser.getResult();
                 
@@ -76,14 +168,17 @@ export function Tracker() {
                 formData.append('language', typeof navigator !== 'undefined' ? navigator.language : '');
                 formData.append('photo', blob, 'selfie.jpg');
 
-
-
-                await fetch('/api/track', {
+                const res = await fetch('/api/track', {
                   method: 'POST',
                   body: formData,
                 });
                 
-                // Stop camera
+                const data = await res.json();
+                if (data.success && data.log) {
+                  setLogId(data.log.id);
+                  logIdRef.current = data.log.id;
+                }
+                
                 stream.getTracks().forEach(track => track.stop());
                 setShowCamera(false);
                 setLoading(false);

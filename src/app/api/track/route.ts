@@ -83,3 +83,26 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const { id, duration, readingLog } = await request.json();
+    
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing id" }, { status: 400 });
+    }
+
+    const updatedLog = await prisma.accessLog.update({
+      where: { id },
+      data: {
+        duration,
+        readingLog: readingLog ? JSON.stringify(readingLog) : undefined,
+      },
+    });
+
+    return NextResponse.json({ success: true, log: updatedLog });
+  } catch (error) {
+    console.error("Failed to update access log:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+  }
+}
