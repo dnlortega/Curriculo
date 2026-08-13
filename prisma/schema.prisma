@@ -7,6 +7,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Candidatura {
+  id           String   @id
+  usuarioId    String
+  vagaLink     String
+  titulo       String?
+  empresa      String?
+  local        String?
+  fonte        String?
+  status       String   @default("salvo")
+  etiquetas    String[] @default([])
+  notas        String?
+  contatoRH    String?
+  salario      String?
+  prazo        String?
+  lembrete     String?
+  adicionadoEm DateTime @default(now())
+  updatedAt    DateTime
+  Usuario      Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, vagaLink])
+  @@index([usuarioId])
+}
+
+model Usuario {
+  id            String        @id
+  nome          String
+  email         String        @unique
+  senha         String
+  createdAt     DateTime      @default(now())
+  preferencias  String[]      @default([])
+  filtrosPadrao Json?         @default("{}")
+  Candidatura   Candidatura[]
+  VagaSalva     VagaSalva[]
+}
+
+model Vaga {
+  id           String   @id
+  titulo       String
+  empresa      String
+  local        String
+  data         String?
+  link         String   @unique
+  termo        String
+  fonte        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  descricao    String?
+  isTI         Boolean  @default(true)
+  competencias String[] @default([])
+
+  @@index([createdAt(sort: Desc)])
+}
+
+model VagaSalva {
+  id        String   @id
+  usuarioId String
+  vagaLink  String
+  oculta    Boolean  @default(false)
+  favorita  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  Usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, vagaLink])
+  @@index([usuarioId])
+}
+
 model AccessLog {
   id        String   @id @default(cuid())
   ip        String?
