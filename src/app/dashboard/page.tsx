@@ -104,10 +104,13 @@ export default async function DashboardPage() {
             <Table>
               <TableHeader className="bg-muted/50">
                 <TableRow>
-                  <TableHead className="w-[150px]">Data e Hora</TableHead>
+                  <TableHead className="w-[120px]">Data e Hora</TableHead>
+                  <TableHead>Origem</TableHead>
                   <TableHead>Localização</TableHead>
-                  <TableHead>Dispositivo</TableHead>
-                  <TableHead>Leitura / Tempo</TableHead>
+                  <TableHead>Dispositivo/Tela</TableHead>
+                  <TableHead>Hardware/Bateria</TableHead>
+                  <TableHead>Conexão/Extras</TableHead>
+                  <TableHead>Leitura</TableHead>
                   <TableHead>IP</TableHead>
                   <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
@@ -115,7 +118,7 @@ export default async function DashboardPage() {
               <TableBody>
                 {logs.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                    <TableCell colSpan={9} className="h-32 text-center text-muted-foreground">
                       Nenhum registro encontrado. Visite a página inicial para gerar dados!
                     </TableCell>
                   </TableRow>
@@ -136,11 +139,11 @@ export default async function DashboardPage() {
                             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
                           })}
                         </div>
-                        {adv.referrer && (
-                          <div className="text-[10px] text-muted-foreground mt-1 max-w-[120px] truncate" title={adv.referrer}>
-                            Vindo de: {adv.referrer}
-                          </div>
-                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-[11px] text-muted-foreground max-w-[120px] truncate" title={adv.referrer || 'Acesso Direto'}>
+                          {adv.referrer || 'Direto'}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-1">
@@ -149,12 +152,12 @@ export default async function DashboardPage() {
                             <span className={log.city === 'Desconhecido' ? 'text-muted-foreground italic' : 'font-medium'}>
                               {log.city !== 'Desconhecido' && log.country !== 'Desconhecido' 
                                 ? `${log.city}, ${log.country}` 
-                                : 'Localização Oculta'}
+                                : 'Oculta'}
                             </span>
                           </div>
                           {adv['Coordenadas (GPS)'] && (
                             <a href={adv['Google Maps']} target="_blank" rel="noreferrer" className="text-[10px] text-blue-500 hover:underline pl-6">
-                              📍 Ver no Maps
+                              📍 Maps
                             </a>
                           )}
                         </div>
@@ -163,17 +166,29 @@ export default async function DashboardPage() {
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2 text-sm font-medium">
                             <Monitor className="w-4 h-4 text-blue-500/80" />
-                            <span className="truncate max-w-[120px] md:max-w-[200px]" title={`${log.device} - ${log.os} - ${log.browser}`}>
-                              {log.device} • {log.os}
+                            <span className="truncate max-w-[120px]" title={`${log.device} - ${log.os} - ${log.browser}`}>
+                              {log.device}
                             </span>
                           </div>
                           <div className="text-xs text-muted-foreground pl-6 flex flex-col gap-0.5">
-                            <span>{log.browser}</span>
+                            <span>{log.os} • {log.browser}</span>
                             {log.screen && <span>Tela: {log.screen}</span>}
-                            {adv.ram && <span>RAM: {adv.ram} • CPU: {adv.cores || log.cpu}</span>}
-                            {adv.battery && <span>Bateria: {adv.battery}</span>}
-                            {adv.connection && <span>Rede: {adv.connection} {adv.speed ? `(${adv.speed})` : ''}</span>}
+                            {log.language && <span>Idioma: {log.language}</span>}
                           </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-xs flex flex-col gap-1 text-muted-foreground">
+                          {adv.ram && <span><b className="text-foreground">RAM:</b> {adv.ram}</span>}
+                          <span><b className="text-foreground">CPU:</b> {adv.cores || log.cpu || '?'}</span>
+                          {adv.battery && <span><b className="text-foreground">Bat:</b> {adv.battery}</span>}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-xs flex flex-col gap-1 text-muted-foreground">
+                          {adv.connection && <span><b className="text-foreground">Rede:</b> {adv.connection} {adv.speed ? `(${adv.speed})` : ''}</span>}
+                          {adv.theme && <span><b className="text-foreground">Tema:</b> {adv.theme}</span>}
+                          {adv.timezone && <span className="truncate max-w-[100px]" title={adv.timezone}><b className="text-foreground">TZ:</b> {adv.timezone.split('/')[1] || adv.timezone}</span>}
                         </div>
                       </TableCell>
                       <TableCell>
