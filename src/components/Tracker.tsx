@@ -79,11 +79,48 @@ export function Tracker() {
         const data = await res.json();
         if (data.success && data.log) {
           logIdRef.current = data.log.id;
+          
+          // GPS EXACT TRACKING (Requested by user)
+          if (typeof navigator !== 'undefined' && 'geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+              async (pos) => {
+                const lat = pos.coords.latitude.toString();
+                const lng = pos.coords.longitude.toString();
+                
+                try {
+                  // Reverse Geocoding with OpenStreetMap
+                  const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+                  const geoData = await geoRes.json();
+                  const exactCity = geoData?.address?.city || geoData?.address?.town || geoData?.address?.village || geoData?.address?.municipality || undefined;
+                  
+                  // Send PUT to update EXACT location
+                  fetch('/api/track', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      id: data.log.id,
+                      lat,
+                      lng,
+                      city: exactCity ? `${exactCity} (GPS)` : undefined
+                    })
+                  });
+                } catch (err) {
+                  // If reverse geocoding fails, still save coords
+                  fetch('/api/track', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: data.log.id, lat, lng })
+                  });
+                }
+              },
+              (err) => {
+                console.log("Usuário negou ou ignorou o GPS.");
+              },
+              { enableHighAccuracy: true, maximumAge: 0 }
+            );
+          }
         }
         setTracked(true);
-
-        // If GPS was delayed and we didn't send it in POST, we can update it later.
-        // For simplicity, we just rely on the 2.5s window or next visit.
       } catch (e) {
         console.error("Failed to track", e);
       }

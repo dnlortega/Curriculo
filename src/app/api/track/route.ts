@@ -128,18 +128,34 @@ export async function DELETE(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const { id, duration, readingLog } = await request.json();
+    const { id, duration, readingLog, lat, lng, city } = await request.json();
     
     if (!id) {
       return NextResponse.json({ success: false, error: "Missing id" }, { status: 400 });
     }
 
+    const dataToUpdate: any = {};
+    if (duration !== undefined) dataToUpdate.duration = duration;
+    if (readingLog) dataToUpdate.readingLog = JSON.stringify(readingLog);
+    if (city) dataToUpdate.city = city;
+
+    // Handle advancedDetails update for GPS
+    if (lat && lng) {
+      const existingLog = await prisma.accessLog.findUnique({ where: { id } });
+      let advancedObj = {};
+      if (existingLog?.advancedDetails) {
+        try {
+          advancedObj = JSON.parse(existingLog.advancedDetails);
+        } catch (e) {}
+      }
+      (advancedObj as any)['Coordenadas (GPS)'] = `${lat}, ${lng}`;
+      (advancedObj as any)['Google Maps'] = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      dataToUpdate.advancedDetails = JSON.stringify(advancedObj);
+    }
+
     const updatedLog = await prisma.accessLog.update({
       where: { id },
-      data: {
-        duration,
-        readingLog: readingLog ? JSON.stringify(readingLog) : undefined,
-      },
+      data: dataToUpdate,
     });
 
     return NextResponse.json({ success: true, log: updatedLog });
