@@ -202,6 +202,7 @@ export default function GovStatusPage() {
   const operationalCount = services.filter(s => s.status === "operational").length;
   const isAllOperational = operationalCount === services.length;
   const hasOutage = services.some(s => s.status === "outage");
+  const affectedServices = services.filter(s => s.status !== "operational");
   
   const overallStatus = isAllOperational 
     ? { title: "Todos os sistemas operacionais", icon: <CheckCircle2 className="w-12 h-12 text-emerald-500" />, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" }
@@ -269,6 +270,21 @@ export default function GovStatusPage() {
                     {services.length} Nós monitorados
                   </Badge>
                 </div>
+
+                {affectedServices.length > 0 && (
+                  <div className="mt-5 pt-5 border-t border-slate-200 dark:border-slate-700/50 w-full">
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                      Sistemas impactados no momento:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {affectedServices.map(svc => (
+                        <Badge key={svc.id} variant="secondary" className={`px-2.5 py-1 ${svc.status === 'outage' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border-rose-200 dark:border-rose-800' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border-amber-200 dark:border-amber-800'}`}>
+                          {svc.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
