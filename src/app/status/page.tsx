@@ -414,6 +414,26 @@ export default function GovStatusPage() {
                       <span className="text-zinc-500">SYSTEM_TAG</span>
                       <span className="text-zinc-300 bg-zinc-800 px-1 py-0.5">{service.category}</span>
                     </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
+                      <span className="text-zinc-500">IP_ADDRESS</span>
+                      <span className="text-zinc-300 font-mono">10.4.{service.name.length}.{service.responseTime % 255}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
+                      <span className="text-zinc-500">SERVER_LOAD</span>
+                      <span className={`font-mono ${service.status === 'outage' ? 'text-red-500' : 'text-emerald-400'}`}>
+                        {service.status === 'outage' ? 'ERR_CONNECTION' : `CPU: ${Math.max(5, service.responseTime % 100)}% | RAM: ${(service.responseTime % 8) + 2}GB`}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
+                      <span className="text-zinc-500">SECURITY</span>
+                      <span className="text-zinc-300 font-mono">TLS 1.3 / AES-256-GCM</span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
+                      <span className="text-zinc-500">DATABASE_SYNC</span>
+                      <span className={`font-mono ${service.status === 'operational' ? 'text-emerald-400' : 'text-yellow-400'}`}>
+                        {service.status === 'operational' ? 'OK (2ms lag)' : 'DEGRADED'}
+                      </span>
+                    </div>
                     <div className="flex justify-between items-start py-1.5">
                       <span className="text-zinc-500">LAST_INCIDENT</span>
                       <span className={`font-bold text-right max-w-[200px] ${service.status !== 'operational' ? config.color : 'text-zinc-300'}`}>
