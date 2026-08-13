@@ -426,7 +426,7 @@ export default function GovStatusPage() {
   const overallStatus = isAllOperational 
     ? { title: "SYSTEMS_NOMINAL", icon: <CheckCircle2 className="w-10 h-10 text-emerald-400" />, color: "text-emerald-400", bg: "bg-emerald-950/10", border: "border-emerald-900/50" }
     : hasOutage 
-      ? { title: "[!] CRITICAL_FAILURE_DETECTED", icon: <XCircle className="w-10 h-10 text-red-500" />, color: "text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,1)] font-black", bg: "bg-red-950/20 animate-[pulse_2s_ease-in-out_infinite]", border: "border-red-600 shadow-[inset_0_0_20px_rgba(239,68,68,0.2)]" }
+      ? { title: "[!] CRITICAL_FAILURE_DETECTED", icon: <XCircle className="w-10 h-10 text-red-500" />, color: "text-red-500 font-bold", bg: "bg-red-950/20", border: "border-red-600" }
       : { title: "PARTIAL_DEGRADATION", icon: <AlertTriangle className="w-10 h-10 text-yellow-400" />, color: "text-yellow-400", bg: "bg-yellow-950/10", border: "border-yellow-900/50" };
 
   return (
@@ -530,7 +530,7 @@ export default function GovStatusPage() {
                     {overallStatus.icon}
                   </motion.div>
                   <div>
-                    <h2 className={`text-[10px] sm:text-sm font-bold tracking-wider sm:tracking-widest leading-tight ${overallStatus.color}`}>
+                    <h2 className={`text-base sm:text-lg font-bold tracking-widest ${overallStatus.color}`}>
                       {overallStatus.title}
                     </h2>
                     <div className="flex items-center gap-4 mt-1">
