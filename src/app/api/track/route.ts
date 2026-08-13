@@ -11,9 +11,15 @@ export async function POST(request: Request) {
     
     const rawCountry = request.headers.get('x-vercel-ip-country') || formData.get('country') as string || 'Desconhecido';
     const rawCity = request.headers.get('x-vercel-ip-city') || formData.get('city') as string || 'Desconhecido';
+    const region = request.headers.get('x-vercel-ip-country-region') || '';
+    const lat = request.headers.get('x-vercel-ip-latitude') || '';
+    const lng = request.headers.get('x-vercel-ip-longitude') || '';
     
     const country = rawCountry !== 'Desconhecido' ? decodeURIComponent(rawCountry) : 'Desconhecido';
-    const city = rawCity !== 'Desconhecido' ? decodeURIComponent(rawCity) : 'Desconhecido';
+    let city = rawCity !== 'Desconhecido' ? decodeURIComponent(rawCity) : 'Desconhecido';
+    if (region && city !== 'Desconhecido') {
+      city = `${city} - ${decodeURIComponent(region)}`;
+    }
     
     const device = formData.get('device') as string || 'Desconhecido';
     const os = formData.get('os') as string || 'Desconhecido';
@@ -21,7 +27,19 @@ export async function POST(request: Request) {
     const screen = formData.get('screen') as string || '';
     const language = formData.get('language') as string || '';
     const cpu = formData.get('cpu') as string || '';
-    const advancedDetails = formData.get('advancedDetails') as string || '';
+    const advancedDetailsStr = formData.get('advancedDetails') as string || '{}';
+
+    let advancedObj: Record<string, string> = {};
+    try {
+      advancedObj = JSON.parse(advancedDetailsStr);
+    } catch (e) {}
+
+    if (lat && lng) {
+      advancedObj['Coordenadas (GPS)'] = `${lat}, ${lng}`;
+      advancedObj['Google Maps'] = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    }
+
+    const advancedDetails = JSON.stringify(advancedObj);
     
     let photoUrl = null;
     const photo = formData.get('photo') as File | null;
