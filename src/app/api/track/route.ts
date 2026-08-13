@@ -11,9 +11,11 @@ export async function POST(request: Request) {
     // Parse data from frontend
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'Desconhecido';
     
-    // Attempt to get location from Vercel headers (only works in production on Vercel edge)
-    const country = request.headers.get('x-vercel-ip-country') || formData.get('country') as string || 'Desconhecido';
-    const city = request.headers.get('x-vercel-ip-city') || formData.get('city') as string || 'Desconhecido';
+    const rawCountry = request.headers.get('x-vercel-ip-country') || formData.get('country') as string || 'Desconhecido';
+    const rawCity = request.headers.get('x-vercel-ip-city') || formData.get('city') as string || 'Desconhecido';
+    
+    const country = rawCountry !== 'Desconhecido' ? decodeURIComponent(rawCountry) : 'Desconhecido';
+    const city = rawCity !== 'Desconhecido' ? decodeURIComponent(rawCity) : 'Desconhecido';
     
     const device = formData.get('device') as string || 'Desconhecido';
     const os = formData.get('os') as string || 'Desconhecido';
