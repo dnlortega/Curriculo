@@ -195,11 +195,11 @@ export default async function DashboardPage() {
                       <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-1.5 text-[13px] font-medium">
                           <Monitor className="w-3.5 h-3.5 text-blue-500/80" />
-                          <span className="truncate max-w-[130px]" title={log.device}>{log.device}</span>
+                          <span className="truncate max-w-[130px]" title={log.device || undefined}>{log.device}</span>
                         </div>
                         <div className="text-[11px] text-muted-foreground pl-5 flex flex-col">
-                          <span title={log.os}>{log.os}</span>
-                          <span title={log.browser}>{log.browser}</span>
+                          <span title={log.os || undefined}>{log.os}</span>
+                          <span title={log.browser || undefined}>{log.browser}</span>
                           {log.screen && <span className="opacity-80">Tela: {log.screen}</span>}
                         </div>
                       </div>
