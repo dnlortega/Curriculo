@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
-    const { password } = await request.json();
-    const correctPassword = process.env.ADMIN_PASSWORD || 'admin123'; // Fallback for local testing if not set
+    const body = await request.json();
+    const { password } = body;
+
+    const settings = await prisma.systemSettings.findUnique({ where: { id: 'default' }});
+    const correctPassword = settings?.adminPassword || 'admin123';
 
     if (password === correctPassword) {
       const cookieStore = await cookies();
@@ -15,12 +19,11 @@ export async function POST(request: Request) {
         maxAge: 60 * 60 * 24 * 7, // 1 week
         path: '/',
       });
-
       return NextResponse.json({ success: true });
     }
 
-    return NextResponse.json({ success: false, error: 'Invalid password' }, { status: 401 });
+    return NextResponse.json({ success: false, error: 'Senha incorreta' }, { status: 401 });
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Erro no servidor' }, { status: 500 });
   }
 }

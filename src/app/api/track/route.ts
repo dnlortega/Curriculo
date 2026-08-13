@@ -75,7 +75,11 @@ export async function POST(request: Request) {
     });
 
     // Send Telegram Notification (if configured)
-    if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+    const settings = await prisma.systemSettings.findUnique({ where: { id: 'default' } });
+    const tgToken = settings?.telegramBotToken || process.env.TELEGRAM_BOT_TOKEN;
+    const tgChatId = settings?.telegramChatId || process.env.TELEGRAM_CHAT_ID;
+
+    if (tgToken && tgChatId) {
       const tgMsg = `🚨 *Novo Acesso no Portfólio!*\n\n` +
                     `📍 *Local:* ${city}, ${country}\n` +
                     `💻 *Dispositivo:* ${device} (${os})\n` +
@@ -83,11 +87,11 @@ export async function POST(request: Request) {
                     `🕵️ *IP:* ${ip}\n` +
                     (lat && lng ? `🗺️ [Abrir no Maps](https://www.google.com/maps/search/?api=1&query=${lat},${lng})` : '');
       
-      fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          chat_id: process.env.TELEGRAM_CHAT_ID,
+          chat_id: tgChatId,
           text: tgMsg,
           parse_mode: 'Markdown',
         }),

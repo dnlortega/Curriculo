@@ -1,6 +1,7 @@
 import { google } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
 // Resume data context
 const CONTEXT = `
@@ -19,14 +20,17 @@ Sua resposta deve ser curta, amigável e usar emojis moderadamente.
 `;
 
 export async function POST(req: Request) {
-  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
-    return new NextResponse('API Key do Gemini não configurada pelo dono.', { status: 500 });
+  const settings = await prisma.systemSettings.findUnique({ where: { id: 'default' } });
+  const geminiKey = settings?.geminiApiKey || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+
+  if (!geminiKey) {
+    return new NextResponse('API Key do Gemini não configurada pelo dono no Dashboard.', { status: 500 });
   }
 
   const { messages } = await req.json();
 
   const result = await streamText({
-    model: google('gemini-1.5-flash'),
+    model: google('gemini-1.5-flash', { apiKey: geminiKey }),
     messages,
     system: CONTEXT,
   });
