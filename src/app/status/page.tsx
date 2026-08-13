@@ -194,7 +194,7 @@ const TacticalMap = ({ services }: { services: Service[] }) => {
   ];
 
   return (
-    <div className="relative w-full h-full bg-zinc-950/50 border border-zinc-800 rounded-none overflow-hidden min-h-[120px]">
+    <div className="relative w-full h-full bg-zinc-950/50 border border-zinc-800 rounded-none overflow-hidden min-h-[80px] sm:min-h-[100px]">
       <svg className="absolute inset-0 w-full h-full" viewBox="15 15 70 70" preserveAspectRatio="xMidYMid meet">
         {/* Network connections */}
         <path d="M50 55 L65 75 L75 70 L50 55 L80 25 L25 30 L50 55" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5" />
@@ -448,10 +448,10 @@ export default function GovStatusPage() {
       `}} />
       <div className={`fixed inset-0 pointer-events-none bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:16px_16px] ${chaosMode ? 'bg-red-950/20' : ''}`} />
       
-      <header className="z-50 w-full border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
-        <div className="container mx-auto px-2 sm:px-4 h-12 sm:h-10 flex flex-wrap items-center justify-between max-w-7xl">
+      <header className="z-50 w-full border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md shrink-0">
+        <div className="container mx-auto px-2 sm:px-4 h-10 flex flex-wrap items-center justify-between max-w-7xl">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <Terminal className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" />
+            <Terminal className="w-3 h-3 text-emerald-500" />
             <span className="font-bold text-[9px] sm:text-xs tracking-widest text-zinc-100 hidden sm:inline-block">GOV.BR_STATUS</span>
             <span className="font-bold text-[9px] sm:text-xs tracking-widest text-zinc-100 sm:hidden">GOV.BR</span>
           </div>
@@ -500,7 +500,7 @@ export default function GovStatusPage() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col justify-start lg:justify-center container mx-auto px-2 sm:px-4 max-w-7xl relative z-10 w-full py-2 overflow-y-auto overflow-x-hidden">
+      <main className="flex-1 flex flex-col justify-start container mx-auto px-2 sm:px-4 max-w-7xl relative z-10 w-full py-2 overflow-hidden h-[calc(100vh-2.5rem)]">
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -594,7 +594,7 @@ export default function GovStatusPage() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 pb-4 sm:pb-0"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-1 sm:gap-2 pb-0 flex-1 min-h-0"
         >
           <AnimatePresence>
           {filteredServices.map((service) => {
@@ -602,36 +602,36 @@ export default function GovStatusPage() {
             return (
               <Dialog key={service.id}>
                 <DialogTrigger render={<motion.button layout variants={itemVariants} initial="hidden" animate="show" exit={{ opacity: 0, scale: 0.9 }} className="cursor-pointer h-full w-full text-left appearance-none border-none bg-transparent p-0 m-0 focus:outline-none" />}>
-                  <Card className={`h-full rounded-none border transition-all duration-300 group ${config.bgGradient} ${config.shadow}`}>
-                    <CardHeader className="p-2 pb-1">
-                      <div className="flex justify-between items-start mb-1">
-                        <span className={`text-[10px] font-bold tracking-widest ${config.color}`}>
+                  <Card className={`h-full rounded-none border transition-all duration-300 group flex flex-col ${config.bgGradient} ${config.shadow}`}>
+                    <CardHeader className="p-1.5 sm:p-2 pb-0.5 shrink-0">
+                      <div className="flex justify-between items-start mb-0.5">
+                        <span className={`text-[9px] sm:text-[10px] font-bold tracking-widest ${config.color}`}>
                           {config.text}
                         </span>
-                        <span className="text-[8px] text-zinc-500 font-bold uppercase tracking-wider">
+                        <span className="text-[7px] sm:text-[8px] text-zinc-500 font-bold uppercase tracking-wider">
                           ID: {service.id}
                         </span>
                       </div>
-                      <CardTitle className="text-xs font-bold text-zinc-100 tracking-wide truncate">
+                      <CardTitle className="text-[10px] sm:text-xs font-bold text-zinc-100 tracking-wide truncate">
                         {service.name}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-2 pt-1 flex flex-col justify-between">
-                      <div className="flex justify-between items-end border-t border-zinc-800/50 pt-1 mt-1 mb-1.5">
+                    <CardContent className="p-1.5 sm:p-2 pt-0.5 flex flex-col justify-between flex-1 min-h-0">
+                      <div className="flex justify-between items-end border-t border-zinc-800/50 pt-1 mt-1 mb-1 shrink-0">
                         <div className="flex flex-col">
-                          <span className="text-[8px] text-zinc-600 uppercase tracking-widest">PING</span>
-                          <span className={`text-[10px] font-bold ${service.responseTime > 500 ? 'text-yellow-400' : 'text-zinc-300'}`}>
+                          <span className="text-[7px] sm:text-[8px] text-zinc-600 uppercase tracking-widest">PING</span>
+                          <span className={`text-[9px] sm:text-[10px] font-bold ${service.responseTime > 500 ? 'text-yellow-400' : 'text-zinc-300'}`}>
                             {service.status === 'outage' ? 'TIMEOUT' : `${service.responseTime}ms`}
                           </span>
                         </div>
                         <div className="flex flex-col items-end">
-                          <span className="text-[8px] text-zinc-600 uppercase tracking-widest">UPTIME</span>
-                          <span className="text-[10px] font-bold text-zinc-300">
+                          <span className="text-[7px] sm:text-[8px] text-zinc-600 uppercase tracking-widest">UPTIME</span>
+                          <span className="text-[9px] sm:text-[10px] font-bold text-zinc-300">
                             {service.uptime}
                           </span>
                         </div>
                       </div>
-                      <div className="h-10 w-full mt-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                      <div className="h-6 sm:h-8 w-full mt-1 opacity-80 group-hover:opacity-100 transition-opacity flex-1 min-h-[20px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <AreaChart data={service.history}>
                             <Area 
