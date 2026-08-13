@@ -302,48 +302,46 @@ export default function GovStatusPage() {
             const config = getStatusConfig(service.status);
             return (
               <Dialog key={service.id}>
-                <DialogTrigger asChild>
-                  <motion.div variants={itemVariants} className="cursor-pointer h-full">
-                    <Card className={`h-full overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-slate-200 dark:border-slate-800 group bg-gradient-to-br ${config.bgGradient} dark:bg-slate-900`}>
-                      <CardHeader className="pb-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-lg bg-white dark:bg-slate-950 shadow-sm border border-slate-100 dark:border-slate-800 relative`}>
-                              <div className={`absolute inset-0 opacity-20 blur-md rounded-lg ${config.color}`} />
-                              <div className="relative z-10">
-                                 {config.icon}
-                              </div>
+                <DialogTrigger render={<motion.div variants={itemVariants} className="cursor-pointer h-full" />}>
+                  <Card className={`h-full overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-slate-200 dark:border-slate-800 group bg-gradient-to-br ${config.bgGradient} dark:bg-slate-900`}>
+                    <CardHeader className="pb-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-lg bg-white dark:bg-slate-950 shadow-sm border border-slate-100 dark:border-slate-800 relative`}>
+                            <div className={`absolute inset-0 opacity-20 blur-md rounded-lg ${config.color}`} />
+                            <div className="relative z-10">
+                               {config.icon}
                             </div>
                           </div>
-                          <Badge variant="outline" className={`font-medium border ${config.badgeClass}`}>
-                            {config.text}
-                          </Badge>
                         </div>
-                        <CardTitle className="text-lg font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {service.name}
-                        </CardTitle>
-                        <CardDescription className="text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                          {service.description}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-2 gap-4 mt-2 pt-4 border-t border-slate-100 dark:border-slate-800/50">
-                          <div className="flex flex-col gap-1">
-                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Latência</span>
-                            <span className={`font-mono text-sm font-medium ${service.responseTime > 500 ? 'text-amber-500' : 'text-slate-700 dark:text-slate-300'}`}>
-                              {service.status === 'outage' ? '--' : `${service.responseTime}ms`}
-                            </span>
-                          </div>
-                          <div className="flex flex-col gap-1 items-end">
-                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Uptime</span>
-                            <span className="font-mono text-sm font-medium text-slate-700 dark:text-slate-300">
-                              {service.uptime}
-                            </span>
-                          </div>
+                        <Badge variant="outline" className={`font-medium border ${config.badgeClass}`}>
+                          {config.text}
+                        </Badge>
+                      </div>
+                      <CardTitle className="text-lg font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {service.name}
+                      </CardTitle>
+                      <CardDescription className="text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                        {service.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-4 mt-2 pt-4 border-t border-slate-100 dark:border-slate-800/50">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Latência</span>
+                          <span className={`font-mono text-sm font-medium ${service.responseTime > 500 ? 'text-amber-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                            {service.status === 'outage' ? '--' : `${service.responseTime}ms`}
+                          </span>
                         </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
+                        <div className="flex flex-col gap-1 items-end">
+                          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Uptime</span>
+                          <span className="font-mono text-sm font-medium text-slate-700 dark:text-slate-300">
+                            {service.uptime}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </DialogTrigger>
                 
                 <DialogContent className="sm:max-w-[500px] border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl">
