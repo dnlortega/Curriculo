@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, AlertTriangle, Activity, Server, Clock, RefreshCw, BarChart3, Globe2, ShieldAlert, Zap } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, Activity, Server, Clock, RefreshCw, BarChart3, Globe2, ShieldAlert, Zap, Terminal } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
@@ -127,12 +127,12 @@ const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }
+    transition: { staggerChildren: 0.05 }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
+  hidden: { y: 10, opacity: 0 },
   show: { y: 0, opacity: 1 }
 };
 
@@ -152,20 +152,19 @@ export default function GovStatusPage() {
     setIsRefreshing(true);
     setTimeout(() => {
       setServices(prev => prev.map(service => {
-        if (Math.random() > 0.7) {
+        if (Math.random() > 0.8) {
           const statuses: ServiceStatus[] = ["operational", "degraded", "outage"];
           const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
           const newResponseTime = newStatus === "outage" ? 0 : Math.floor(Math.random() * 800) + 40;
           return { ...service, status: newStatus, responseTime: newResponseTime };
         }
-        // Even if status doesn't change, fluctuate response time
         const flux = Math.floor(Math.random() * 50) - 25;
         const newResponseTime = service.status === "outage" ? 0 : Math.max(20, service.responseTime + flux);
         return { ...service, responseTime: newResponseTime };
       }));
       setLastUpdate(new Date().toLocaleTimeString('pt-BR'));
       setIsRefreshing(false);
-    }, 1500);
+    }, 1000);
   }, []);
 
   useEffect(() => {
@@ -180,30 +179,30 @@ export default function GovStatusPage() {
     switch (status) {
       case "operational":
         return {
-          icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
-          text: "Operacional",
-          badgeClass: "bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-500/20",
-          color: "bg-emerald-500",
-          bgGradient: "from-emerald-500/5 to-transparent",
-          textColor: "text-emerald-500"
+          icon: <CheckCircle2 className="w-4 h-4 text-emerald-400" />,
+          text: "[ OK ]",
+          badgeClass: "bg-emerald-950/30 text-emerald-400 border-emerald-900/50 font-bold",
+          color: "text-emerald-400",
+          bgGradient: "bg-zinc-900/50 hover:bg-zinc-900/80 border-emerald-900/30",
+          shadow: "hover:shadow-[0_0_15px_rgba(52,211,153,0.1)]"
         };
       case "degraded":
         return {
-          icon: <AlertTriangle className="w-5 h-5 text-amber-500" />,
-          text: "Instabilidade",
-          badgeClass: "bg-amber-500/15 text-amber-600 hover:bg-amber-500/25 border-amber-500/20",
-          color: "bg-amber-500",
-          bgGradient: "from-amber-500/5 to-transparent",
-          textColor: "text-amber-500"
+          icon: <AlertTriangle className="w-4 h-4 text-yellow-400" />,
+          text: "[ WARN ]",
+          badgeClass: "bg-yellow-950/30 text-yellow-400 border-yellow-900/50 font-bold animate-pulse",
+          color: "text-yellow-400",
+          bgGradient: "bg-zinc-900/50 hover:bg-zinc-900/80 border-yellow-900/50",
+          shadow: "hover:shadow-[0_0_15px_rgba(250,204,21,0.15)]"
         };
       case "outage":
         return {
-          icon: <XCircle className="w-5 h-5 text-rose-500" />,
-          text: "Fora do Ar",
-          badgeClass: "bg-rose-500/15 text-rose-600 hover:bg-rose-500/25 border-rose-500/20",
-          color: "bg-rose-500",
-          bgGradient: "from-rose-500/5 to-transparent",
-          textColor: "text-rose-500"
+          icon: <XCircle className="w-4 h-4 text-red-500" />,
+          text: "[ FAIL ]",
+          badgeClass: "bg-red-950/30 text-red-500 border-red-900/50 font-bold animate-pulse",
+          color: "text-red-500",
+          bgGradient: "bg-red-950/10 hover:bg-red-950/20 border-red-900/50",
+          shadow: "hover:shadow-[0_0_15px_rgba(239,68,68,0.2)]"
         };
     }
   };
@@ -214,119 +213,116 @@ export default function GovStatusPage() {
   const affectedServices = services.filter(s => s.status !== "operational");
   
   const overallStatus = isAllOperational 
-    ? { title: "Todos os sistemas operacionais", icon: <CheckCircle2 className="w-12 h-12 text-emerald-500" />, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" }
+    ? { title: "SYSTEMS_NOMINAL", icon: <CheckCircle2 className="w-10 h-10 text-emerald-400" />, color: "text-emerald-400", bg: "bg-emerald-950/10", border: "border-emerald-900/50" }
     : hasOutage 
-      ? { title: "Falhas críticas detectadas", icon: <XCircle className="w-12 h-12 text-rose-500" />, color: "text-rose-500", bg: "bg-rose-500/10", border: "border-rose-500/20" }
-      : { title: "Instabilidade parcial", icon: <AlertTriangle className="w-12 h-12 text-amber-500" />, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" };
+      ? { title: "CRITICAL_FAILURE_DETECTED", icon: <XCircle className="w-10 h-10 text-red-500" />, color: "text-red-500", bg: "bg-red-950/10", border: "border-red-900/50" }
+      : { title: "PARTIAL_DEGRADATION", icon: <AlertTriangle className="w-10 h-10 text-yellow-400" />, color: "text-yellow-400", bg: "bg-yellow-950/10", border: "border-yellow-900/50" };
 
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 pb-20">
-      <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-6xl">
+    <div className="h-screen w-full bg-zinc-950 text-zinc-300 font-mono overflow-hidden flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200">
+      {/* Background Grid Pattern */}
+      <div className="fixed inset-0 pointer-events-none bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:16px_16px]" />
+      
+      <header className="z-50 w-full border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
+        <div className="container mx-auto px-4 h-10 flex items-center justify-between max-w-7xl">
           <div className="flex items-center gap-2">
-            <Activity className="w-6 h-6 text-blue-600 dark:text-blue-500" />
-            <span className="font-bold text-lg tracking-tight">GovStatus Pro</span>
+            <Terminal className="w-4 h-4 text-emerald-500" />
+            <span className="font-bold text-xs tracking-widest text-zinc-100">GOV.BR_STATUS_MONITOR</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-[10px]">
             <select 
-              className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm font-medium rounded-full px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer appearance-none text-slate-700 dark:text-slate-300"
+              className="bg-zinc-900 border border-zinc-700 rounded-none px-1 py-0.5 outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer appearance-none text-zinc-300"
               value={autoRefreshInterval}
               onChange={(e) => setAutoRefreshInterval(Number(e.target.value))}
-              title="Atualização automática"
             >
-              <option value={0}>Auto: Desligado</option>
-              <option value={10}>A cada 10s</option>
-              <option value={30}>A cada 30s</option>
-              <option value={60}>A cada 1 min</option>
+              <option value={0}>AUTO_SYNC: OFF</option>
+              <option value={10}>SYNC_FREQ: 10s</option>
+              <option value={30}>SYNC_FREQ: 30s</option>
+              <option value={60}>SYNC_FREQ: 60s</option>
             </select>
             <button 
               onClick={refreshStatus}
               disabled={isRefreshing}
-              className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 flex items-center gap-2 text-sm font-medium"
-              title="Atualizar Status"
+              className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 transition-colors disabled:opacity-50 flex items-center gap-1.5"
             >
-              <span className="hidden sm:inline-block">Sincronizar</span>
-              <RefreshCw className={`w-5 h-5 text-slate-500 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3 h-3 text-emerald-500 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline-block tracking-widest">FORCE_SYNC</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 pt-12 max-w-6xl">
+      <main className="flex-1 flex flex-col justify-center container mx-auto px-4 max-w-7xl relative z-10 w-full">
         <motion.div 
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-16"
+          className="mb-4"
         >
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-              Monitoramento Governamental
-            </h1>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Painel de transparência e acompanhamento em tempo real da disponibilidade, latência e estabilidade dos serviços digitais do Brasil.
-            </p>
+          <div className="flex items-end justify-between mb-2">
+            <div>
+              <h1 className="text-lg md:text-xl font-bold tracking-widest text-zinc-100 uppercase">
+                Server_Farm_Status
+              </h1>
+            </div>
+            <div className="text-right text-[10px] font-mono text-zinc-500">
+              <p>SESSION_ID: 0x8F9A2 | UPTIME: 99.9%</p>
+            </div>
           </div>
 
-          <Card className={`overflow-hidden border-2 shadow-lg transition-colors duration-500 ${overallStatus.border}`}>
-            <div className={`p-8 flex flex-col md:flex-row items-center justify-center gap-6 ${overallStatus.bg}`}>
-              <motion.div
-                animate={isRefreshing ? { scale: [1, 1.1, 1] } : {}}
-                transition={{ duration: 1, repeat: isRefreshing ? Infinity : 0 }}
-              >
-                {overallStatus.icon}
-              </motion.div>
-              <div className="text-center md:text-left">
-                <h2 className={`text-2xl md:text-3xl font-bold ${overallStatus.color}`}>
-                  {overallStatus.title}
-                </h2>
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3">
-                  <Badge variant="outline" className="bg-white/50 dark:bg-black/20 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
-                    <Clock className="w-3.5 h-3.5 mr-1" />
-                    Atualizado: {lastUpdate}
-                  </Badge>
-                  <Badge variant="outline" className="bg-white/50 dark:bg-black/20 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
-                    <Server className="w-3.5 h-3.5 mr-1" />
-                    {services.length} Nós monitorados
-                  </Badge>
-                </div>
-
-                {affectedServices.length > 0 && (
-                  <div className="mt-5 pt-5 border-t border-slate-200 dark:border-slate-700/50 w-full">
-                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
-                      Sistemas impactados no momento:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {affectedServices.map(svc => (
-                        <Badge key={svc.id} variant="secondary" className={`px-2.5 py-1 ${svc.status === 'outage' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 border-rose-200 dark:border-rose-800' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border-amber-200 dark:border-amber-800'}`}>
-                          {svc.name}
-                        </Badge>
-                      ))}
-                    </div>
+          <Card className={`rounded-none border shadow-2xl transition-all duration-500 ${overallStatus.border} ${overallStatus.bg}`}>
+            <div className="p-3 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <motion.div
+                  animate={isRefreshing ? { scale: [1, 1.1, 1], opacity: [1, 0.5, 1] } : {}}
+                  transition={{ duration: 1, repeat: isRefreshing ? Infinity : 0 }}
+                >
+                  {overallStatus.icon}
+                </motion.div>
+                <div>
+                  <h2 className={`text-sm font-bold tracking-widest ${overallStatus.color}`}>
+                    {overallStatus.title}
+                  </h2>
+                  <div className="flex items-center gap-4 mt-1">
+                    <span className="text-[10px] text-zinc-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> PING: {lastUpdate}
+                    </span>
+                    <span className="text-[10px] text-zinc-400 flex items-center gap-1">
+                      <Server className="w-3 h-3" /> NODES: {operationalCount}/{services.length}
+                    </span>
                   </div>
-                )}
+                </div>
               </div>
+
+              {affectedServices.length > 0 && (
+                <div className="border-l border-zinc-800 pl-4">
+                  <p className="text-[10px] font-bold text-zinc-400 mb-1 tracking-widest uppercase">Alert_Log:</p>
+                  <div className="flex flex-col gap-0.5">
+                    {affectedServices.map(svc => (
+                      <div key={svc.id} className="flex items-center gap-1 text-[10px]">
+                        <span className={`${svc.status === 'outage' ? 'text-red-500' : 'text-yellow-400'}`}>
+                          {svc.status === 'outage' ? '[ERR]' : '[WARN]'}
+                        </span>
+                        <span className="text-zinc-300">{svc.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         </motion.div>
 
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h3 className="text-2xl font-bold flex items-center gap-2">
-            <Activity className="w-6 h-6 text-slate-400" />
-            Visão Detalhada dos Serviços
+        <div className="mb-2 flex items-center justify-between border-b border-zinc-800 pb-1">
+          <h3 className="text-xs font-bold tracking-widest text-zinc-300 uppercase">
+            &gt; Network_Nodes
           </h3>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-sm text-slate-500 font-medium">
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Operacional
-            </div>
-            <div className="flex items-center gap-1.5 text-sm text-slate-500 font-medium">
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Instável
-            </div>
-            <div className="flex items-center gap-1.5 text-sm text-slate-500 font-medium">
-              <div className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Offline
-            </div>
+          <div className="flex items-center gap-3 text-[10px] font-medium">
+            <span className="text-emerald-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" /> OP</span>
+            <span className="text-yellow-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-yellow-400 rounded-full" /> DEG</span>
+            <span className="text-red-500 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-red-500 rounded-full" /> OUT</span>
           </div>
         </div>
 
@@ -334,46 +330,38 @@ export default function GovStatusPage() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2"
         >
           {services.map((service) => {
             const config = getStatusConfig(service.status);
             return (
               <Dialog key={service.id}>
                 <DialogTrigger render={<motion.button variants={itemVariants} className="cursor-pointer h-full w-full text-left appearance-none border-none bg-transparent p-0 m-0 focus:outline-none" />}>
-                  <Card className={`h-full overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-slate-200 dark:border-slate-800 group bg-gradient-to-br ${config.bgGradient} dark:bg-slate-900`}>
-                    <CardHeader className="pb-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-lg bg-white dark:bg-slate-950 shadow-sm border border-slate-100 dark:border-slate-800 relative`}>
-                            <div className={`absolute inset-0 opacity-20 blur-md rounded-lg ${config.color}`} />
-                            <div className="relative z-10">
-                               {config.icon}
-                            </div>
-                          </div>
-                        </div>
-                        <Badge variant="outline" className={`font-medium border ${config.badgeClass}`}>
+                  <Card className={`h-full rounded-none border transition-all duration-300 group ${config.bgGradient} ${config.shadow}`}>
+                    <CardHeader className="p-2 pb-1">
+                      <div className="flex justify-between items-start mb-1">
+                        <span className={`text-[10px] font-bold tracking-widest ${config.color}`}>
                           {config.text}
-                        </Badge>
+                        </span>
+                        <span className="text-[8px] text-zinc-500 font-bold uppercase tracking-wider">
+                          ID: {service.id}
+                        </span>
                       </div>
-                      <CardTitle className="text-lg font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      <CardTitle className="text-xs font-bold text-zinc-100 tracking-wide truncate">
                         {service.name}
                       </CardTitle>
-                      <CardDescription className="text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                        {service.description}
-                      </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 gap-4 mt-2 pt-4 border-t border-slate-100 dark:border-slate-800/50">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Latência</span>
-                          <span className={`font-mono text-sm font-medium ${service.responseTime > 500 ? 'text-amber-500' : 'text-slate-700 dark:text-slate-300'}`}>
-                            {service.status === 'outage' ? '--' : `${service.responseTime}ms`}
+                    <CardContent className="p-2 pt-1">
+                      <div className="flex justify-between items-end border-t border-zinc-800/50 pt-1 mt-1">
+                        <div className="flex flex-col">
+                          <span className="text-[8px] text-zinc-600 uppercase tracking-widest">PING</span>
+                          <span className={`text-[10px] font-bold ${service.responseTime > 500 ? 'text-yellow-400' : 'text-zinc-300'}`}>
+                            {service.status === 'outage' ? 'TIMEOUT' : `${service.responseTime}ms`}
                           </span>
                         </div>
-                        <div className="flex flex-col gap-1 items-end">
-                          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Uptime</span>
-                          <span className="font-mono text-sm font-medium text-slate-700 dark:text-slate-300">
+                        <div className="flex flex-col items-end">
+                          <span className="text-[8px] text-zinc-600 uppercase tracking-widest">UPTIME</span>
+                          <span className="text-[10px] font-bold text-zinc-300">
                             {service.uptime}
                           </span>
                         </div>
@@ -382,58 +370,55 @@ export default function GovStatusPage() {
                   </Card>
                 </DialogTrigger>
                 
-                <DialogContent className="sm:max-w-[500px] border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl">
-                  <DialogHeader>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-3 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-center`}>
-                        {config.icon}
-                      </div>
-                      <Badge variant="outline" className={`text-base py-1 px-3 border-2 ${config.badgeClass}`}>
+                <DialogContent className="sm:max-w-[500px] rounded-none border-zinc-700 bg-zinc-950 font-mono text-zinc-300 shadow-[0_0_40px_rgba(0,0,0,0.8)]">
+                  <DialogHeader className="border-b border-zinc-800 pb-3 mb-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest">NODE_DETAILS</span>
+                      <span className={`text-xs font-bold tracking-widest ${config.color}`}>
                         {config.text}
-                      </Badge>
+                      </span>
                     </div>
-                    <DialogTitle className="text-2xl font-bold">{service.name}</DialogTitle>
-                    <DialogDescription className="text-base mt-2">
+                    <DialogTitle className="text-lg font-bold tracking-widest uppercase text-zinc-100">
+                      &gt; {service.name}
+                    </DialogTitle>
+                    <DialogDescription className="text-[10px] text-zinc-500 font-mono mt-1">
                       {service.description}
                     </DialogDescription>
                   </DialogHeader>
                   
-                  <div className="grid grid-cols-2 gap-4 my-6">
-                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-center">
-                      <Zap className="w-5 h-5 text-amber-500 mb-2" />
-                      <span className="text-xs text-slate-500 font-semibold uppercase">Tempo de Resposta</span>
-                      <span className="text-xl font-mono font-bold text-slate-700 dark:text-slate-200">
-                        {service.status === 'outage' ? 'Inacessível' : `${service.responseTime} ms`}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-zinc-900 border border-zinc-800 p-2 flex flex-col">
+                      <span className="text-[8px] text-zinc-500 tracking-widest mb-1 flex items-center gap-1">
+                        <Zap className="w-3 h-3 text-zinc-400" /> LATENCY
+                      </span>
+                      <span className={`text-base font-bold ${service.status === 'outage' ? 'text-red-500' : 'text-zinc-200'}`}>
+                        {service.status === 'outage' ? 'TIMEOUT' : `${service.responseTime} ms`}
                       </span>
                     </div>
-                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-center">
-                      <BarChart3 className="w-5 h-5 text-emerald-500 mb-2" />
-                      <span className="text-xs text-slate-500 font-semibold uppercase">Uptime (30 dias)</span>
-                      <span className="text-xl font-mono font-bold text-slate-700 dark:text-slate-200">
+                    <div className="bg-zinc-900 border border-zinc-800 p-2 flex flex-col">
+                      <span className="text-[8px] text-zinc-500 tracking-widest mb-1 flex items-center gap-1">
+                        <BarChart3 className="w-3 h-3 text-zinc-400" /> UPTIME_30D
+                      </span>
+                      <span className="text-base font-bold text-zinc-200">
                         {service.uptime}
                       </span>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
-                      <Server className="w-4 h-4" /> Informações Adicionais
-                    </h4>
-                    <div className="grid grid-cols-1 gap-3 text-sm">
-                      <div className="flex justify-between items-center py-2 border-b border-slate-50 dark:border-slate-800/50">
-                        <span className="text-slate-500 flex items-center gap-2"><Globe2 className="w-4 h-4" /> Região</span>
-                        <span className="font-medium">{service.region}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-slate-50 dark:border-slate-800/50">
-                        <span className="text-slate-500 flex items-center gap-2"><ShieldAlert className="w-4 h-4" /> Último Incidente</span>
-                        <span className={`font-medium ${service.status !== 'operational' ? config.textColor : ''}`}>
-                          {service.lastIncident}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center py-2">
-                        <span className="text-slate-500">Categoria</span>
-                        <Badge variant="secondary">{service.category}</Badge>
-                      </div>
+                  <div className="border border-zinc-800 bg-zinc-900/50 p-3 text-[10px]">
+                    <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
+                      <span className="text-zinc-500">REGION_LOCK</span>
+                      <span className="text-zinc-300 font-bold">{service.region}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/50">
+                      <span className="text-zinc-500">SYSTEM_TAG</span>
+                      <span className="text-zinc-300 bg-zinc-800 px-1 py-0.5">{service.category}</span>
+                    </div>
+                    <div className="flex justify-between items-start py-1.5">
+                      <span className="text-zinc-500">LAST_INCIDENT</span>
+                      <span className={`font-bold text-right max-w-[200px] ${service.status !== 'operational' ? config.color : 'text-zinc-300'}`}>
+                        {service.lastIncident}
+                      </span>
                     </div>
                   </div>
                 </DialogContent>
