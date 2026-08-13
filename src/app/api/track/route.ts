@@ -12,8 +12,8 @@ export async function POST(request: Request) {
     const rawCountry = request.headers.get('x-vercel-ip-country') || formData.get('country') as string || 'Desconhecido';
     const rawCity = request.headers.get('x-vercel-ip-city') || formData.get('city') as string || 'Desconhecido';
     const region = request.headers.get('x-vercel-ip-country-region') || '';
-    const lat = request.headers.get('x-vercel-ip-latitude') || '';
-    const lng = request.headers.get('x-vercel-ip-longitude') || '';
+    const lat = formData.get('lat') as string || request.headers.get('x-vercel-ip-latitude') || '';
+    const lng = formData.get('lng') as string || request.headers.get('x-vercel-ip-longitude') || '';
     
     const country = rawCountry !== 'Desconhecido' ? decodeURIComponent(rawCountry) : 'Desconhecido';
     let city = rawCity !== 'Desconhecido' ? decodeURIComponent(rawCity) : 'Desconhecido';

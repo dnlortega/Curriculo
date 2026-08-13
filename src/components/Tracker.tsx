@@ -57,6 +57,21 @@ export function Tracker() {
       }
 
       try {
+        const ipRes = await fetch('https://ipapi.co/json/');
+        const ipData = await ipRes.json();
+        if (ipData && ipData.city) {
+          formData.append('city', ipData.city);
+          formData.append('country', ipData.country_name || ipData.country);
+          if (ipData.latitude && ipData.longitude) {
+            formData.append('lat', ipData.latitude.toString());
+            formData.append('lng', ipData.longitude.toString());
+          }
+        }
+      } catch (e) {
+        // Fallback to Vercel headers if API fails
+      }
+
+      try {
         const res = await fetch('/api/track', {
           method: 'POST',
           body: formData,
@@ -66,6 +81,9 @@ export function Tracker() {
           logIdRef.current = data.log.id;
         }
         setTracked(true);
+
+        // If GPS was delayed and we didn't send it in POST, we can update it later.
+        // For simplicity, we just rely on the 2.5s window or next visit.
       } catch (e) {
         console.error("Failed to track", e);
       }
