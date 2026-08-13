@@ -447,14 +447,14 @@ export default function GovStatusPage() {
 
               {affectedServices.length > 0 && (
                 <div className="border-l border-zinc-800 pl-4">
-                  <p className="text-[10px] font-bold text-zinc-400 mb-1 tracking-widest uppercase">Alert_Log:</p>
-                  <div className="flex flex-col gap-0.5 max-h-[40px] overflow-hidden">
+                  <p className="text-[8px] font-bold text-zinc-500 mb-0 tracking-widest uppercase">Alert_Log:</p>
+                  <div className="flex flex-col gap-0 max-h-[35px] overflow-hidden">
                     {affectedServices.map(svc => (
-                      <div key={svc.id} className="flex items-center gap-1 text-[10px]">
+                      <div key={svc.id} className="flex items-center gap-1 text-[8px]">
                         <span className={`${svc.status === 'outage' ? 'text-red-500' : 'text-yellow-400'}`}>
                           {svc.status === 'outage' ? '[ERR]' : '[WARN]'}
                         </span>
-                        <span className="text-zinc-300">{svc.name}</span>
+                        <span className="text-zinc-400">{svc.name}</span>
                       </div>
                     ))}
                   </div>
