@@ -338,10 +338,8 @@ export default function GovStatusPage() {
       ? { title: "CRITICAL_FAILURE_DETECTED", icon: <XCircle className="w-10 h-10 text-red-500" />, color: "text-red-500", bg: "bg-red-950/10", border: "border-red-900/50" }
       : { title: "PARTIAL_DEGRADATION", icon: <AlertTriangle className="w-10 h-10 text-yellow-400" />, color: "text-yellow-400", bg: "bg-yellow-950/10", border: "border-yellow-900/50" };
 
-  if (!mounted) return null;
-
   return (
-    <div className={`h-screen w-full bg-zinc-950 text-zinc-300 font-mono overflow-hidden flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200 ${chaosMode ? 'animate-[shake_0.5s_ease-in-out_infinite]' : ''}`}>
+    <div className={`h-screen w-full bg-zinc-950 text-zinc-300 font-mono flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200 ${chaosMode ? 'animate-[shake_0.5s_ease-in-out_infinite]' : ''}`}>
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes shake {
           0% { transform: translate(1px, 1px) rotate(0deg); }
@@ -360,12 +358,13 @@ export default function GovStatusPage() {
       <div className={`fixed inset-0 pointer-events-none bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:16px_16px] ${chaosMode ? 'bg-red-950/20' : ''}`} />
       
       <header className="z-50 w-full border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 h-10 flex items-center justify-between max-w-7xl">
-          <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-emerald-500" />
-            <span className="font-bold text-xs tracking-widest text-zinc-100">GOV.BR_STATUS_MONITOR</span>
+        <div className="container mx-auto px-2 sm:px-4 h-12 sm:h-10 flex flex-wrap items-center justify-between max-w-7xl">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Terminal className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" />
+            <span className="font-bold text-[9px] sm:text-xs tracking-widest text-zinc-100 hidden sm:inline-block">GOV.BR_STATUS</span>
+            <span className="font-bold text-[9px] sm:text-xs tracking-widest text-zinc-100 sm:hidden">GOV.BR</span>
           </div>
-          <div className="flex items-center gap-3 text-[10px]">
+          <div className="flex items-center gap-1.5 sm:gap-3 text-[9px] sm:text-[10px]">
             <button 
               onClick={triggerChaos}
               className={`px-2 py-0.5 border transition-colors flex items-center gap-1.5 ${chaosMode ? 'bg-red-600 text-white border-red-500 animate-pulse' : 'bg-zinc-900 border-zinc-700 hover:bg-red-950/30 hover:border-red-900/50 hover:text-red-400 text-zinc-500'}`}
@@ -382,7 +381,7 @@ export default function GovStatusPage() {
               <Maximize className="w-3 h-3" />
             </button>
             <select 
-              className="bg-zinc-900 border border-zinc-700 rounded-none px-1 py-0.5 outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer appearance-none text-zinc-300"
+              className="bg-zinc-900 border border-zinc-700 rounded-none px-1 py-0.5 outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer appearance-none text-zinc-300 max-w-[80px] sm:max-w-none text-[8px] sm:text-[10px]"
               value={autoRefreshInterval}
               onChange={(e) => setAutoRefreshInterval(Number(e.target.value))}
             >
@@ -403,30 +402,31 @@ export default function GovStatusPage() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col justify-center container mx-auto px-4 max-w-7xl relative z-10 w-full py-2">
+      <main className="flex-1 flex flex-col justify-start lg:justify-center container mx-auto px-2 sm:px-4 max-w-7xl relative z-10 w-full py-2 overflow-y-auto overflow-x-hidden">
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-2"
+          className="mb-2 shrink-0"
         >
           <div className="flex items-end justify-between mb-2">
             <div>
-              <h1 className="text-lg md:text-xl font-bold tracking-widest text-zinc-100 uppercase">
-                Server_Farm_Status
+              <h1 className="text-base sm:text-lg md:text-xl font-bold tracking-widest text-zinc-100 uppercase">
+                Server_Farm
               </h1>
             </div>
-            <div className="text-right text-[10px] font-mono text-zinc-500">
+            <div className="text-right text-[8px] sm:text-[10px] font-mono text-zinc-500 hidden sm:block">
               <p>SESSION_ID: 0x8F9A2 | UPTIME: 99.9%</p>
             </div>
           </div>
 
           <Card className={`rounded-none border shadow-2xl transition-all duration-500 ${overallStatus.border} ${overallStatus.bg}`}>
-            <div className="p-3 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
+            <div className="p-2 sm:p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <motion.div
                   animate={isRefreshing ? { scale: [1, 1.1, 1], opacity: [1, 0.5, 1] } : {}}
                   transition={{ duration: 1, repeat: isRefreshing ? Infinity : 0 }}
+                  className="shrink-0"
                 >
                   {overallStatus.icon}
                 </motion.div>
@@ -446,9 +446,9 @@ export default function GovStatusPage() {
               </div>
 
               {affectedServices.length > 0 && (
-                <div className="border-l border-zinc-800 pl-4">
+                <div className="w-full sm:w-auto border-t sm:border-t-0 sm:border-l border-zinc-800 pt-2 sm:pt-0 sm:pl-4">
                   <p className="text-[8px] font-bold text-zinc-500 mb-0 tracking-widest uppercase">Alert_Log:</p>
-                  <div className="flex flex-col gap-0 max-h-[35px] overflow-hidden">
+                  <div className="flex flex-col gap-0 max-h-[35px] overflow-y-auto sm:overflow-hidden">
                     {affectedServices.map(svc => (
                       <div key={svc.id} className="flex items-center gap-1 text-[8px]">
                         <span className={`${svc.status === 'outage' ? 'text-red-500' : 'text-yellow-400'}`}>
@@ -464,22 +464,22 @@ export default function GovStatusPage() {
           </Card>
         </motion.div>
 
-        <div className="mb-2 flex flex-wrap items-center justify-between border-b border-zinc-800 pb-1 gap-2">
-          <div className="flex items-center gap-2">
-            <h3 className="text-xs font-bold tracking-widest text-zinc-300 uppercase mr-2">
+        <div className="mb-2 flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-1 gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <h3 className="text-[10px] sm:text-xs font-bold tracking-widest text-zinc-300 uppercase mr-1 sm:mr-2">
               &gt; Filters:
             </h3>
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setCategoryFilter(cat)}
-                className={`text-[9px] px-2 py-0.5 uppercase tracking-widest transition-colors ${categoryFilter === cat ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                className={`text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 uppercase tracking-widest transition-colors ${categoryFilter === cat ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
               >
                 [{cat}]
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-3 text-[10px] font-medium">
+          <div className="flex items-center gap-2 sm:gap-3 text-[8px] sm:text-[10px] font-medium self-end sm:self-auto">
             <span className="text-emerald-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" /> OP</span>
             <span className="text-yellow-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-yellow-400 rounded-full" /> DEG</span>
             <span className="text-red-500 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-red-500 rounded-full" /> OUT</span>
@@ -490,7 +490,7 @@ export default function GovStatusPage() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 pb-4 sm:pb-0"
         >
           <AnimatePresence>
           {filteredServices.map((service) => {
@@ -556,12 +556,12 @@ export default function GovStatusPage() {
                     </DialogDescription>
                   </DialogHeader>
                   
-                  <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4">
                     <div className="bg-zinc-900 border border-zinc-800 p-2 flex flex-col">
                       <span className="text-[8px] text-zinc-500 tracking-widest mb-1 flex items-center gap-1">
                         <Zap className="w-3 h-3 text-zinc-400" /> LATENCY
                       </span>
-                      <span className={`text-base font-bold ${service.status === 'outage' ? 'text-red-500' : 'text-zinc-200'}`}>
+                      <span className={`text-sm sm:text-base font-bold ${service.status === 'outage' ? 'text-red-500' : 'text-zinc-200'}`}>
                         {service.status === 'outage' ? 'TIMEOUT' : `${service.responseTime} ms`}
                       </span>
                     </div>
@@ -569,7 +569,7 @@ export default function GovStatusPage() {
                       <span className="text-[8px] text-zinc-500 tracking-widest mb-1 flex items-center gap-1">
                         <BarChart3 className="w-3 h-3 text-zinc-400" /> UPTIME_30D
                       </span>
-                      <span className="text-base font-bold text-zinc-200">
+                      <span className="text-sm sm:text-base font-bold text-zinc-200">
                         {service.uptime}
                       </span>
                     </div>
