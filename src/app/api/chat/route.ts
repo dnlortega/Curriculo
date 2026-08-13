@@ -39,5 +39,5 @@ export async function POST(req: Request) {
     system: CONTEXT,
   });
 
-  return result.toDataStreamResponse();
+  return result.toTextStreamResponse();
 }
