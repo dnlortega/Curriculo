@@ -121,7 +121,13 @@ export default async function DashboardPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  logs.map((log) => (
+                  logs.map((log) => {
+                    let adv: any = {};
+                    try {
+                      if (log.advancedDetails) adv = JSON.parse(log.advancedDetails);
+                    } catch (e) {}
+
+                    return (
                     <TableRow key={log.id} className="hover:bg-muted/50 transition-colors">
                       <TableCell>
                         <div className="flex items-center gap-2 whitespace-nowrap text-xs md:text-sm font-medium">
@@ -131,15 +137,27 @@ export default async function DashboardPage() {
                             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
                           })}
                         </div>
+                        {adv.referrer && (
+                          <div className="text-[10px] text-muted-foreground mt-1 max-w-[120px] truncate" title={adv.referrer}>
+                            Vindo de: {adv.referrer}
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2 text-sm">
-                          <MapPin className="w-4 h-4 text-red-500/80" />
-                          <span className={log.city === 'Desconhecido' ? 'text-muted-foreground italic' : 'font-medium'}>
-                            {log.city !== 'Desconhecido' && log.country !== 'Desconhecido' 
-                              ? `${log.city}, ${log.country}` 
-                              : 'Localização Oculta'}
-                          </span>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2 text-sm">
+                            <MapPin className="w-4 h-4 text-red-500/80" />
+                            <span className={log.city === 'Desconhecido' ? 'text-muted-foreground italic' : 'font-medium'}>
+                              {log.city !== 'Desconhecido' && log.country !== 'Desconhecido' 
+                                ? `${log.city}, ${log.country}` 
+                                : 'Localização Oculta'}
+                            </span>
+                          </div>
+                          {adv['Coordenadas (GPS)'] && (
+                            <a href={adv['Google Maps']} target="_blank" rel="noreferrer" className="text-[10px] text-blue-500 hover:underline pl-6">
+                              📍 Ver no Maps
+                            </a>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -153,7 +171,9 @@ export default async function DashboardPage() {
                           <div className="text-xs text-muted-foreground pl-6 flex flex-col gap-0.5">
                             <span>{log.browser}</span>
                             {log.screen && <span>Tela: {log.screen}</span>}
-                            {log.language && <span>Idioma: {log.language}</span>}
+                            {adv.ram && <span>RAM: {adv.ram} • CPU: {adv.cores || log.cpu}</span>}
+                            {adv.battery && <span>Bateria: {adv.battery}</span>}
+                            {adv.connection && <span>Rede: {adv.connection} {adv.speed ? `(${adv.speed})` : ''}</span>}
                           </div>
                         </div>
                       </TableCell>
@@ -181,7 +201,8 @@ export default async function DashboardPage() {
                         <DeleteLogButton id={log.id} />
                       </TableCell>
                     </TableRow>
-                  ))
+                    );
+                  })
                 )}
               </TableBody>
             </Table>
