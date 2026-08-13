@@ -87,5 +87,6 @@ model AccessLog {
   photoUrl  String?
   duration  Int?
   readingLog String?
+  advancedDetails String?
   createdAt DateTime @default(now())
 }

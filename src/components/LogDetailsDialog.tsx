@@ -14,14 +14,18 @@ import { BookOpen } from "lucide-react";
 interface LogDetailsDialogProps {
   duration: number | null;
   readingLog: string | null;
+  advancedDetails: string | null;
 }
 
-export function LogDetailsDialog({ duration, readingLog }: LogDetailsDialogProps) {
-  if (!duration && !readingLog) return <span className="text-muted-foreground text-xs italic">Sem dados</span>;
+export function LogDetailsDialog({ duration, readingLog, advancedDetails }: LogDetailsDialogProps) {
+  if (!duration && !readingLog && !advancedDetails) return <span className="text-muted-foreground text-xs italic">Sem dados</span>;
 
   let parsedLog: Record<string, number> = {};
+  let parsedAdvanced: Record<string, string | number> = {};
+  
   try {
     if (readingLog) parsedLog = JSON.parse(readingLog);
+    if (advancedDetails) parsedAdvanced = JSON.parse(advancedDetails);
   } catch (e) {
     console.error(e);
   }
@@ -57,7 +61,7 @@ export function LogDetailsDialog({ duration, readingLog }: LogDetailsDialogProps
             {sections.length === 0 ? (
               <p className="text-xs text-muted-foreground italic">Nenhuma seção registrada.</p>
             ) : (
-              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+              <div className="space-y-2 max-h-[150px] overflow-y-auto pr-2">
                 {sections.map(([section, time]) => (
                   <div key={section} className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground capitalize">
@@ -69,6 +73,20 @@ export function LogDetailsDialog({ duration, readingLog }: LogDetailsDialogProps
               </div>
             )}
           </div>
+
+          {Object.keys(parsedAdvanced).length > 0 && (
+            <div className="space-y-2 mt-4 pt-4 border-t border-border">
+              <h4 className="text-sm font-semibold">Detalhes Secretos (Hardware & Conexão)</h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {Object.entries(parsedAdvanced).map(([key, val]) => (
+                  <div key={key} className="flex flex-col bg-muted/30 p-2 rounded">
+                    <span className="text-muted-foreground capitalize font-medium">{key}</span>
+                    <span className="font-mono truncate" title={String(val)}>{val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

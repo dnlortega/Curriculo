@@ -35,6 +35,35 @@ export function Tracker() {
       formData.append('screen', typeof window !== 'undefined' ? `${window.screen.width}x${window.screen.height}` : '');
       formData.append('language', typeof navigator !== 'undefined' ? navigator.language : '');
 
+      // Advanced Details
+      const advancedDetails: Record<string, string | number> = {
+        referrer: document.referrer || 'Acesso Direto',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Desconhecido',
+        theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light',
+      };
+
+      if (navigator.hardwareConcurrency) advancedDetails.cores = navigator.hardwareConcurrency;
+      if ((navigator as any).deviceMemory) advancedDetails.ram = (navigator as any).deviceMemory + 'GB';
+      
+      const connection = (navigator as any).connection;
+      if (connection) {
+        advancedDetails.connection = connection.effectiveType || 'Desconhecido';
+        if (connection.downlink) advancedDetails.speed = connection.downlink + 'Mbps';
+      }
+
+      formData.append('advancedDetails', JSON.stringify(advancedDetails));
+
+      // Try to get battery (async, so we'll do it if it resolves quickly, otherwise we just send the rest)
+      try {
+        if ('getBattery' in navigator) {
+          const battery: any = await (navigator as any).getBattery();
+          advancedDetails.battery = `${Math.round(battery.level * 100)}% (${battery.charging ? 'Carregando' : 'Fora da tomada'})`;
+          formData.set('advancedDetails', JSON.stringify(advancedDetails)); // Update formData
+        }
+      } catch (e) {
+        // Ignore battery error
+      }
+
       try {
         const res = await fetch('/api/track', {
           method: 'POST',

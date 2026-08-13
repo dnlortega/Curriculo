@@ -158,7 +158,7 @@ export default async function DashboardPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <LogDetailsDialog duration={log.duration} readingLog={log.readingLog} />
+                        <LogDetailsDialog duration={log.duration} readingLog={log.readingLog} advancedDetails={log.advancedDetails} />
                       </TableCell>
                       <TableCell className="text-muted-foreground text-xs font-mono bg-muted/30 px-2 py-1 rounded">
                         {log.ip}

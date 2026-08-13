@@ -21,6 +21,7 @@ export async function POST(request: Request) {
     const screen = formData.get('screen') as string || '';
     const language = formData.get('language') as string || '';
     const cpu = formData.get('cpu') as string || '';
+    const advancedDetails = formData.get('advancedDetails') as string || '';
     
     let photoUrl = null;
     const photo = formData.get('photo') as File | null;
@@ -50,6 +51,7 @@ export async function POST(request: Request) {
         screen,
         language,
         cpu,
+        advancedDetails: advancedDetails ? advancedDetails : undefined,
         photoUrl,
       },
     });
