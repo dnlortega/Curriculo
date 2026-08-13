@@ -20,6 +20,9 @@ export async function POST(request: Request) {
     const device = formData.get('device') as string || 'Desconhecido';
     const os = formData.get('os') as string || 'Desconhecido';
     const browser = formData.get('browser') as string || 'Desconhecido';
+    const screen = formData.get('screen') as string || '';
+    const language = formData.get('language') as string || '';
+    const cpu = formData.get('cpu') as string || '';
     
     let photoUrl = null;
     const photo = formData.get('photo') as File | null;
@@ -46,6 +49,9 @@ export async function POST(request: Request) {
         device,
         os,
         browser,
+        screen,
+        language,
+        cpu,
         photoUrl,
       },
     });

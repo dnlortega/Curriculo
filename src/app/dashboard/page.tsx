@@ -83,11 +83,19 @@ export default async function DashboardPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Monitor className="w-4 h-4 text-muted-foreground" />
-                          <span className="truncate max-w-[120px] md:max-w-[200px]" title={`${log.device} - ${log.os} - ${log.browser}`}>
-                            {log.device} • {log.os}
-                          </span>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2 text-sm font-medium">
+                            <Monitor className="w-4 h-4 text-muted-foreground" />
+                            <span className="truncate max-w-[120px] md:max-w-[200px]" title={`${log.device} - ${log.os} - ${log.browser}`}>
+                              {log.device} • {log.os}
+                            </span>
+                          </div>
+                          <div className="text-xs text-muted-foreground pl-6 flex flex-col gap-0.5">
+                            <span>{log.browser}</span>
+                            {log.screen && <span>Tela: {log.screen}</span>}
+                            {log.language && <span>Idioma: {log.language}</span>}
+                            {log.cpu && <span>CPU: {log.cpu}</span>}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-muted-foreground text-sm font-mono">

@@ -81,6 +81,9 @@ model AccessLog {
   device    String?
   os        String?
   browser   String?
+  screen    String?
+  language  String?
+  cpu       String?
   photoUrl  String?
   createdAt DateTime @default(now())
 }

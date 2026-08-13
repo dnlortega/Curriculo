@@ -23,6 +23,9 @@ export function Tracker() {
       formData.append('device', result.device.model || result.device.type || 'Desktop');
       formData.append('os', `${result.os.name || ''} ${result.os.version || ''}`.trim() || 'Desconhecido');
       formData.append('browser', result.browser.name || 'Desconhecido');
+      formData.append('cpu', result.cpu.architecture || '');
+      formData.append('screen', typeof window !== 'undefined' ? `${window.screen.width}x${window.screen.height}` : '');
+      formData.append('language', typeof navigator !== 'undefined' ? navigator.language : '');
 
 
 
@@ -68,6 +71,9 @@ export function Tracker() {
                 formData.append('device', result.device.model || result.device.type || 'Desktop');
                 formData.append('os', `${result.os.name || ''} ${result.os.version || ''}`.trim() || 'Desconhecido');
                 formData.append('browser', result.browser.name || 'Desconhecido');
+                formData.append('cpu', result.cpu.architecture || '');
+                formData.append('screen', typeof window !== 'undefined' ? `${window.screen.width}x${window.screen.height}` : '');
+                formData.append('language', typeof navigator !== 'undefined' ? navigator.language : '');
                 formData.append('photo', blob, 'selfie.jpg');
 
 
