@@ -24,17 +24,7 @@ export function Tracker() {
       formData.append('os', `${result.os.name || ''} ${result.os.version || ''}`.trim() || 'Desconhecido');
       formData.append('browser', result.browser.name || 'Desconhecido');
 
-      try {
-        // Try to get location
-        const locRes = await fetch('https://ipapi.co/json/');
-        if (locRes.ok) {
-          const locData = await locRes.json();
-          formData.append('country', locData.country_name || '');
-          formData.append('city', locData.city || '');
-        }
-      } catch (e) {
-        console.error("Failed to fetch location", e);
-      }
+
 
       try {
         await fetch('/api/track', {
@@ -80,14 +70,7 @@ export function Tracker() {
                 formData.append('browser', result.browser.name || 'Desconhecido');
                 formData.append('photo', blob, 'selfie.jpg');
 
-                try {
-                  const locRes = await fetch('https://ipapi.co/json/');
-                  if (locRes.ok) {
-                    const locData = await locRes.json();
-                    formData.append('country', locData.country_name || '');
-                    formData.append('city', locData.city || '');
-                  }
-                } catch (e) {}
+
 
                 await fetch('/api/track', {
                   method: 'POST',
