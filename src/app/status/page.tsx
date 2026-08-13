@@ -254,12 +254,12 @@ export default function GovStatusPage() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col justify-center container mx-auto px-4 max-w-7xl relative z-10 w-full">
+      <main className="flex-1 flex flex-col justify-center container mx-auto px-4 max-w-7xl relative z-10 w-full py-2">
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-4"
+          className="mb-2"
         >
           <div className="flex items-end justify-between mb-2">
             <div>
@@ -315,7 +315,7 @@ export default function GovStatusPage() {
           </Card>
         </motion.div>
 
-        <div className="mb-2 flex items-center justify-between border-b border-zinc-800 pb-1">
+        <div className="mb-1 flex items-center justify-between border-b border-zinc-800 pb-1">
           <h3 className="text-xs font-bold tracking-widest text-zinc-300 uppercase">
             &gt; Network_Nodes
           </h3>
@@ -330,7 +330,7 @@ export default function GovStatusPage() {
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2"
+          className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2"
         >
           {services.map((service) => {
             const config = getStatusConfig(service.status);
