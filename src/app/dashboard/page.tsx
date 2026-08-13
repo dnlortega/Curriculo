@@ -70,6 +70,7 @@ export default async function DashboardPage() {
                         <div className="flex items-center gap-2 whitespace-nowrap text-xs md:text-sm">
                           <Clock className="w-4 h-4 text-muted-foreground" />
                           {new Date(log.createdAt).toLocaleString('pt-BR', {
+                            timeZone: 'America/Sao_Paulo',
                             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
                           })}
                         </div>
