@@ -295,11 +295,11 @@ export default function FootballDashboard() {
                     Principais Destaques
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-0 overflow-y-auto min-h-0">
-                  <div className="divide-y divide-neutral-800/50">
+                <CardContent className="flex-1 p-0 min-h-0">
+                  <div className="divide-y divide-neutral-800/50 flex flex-col h-full">
                     {team.topPlayers?.slice(0, 3).map((player: any, idx: number) => (
-                      <div key={player.name + team.id} className="p-3 hover:bg-neutral-800/30 transition-colors flex items-center gap-3">
-                        <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-black text-white border border-neutral-700 shadow-inner">
+                      <div key={player.name + team.id} className="px-3 py-1 lg:py-2 hover:bg-neutral-800/30 transition-colors flex-1 flex items-center gap-3">
+                        <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-black text-white border border-neutral-700 shadow-inner">
                           {player.name.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
