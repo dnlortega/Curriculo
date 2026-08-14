@@ -64,34 +64,34 @@ export default function FootballDashboard() {
       
       {/* Header Compacto */}
       <header 
-        className="flex-none px-6 py-3 border-b border-neutral-800/80 flex items-center justify-between"
+        className="flex-none px-4 py-2 border-b border-neutral-800/80 flex items-center justify-between"
         style={{
           background: `linear-gradient(90deg, ${team.colors.primary}25 0%, #0a0a0a 40%)`
         }}
       >
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl p-1.5 flex items-center justify-center border border-white/5">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-lg p-1 flex items-center justify-center border border-white/5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={team.logo} alt={team.name} className="w-full h-full object-contain drop-shadow-md" />
           </div>
           <div>
-            <h1 className="text-2xl font-black tracking-tight text-white leading-tight">{team.name}</h1>
-            <p className="text-neutral-400 text-sm mt-0.5">Visão Executiva • Desempenho e Finanças</p>
+            <h1 className="text-xl font-black tracking-tight text-white leading-tight">{team.name}</h1>
+            <p className="text-neutral-400 text-xs mt-0.5">Visão Executiva • Desempenho e Finanças</p>
           </div>
         </div>
         
         <div className="flex items-center">
           <Select value={selectedTeamId} onValueChange={(val) => val && setSelectedTeamId(val)}>
-            <SelectTrigger className="w-[240px] h-11 bg-neutral-950/80 border-neutral-700 text-base">
+            <SelectTrigger className="w-[200px] h-9 bg-neutral-950/80 border-neutral-700 text-sm">
               <SelectValue placeholder="Selecione um clube" />
             </SelectTrigger>
             <SelectContent className="bg-neutral-900 border-neutral-800 text-white max-h-[300px]">
               {footballTeams.map((t) => (
-                <SelectItem key={t.id} value={t.id} className="cursor-pointer py-2.5">
-                  <div className="flex items-center gap-3">
+                <SelectItem key={t.id} value={t.id} className="cursor-pointer py-1.5">
+                  <div className="flex items-center gap-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={t.logo} alt={t.name} className="w-6 h-6 object-contain" />
-                    <span className="font-semibold text-base">{t.name}</span>
+                    <img src={t.logo} alt={t.name} className="w-5 h-5 object-contain" />
+                    <span className="font-semibold text-sm">{t.name}</span>
                   </div>
                 </SelectItem>
               ))}
@@ -101,58 +101,58 @@ export default function FootballDashboard() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-hidden p-4 flex flex-col gap-4">
+      <main className="flex-1 p-2 md:p-3 flex flex-col gap-2 md:gap-3 overflow-hidden">
         
         {/* KPIs Row */}
-        <div className="flex-none h-28 grid grid-cols-4 gap-4">
-          {renderKPI("Receita Total (Bruta)", team.revenue, "R$ ", " M", <DollarSign className="h-5 w-5 text-emerald-500" />)}
-          {renderKPI("Despesas Operacionais", team.expenses, "R$ ", " M", <Activity className="h-5 w-5 text-rose-500" />)}
-          {renderKPI("Programa Sócio Torcedor", team.members, "", "", <Users className="h-5 w-5 text-blue-500" />)}
-          {renderKPI("Público Médio (Pagantes)", team.attendance, "", "", <Ticket className="h-5 w-5 text-amber-500" />)}
+        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
+          {renderKPI("Receita Total (Bruta)", team.revenue, "R$ ", " M", <DollarSign className="h-4 w-4 text-emerald-500" />)}
+          {renderKPI("Despesas Operacionais", team.expenses, "R$ ", " M", <Activity className="h-4 w-4 text-rose-500" />)}
+          {renderKPI("Programa Sócio Torcedor", team.members, "", "", <Users className="h-4 w-4 text-blue-500" />)}
+          {renderKPI("Público Médio (Pagantes)", team.attendance, "", "", <Ticket className="h-4 w-4 text-amber-500" />)}
         </div>
 
         {/* Charts & Players Row */}
-        <div className="flex-1 grid grid-cols-12 gap-4 min-h-0">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-3 min-h-0">
           
           {/* Main Chart */}
-          <Card className="col-span-7 bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col">
-            <CardHeader className="py-4 px-5 flex-none border-b border-neutral-800/50">
-              <CardTitle className="text-lg font-bold text-white">Evolução Financeira Mensal</CardTitle>
+          <Card className="lg:col-span-6 bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col">
+            <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
+              <CardTitle className="text-sm font-bold text-white">Evolução Financeira Mensal</CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 p-2 min-h-0">
+            <CardContent className="flex-1 p-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={team.historicalRevenue} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
+                <BarChart data={team.historicalRevenue} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
-                  <XAxis dataKey="month" stroke="#737373" fontSize={11} tickLine={false} axisLine={false} dy={5} />
-                  <YAxis stroke="#737373" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(value) => `R$${value}`} />
+                  <XAxis dataKey="month" stroke="#737373" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#737373" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
                   <Tooltip 
                     cursor={{fill: '#262626'}}
-                    contentStyle={{ backgroundColor: '#171717', borderColor: '#333', color: '#fff', borderRadius: '6px' }}
-                    itemStyle={{ color: '#fff', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '12px' }}
+                    itemStyle={{ color: '#fff' }}
                   />
-                  <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '12px' }} iconType="circle" />
-                  <Bar dataKey="revenue" name="Receita (M)" fill="#10b981" radius={[3, 3, 0, 0]} maxBarSize={30} />
-                  <Bar dataKey="expenses" name="Despesas (M)" fill="#ef4444" radius={[3, 3, 0, 0]} maxBarSize={30} />
+                  <Legend wrapperStyle={{ fontSize: '10px' }} />
+                  <Bar dataKey="expenses" name="Despesas (M)" fill="#ef4444" radius={[2, 2, 0, 0]} maxBarSize={40} />
+                  <Bar dataKey="revenue" name="Receita (M)" fill="#10b981" radius={[2, 2, 0, 0]} maxBarSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
           {/* Pie Chart */}
-          <Card className="col-span-3 bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col">
-            <CardHeader className="py-4 px-5 flex-none border-b border-neutral-800/50">
-              <CardTitle className="text-lg font-bold text-white">Composição</CardTitle>
+          <Card className="lg:col-span-3 bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col">
+            <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
+              <CardTitle className="text-sm font-bold text-white">Composição</CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 p-2 min-h-0">
+            <CardContent className="flex-1 p-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={team.categories}
                     cx="50%"
                     cy="45%"
-                    innerRadius="50%"
-                    outerRadius="80%"
-                    paddingAngle={3}
+                    innerRadius={40}
+                    outerRadius={65}
+                    paddingAngle={2}
                     dataKey="value"
                     stroke="none"
                   >
@@ -161,44 +161,43 @@ export default function FootballDashboard() {
                     ))}
                   </Pie>
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#171717', borderColor: '#333', color: '#fff', borderRadius: '6px' }}
-                    itemStyle={{ color: '#fff', fontSize: '12px' }}
-                    formatter={(value: any) => [`R$ ${value} M`, 'Valor']}
+                    contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '12px' }}
+                    itemStyle={{ color: '#fff' }}
                   />
-                  <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ fontSize: '10px', paddingTop: '5px' }} iconType="circle"/>
+                  <Legend wrapperStyle={{ fontSize: '10px', bottom: 0 }} />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
           {/* Top Players */}
-          <Card className="col-span-2 bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col">
-            <CardHeader className="py-4 px-5 flex-none border-b border-neutral-800/50">
-              <CardTitle className="text-lg font-bold text-white flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+          <Card className="lg:col-span-3 bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col">
+            <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
+              <CardTitle className="text-sm font-bold text-white flex items-center gap-2">
+                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                 Destaques
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 p-0 overflow-y-auto min-h-0">
               <div className="divide-y divide-neutral-800">
                 {team.topPlayers?.map((player: any, idx: number) => (
-                  <div key={idx} className="p-4 hover:bg-neutral-800/50 transition-colors flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-lg font-bold text-neutral-400 border border-neutral-700">
+                  <div key={idx} className="p-2 md:p-3 hover:bg-neutral-800/50 transition-colors flex items-center gap-2 md:gap-3">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-neutral-800 flex items-center justify-center text-sm md:text-base font-bold text-neutral-400 border border-neutral-700">
                       {player.name.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-base font-bold text-white truncate">{player.name}</p>
-                      <p className="text-xs text-neutral-500 uppercase tracking-wider mt-0.5">{player.pos}</p>
+                      <p className="text-sm md:text-base font-bold text-white truncate">{player.name}</p>
+                      <p className="text-[10px] md:text-xs text-neutral-500 uppercase tracking-wider">{player.pos}</p>
                     </div>
-                    <div className="flex items-center gap-1 bg-neutral-950 px-2.5 py-1.5 rounded-md border border-neutral-800">
-                      <span className="text-sm font-bold text-emerald-400">{player.rating}</span>
+                    <div className="flex items-center gap-1 bg-neutral-950 px-2 py-1 rounded-md border border-neutral-800">
+                      <span className="text-xs md:text-sm font-bold text-emerald-400">{player.rating}</span>
                     </div>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
-
+          
         </div>
       </main>
     </div>
