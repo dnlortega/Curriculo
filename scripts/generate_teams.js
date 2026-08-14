@@ -90,10 +90,19 @@ const generateMockData = (team, index) => {
     { ...players[index * 3 + 2], rating: (7 + Math.random() * 1.5).toFixed(1) }
   ];
 
+  const stats = [
+    { subject: "Ataque", value: Math.floor(Math.random() * 30) + 65 },
+    { subject: "Defesa", value: Math.floor(Math.random() * 30) + 65 },
+    { subject: "Tática", value: Math.floor(Math.random() * 30) + 65 },
+    { subject: "Finanças", value: Math.floor(Math.random() * 30) + 65 },
+    { subject: "Engajamento", value: Math.floor(Math.random() * 30) + 65 }
+  ];
+
   return "  {\n" +
     "    id: \"" + team.id + "\",\n" +
     "    name: \"" + team.name + "\",\n" +
-    "    logo: \"" + team.logo + "\",\n" +
+    "    logo: \"/logos/" + team.id + ".png\",\n" +
+    "    position: " + (index + 1) + ",\n" +
     "    colors: { primary: \"" + team.color1 + "\", secondary: \"" + team.color2 + "\" },\n" +
     "    revenue: { current: " + currentRevenue + ", previousMonth: " + previousMonthRevenue + ", previousYear: " + previousYearRevenue + " },\n" +
     "    members: { current: " + currentMembers + ", previousMonth: " + previousMonthMembers + ", previousYear: " + previousYearMembers + " },\n" +
@@ -101,6 +110,7 @@ const generateMockData = (team, index) => {
     "    expenses: { current: " + currentExpenses + ", previousMonth: " + previousMonthExpenses + ", previousYear: " + previousYearExpenses + " },\n" +
     "    historicalRevenue: " + JSON.stringify(historicalRevenue) + ",\n" +
     "    topPlayers: " + JSON.stringify(topPlayers) + ",\n" +
+    "    stats: " + JSON.stringify(stats) + ",\n" +
     "    categories: [\n" +
     "      { name: \"Direitos de TV\", value: " + tv + " },\n" +
     "      { name: \"Patrocínios\", value: " + patrocinios + " },\n" +

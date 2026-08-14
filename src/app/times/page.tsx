@@ -191,10 +191,16 @@ export default function FootballDashboard() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-4 md:p-6 flex flex-col gap-4 md:gap-6 overflow-hidden bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]">
+      <main className="flex-1 p-4 md:p-6 flex flex-col gap-4 md:gap-6 overflow-hidden relative">
         
+        {/* Watermark Logo */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-5 pointer-events-none transition-all duration-1000">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={team.logo} alt="" className="w-full h-[150%] max-w-[800px] max-h-[800px] object-contain grayscale" />
+        </div>
+
         {/* KPIs Row */}
-        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-4 h-32 z-10">
+        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-4 h-32 z-10 relative">
           {renderKPI("Receita Bruta (Acumulado)", team.revenue, "R$ ", " M", <DollarSign className="h-5 w-5 text-emerald-400" />, 0.1)}
           {renderKPI("Despesas Operacionais", team.expenses, "R$ ", " M", <Activity className="h-5 w-5 text-rose-400" />, 0.2)}
           {renderKPI("Sócio Torcedor Ativo", team.members, "", "", <Users className="h-5 w-5 text-blue-400" />, 0.3)}
@@ -322,7 +328,7 @@ export default function FootballDashboard() {
                       <Tooltip 
                         contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '12px', borderRadius: '8px' }}
                         itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                        formatter={(val: number) => [`${val}%`, 'Fatia']}
+                        formatter={(value: any, name: any) => [`${value}%`, name]}
                       />
                     </PieChart>
                   </ResponsiveContainer>
