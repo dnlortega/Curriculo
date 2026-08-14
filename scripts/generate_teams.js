@@ -25,8 +25,30 @@ const teamsInfo = [
 
 const months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
+const players = [
+  { name: "G. Arrascaeta", pos: "Meio-Campo" }, { name: "P. Henrique", pos: "Atacante" }, { name: "N. De La Cruz", pos: "Meio-Campo" },
+  { name: "R. Veiga", pos: "Meio-Campo" }, { name: "Dudu", pos: "Atacante" }, { name: "E. Endrick", pos: "Atacante" },
+  { name: "J. Calleri", pos: "Atacante" }, { name: "L. Moura", pos: "Meio-Campo" }, { name: "W. Rato", pos: "Atacante" },
+  { name: "Yuri A.", pos: "Atacante" }, { name: "R. Garro", pos: "Meio-Campo" }, { name: "C. Miguel", pos: "Goleiro" },
+  { name: "G. Cano", pos: "Atacante" }, { name: "J. Arias", pos: "Meio-Campo" }, { name: "Marcelo", pos: "Defensor" },
+  { name: "T. Soares", pos: "Atacante" }, { name: "J. Savarino", pos: "Atacante" }, { name: "Lucas P.", pos: "Goleiro" },
+  { name: "P. Vegetti", pos: "Atacante" }, { name: "D. Payet", pos: "Meio-Campo" }, { name: "L. Jardim", pos: "Goleiro" },
+  { name: "L. Suárez", pos: "Atacante" }, { name: "M. Villasanti", pos: "Meio-Campo" }, { name: "W. Kannemann", pos: "Defensor" },
+  { name: "A. Patrick", pos: "Meio-Campo" }, { name: "E. Valencia", pos: "Atacante" }, { name: "Wanderson", pos: "Atacante" },
+  { name: "Hulk", pos: "Atacante" }, { name: "Paulinho", pos: "Atacante" }, { name: "G. Arana", pos: "Defensor" },
+  { name: "Matheus P.", pos: "Meio-Campo" }, { name: "A. Silva", pos: "Atacante" }, { name: "Wiliam", pos: "Atacante" },
+  { name: "Fernandinho", pos: "Meio-Campo" }, { name: "Pablo", pos: "Atacante" }, { name: "Bento", pos: "Goleiro" },
+  { name: "E. Ribeiro", pos: "Meio-Campo" }, { name: "Cauly", pos: "Meio-Campo" }, { name: "Thaciano", pos: "Atacante" },
+  { name: "J. Lucero", pos: "Atacante" }, { name: "Y. Pikachu", pos: "Meio-Campo" }, { name: "Tinga", pos: "Defensor" },
+  { name: "Osvaldo", pos: "Atacante" }, { name: "Z. Hugo", pos: "Defensor" }, { name: "W. Oliveira", pos: "Meio-Campo" },
+  { name: "Nenê", pos: "Meio-Campo" }, { name: "G. Barbosa", pos: "Atacante" }, { name: "Jadson", pos: "Meio-Campo" },
+  { name: "L. Fernando", pos: "Atacante" }, { name: "S. Romero", pos: "Atacante" }, { name: "A. Cruz", pos: "Defensor" },
+  { name: "Eder", pos: "Atacante" }, { name: "M. Hermes", pos: "Defensor" }, { name: "Y. Bolasie", pos: "Atacante" },
+  { name: "Deyverson", pos: "Atacante" }, { name: "F. Marques", pos: "Meio-Campo" }, { name: "Walter", pos: "Goleiro" },
+  { name: "E. Sasha", pos: "Atacante" }, { name: "L. Cândido", pos: "Defensor" }, { name: "Cleiton", pos: "Goleiro" }
+];
+
 const generateMockData = (team, index) => {
-  // Generate slightly different data based on index so it's not all the same
   const revBase = 300 + (20 - index) * 40;
   const expBase = revBase * 0.7;
   const memBase = 20000 + (20 - index) * 4000;
@@ -62,48 +84,58 @@ const generateMockData = (team, index) => {
   const socio = Math.round(currentRevenue * 0.1);
   const transferencias = currentRevenue - tv - patrocinios - bilheteria - socio;
 
-  return `  {
-    id: "${team.id}",
-    name: "${team.name}",
-    logo: "${team.logo}",
-    colors: { primary: "${team.color1}", secondary: "${team.color2}" },
-    revenue: { current: ${currentRevenue}, previousMonth: ${previousMonthRevenue}, previousYear: ${previousYearRevenue} },
-    members: { current: ${currentMembers}, previousMonth: ${previousMonthMembers}, previousYear: ${previousYearMembers} },
-    attendance: { current: ${currentAttendance}, previousMonth: ${previousMonthAttendance}, previousYear: ${previousYearAttendance} },
-    expenses: { current: ${currentExpenses}, previousMonth: ${previousMonthExpenses}, previousYear: ${previousYearExpenses} },
-    historicalRevenue: ${JSON.stringify(historicalRevenue)},
-    categories: [
-      { name: "Direitos de TV", value: ${tv} },
-      { name: "Patrocínios", value: ${patrocinios} },
-      { name: "Bilheteria", value: ${bilheteria} },
-      { name: "Sócio Torcedor", value: ${socio} },
-      { name: "Transferências", value: ${transferencias} }
-    ]
-  }`;
+  const topPlayers = [
+    { ...players[index * 3], rating: (8 + Math.random() * 1.5).toFixed(1) },
+    { ...players[index * 3 + 1], rating: (7.5 + Math.random() * 1.5).toFixed(1) },
+    { ...players[index * 3 + 2], rating: (7 + Math.random() * 1.5).toFixed(1) }
+  ];
+
+  return "  {\n" +
+    "    id: \"" + team.id + "\",\n" +
+    "    name: \"" + team.name + "\",\n" +
+    "    logo: \"" + team.logo + "\",\n" +
+    "    colors: { primary: \"" + team.color1 + "\", secondary: \"" + team.color2 + "\" },\n" +
+    "    revenue: { current: " + currentRevenue + ", previousMonth: " + previousMonthRevenue + ", previousYear: " + previousYearRevenue + " },\n" +
+    "    members: { current: " + currentMembers + ", previousMonth: " + previousMonthMembers + ", previousYear: " + previousYearMembers + " },\n" +
+    "    attendance: { current: " + currentAttendance + ", previousMonth: " + previousMonthAttendance + ", previousYear: " + previousYearAttendance + " },\n" +
+    "    expenses: { current: " + currentExpenses + ", previousMonth: " + previousMonthExpenses + ", previousYear: " + previousYearExpenses + " },\n" +
+    "    historicalRevenue: " + JSON.stringify(historicalRevenue) + ",\n" +
+    "    topPlayers: " + JSON.stringify(topPlayers) + ",\n" +
+    "    categories: [\n" +
+    "      { name: \"Direitos de TV\", value: " + tv + " },\n" +
+    "      { name: \"Patrocínios\", value: " + patrocinios + " },\n" +
+    "      { name: \"Bilheteria\", value: " + bilheteria + " },\n" +
+    "      { name: \"Sócio Torcedor\", value: " + socio + " },\n" +
+    "      { name: \"Transferências\", value: " + transferencias + " }\n" +
+    "    ]\n" +
+    "  }";
 };
 
-const output = `export interface FootballData {
-  id: string;
-  name: string;
-  logo: string;
-  colors: { primary: string; secondary: string };
-  revenue: { current: number; previousMonth: number; previousYear: number; };
-  members: { current: number; previousMonth: number; previousYear: number; };
-  attendance: { current: number; previousMonth: number; previousYear: number; };
-  expenses: { current: number; previousMonth: number; previousYear: number; };
-  historicalRevenue: { month: string; revenue: number; expenses: number }[];
-  categories: { name: string; value: number }[];
-}
-
-export const footballTeams: FootballData[] = [
-${teamsInfo.map((team, index) => generateMockData(team, index)).join(",\\n")}
-];
-
-export const calculateGrowth = (current: number, previous: number): number => {
-  if (previous === 0) return 100;
-  return ((current - previous) / previous) * 100;
-};
-`;
+const output = "export interface Player {\n" +
+"  name: string;\n" +
+"  position: string;\n" +
+"  rating: string;\n" +
+"}\n\n" +
+"export interface FootballData {\n" +
+"  id: string;\n" +
+"  name: string;\n" +
+"  logo: string;\n" +
+"  colors: { primary: string; secondary: string };\n" +
+"  revenue: { current: number; previousMonth: number; previousYear: number; };\n" +
+"  members: { current: number; previousMonth: number; previousYear: number; };\n" +
+"  attendance: { current: number; previousMonth: number; previousYear: number; };\n" +
+"  expenses: { current: number; previousMonth: number; previousYear: number; };\n" +
+"  historicalRevenue: { month: string; revenue: number; expenses: number }[];\n" +
+"  categories: { name: string; value: number }[];\n" +
+"  topPlayers: { name: string; pos: string; rating: string }[];\n" +
+"}\n\n" +
+"export const footballTeams: FootballData[] = [\n" +
+teamsInfo.map((team, index) => generateMockData(team, index)).join(",\n") +
+"\n];\n\n" +
+"export const calculateGrowth = (current: number, previous: number): number => {\n" +
+"  if (previous === 0) return 100;\n" +
+"  return ((current - previous) / previous) * 100;\n" +
+"};\n";
 
 fs.writeFileSync('src/lib/data/football-data.ts', output);
 console.log('football-data.ts generated successfully');
