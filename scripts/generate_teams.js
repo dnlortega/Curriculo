@@ -120,6 +120,7 @@ const output = "export interface Player {\n" +
 "  id: string;\n" +
 "  name: string;\n" +
 "  logo: string;\n" +
+"  position: number;\n" +
 "  colors: { primary: string; secondary: string };\n" +
 "  revenue: { current: number; previousMonth: number; previousYear: number; };\n" +
 "  members: { current: number; previousMonth: number; previousYear: number; };\n" +
@@ -128,6 +129,7 @@ const output = "export interface Player {\n" +
 "  historicalRevenue: { month: string; revenue: number; expenses: number }[];\n" +
 "  categories: { name: string; value: number }[];\n" +
 "  topPlayers: { name: string; pos: string; rating: string }[];\n" +
+"  stats: { subject: string; value: number }[];\n" +
 "}\n\n" +
 "export const footballTeams: FootballData[] = [\n" +
 teamsInfo.map((team, index) => generateMockData(team, index)).join(",\n") +
