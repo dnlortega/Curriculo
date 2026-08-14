@@ -216,7 +216,7 @@ export default function FootballDashboard() {
         </div>
 
         {/* KPIs Row */}
-        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 h-28 lg:h-32 z-10 relative">
+        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 z-10 relative">
           {renderKPI("Receita Bruta (Acumulado)", team.revenue, "R$ ", " M", <DollarSign className="h-5 w-5 text-emerald-400" />, 0.1)}
           {renderKPI("Despesas Operacionais", team.expenses, "R$ ", " M", <Activity className="h-5 w-5 text-rose-400" />, 0.2)}
           {renderKPI("Sócio Torcedor", team.members, "", "", <Users className="h-5 w-5 text-blue-400" />, 0.3)}
