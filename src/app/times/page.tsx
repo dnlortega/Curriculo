@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { footballTeams, calculateGrowth } from "@/lib/data/football-data";
-import { ArrowUpRight, ArrowDownRight, Users, DollarSign, Activity, Ticket, Star, Shield, ArrowRightLeft } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Users, DollarSign, Activity, Ticket, Star, Shield, PieChart as PieChartIcon } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -24,95 +24,64 @@ import {
   Pie,
   Cell
 } from "recharts";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export default function FootballDashboard() {
   const [selectedTeamId, setSelectedTeamId] = useState<string>("flamengo");
-  const [comparisonTeamId, setComparisonTeamId] = useState<string | null>(null);
   const [year, setYear] = useState<string>("2024");
   const [month, setMonth] = useState<string>("Todos");
   const [championship, setChampionship] = useState<string>("Todos");
 
   const team = useMemo(() => footballTeams.find((t) => t.id === selectedTeamId) || footballTeams[0], [selectedTeamId]);
-  const comparisonTeam = useMemo(() => comparisonTeamId ? footballTeams.find((t) => t.id === comparisonTeamId) : null, [comparisonTeamId]);
 
-  // Merge historical revenue for comparison
-  const mergedChartData = useMemo(() => {
-    if (!comparisonTeam) return team.historicalRevenue.map(d => ({ ...d, [team.name + ' Rec']: d.revenue, [team.name + ' Desp']: d.expenses }));
-    
-    return team.historicalRevenue.map((data, index) => {
-      const compData = comparisonTeam.historicalRevenue[index] || { revenue: 0, expenses: 0 };
-      return {
-        month: data.month,
-        [`${team.name} Rec`]: data.revenue,
-        [`${comparisonTeam.name} Rec`]: compData.revenue,
-      };
-    });
-  }, [team, comparisonTeam]);
-
-  // Merge stats for Radar
   const radarData = useMemo(() => {
     if (!team.stats) return [];
-    return team.stats.map(s => {
-      const cStat = comparisonTeam?.stats?.find(cs => cs.subject === s.subject);
-      return {
-        subject: s.subject,
-        [team.name]: s.value,
-        ...(comparisonTeam ? { [comparisonTeam.name]: cStat?.value || 0 } : {})
-      };
-    });
-  }, [team, comparisonTeam]);
+    return team.stats.map(s => ({
+      subject: s.subject,
+      [team.name]: s.value
+    }));
+  }, [team]);
 
-  const renderKPI = (title: string, data: any, compData: any, prefix = "", suffix = "", icon: React.ReactNode) => {
+  const renderKPI = (title: string, data: any, prefix = "", suffix = "", icon: React.ReactNode, delay: number) => {
     const mom = calculateGrowth(data.current, data.previousMonth);
+    const yoy = calculateGrowth(data.current, data.previousYear);
     const isMomPositive = mom >= 0;
+    const isYoyPositive = yoy >= 0;
 
     return (
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.4, delay }}
         className="h-full"
       >
-        <Card className="flex flex-col bg-neutral-900/50 border-neutral-800 backdrop-blur-sm h-full justify-between p-4">
-          <div className="flex flex-row items-center justify-between pb-1">
+        <Card className="flex flex-col bg-neutral-900/50 border-neutral-800 backdrop-blur-sm h-full justify-between p-4 md:p-5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
+          <div className="flex flex-row items-center justify-between pb-2">
             <span className="text-sm font-semibold text-neutral-400">{title}</span>
-            {icon}
+            <div className="p-2 bg-neutral-800/50 rounded-lg">{icon}</div>
           </div>
           <div className="mt-1 flex flex-col justify-end flex-1">
-            <div className="flex justify-between items-end">
-              <div>
-                <motion.div 
-                  key={data.current}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-2xl font-black text-white tracking-tight"
-                >
-                  {prefix}{data.current.toLocaleString("pt-BR")}{suffix}
-                </motion.div>
-                <div className="flex gap-2 mt-1 text-xs font-medium">
-                  <Badge variant="outline" className={isMomPositive ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20 px-1 py-0" : "text-rose-400 bg-rose-400/10 border-rose-400/20 px-1 py-0"}>
-                    {isMomPositive ? <ArrowUpRight className="mr-0.5 h-3 w-3" /> : <ArrowDownRight className="mr-0.5 h-3 w-3" />}
-                    {Math.abs(mom).toFixed(1)}% MoM
-                  </Badge>
-                </div>
-              </div>
-              
-              {comparisonTeam && compData && (
-                <div className="text-right border-l border-neutral-800 pl-2 ml-2">
-                   <div className="text-xs text-neutral-500 mb-0.5">{comparisonTeam.name}</div>
-                   <motion.div 
-                      key={compData.current}
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="text-lg font-bold text-neutral-300 tracking-tight"
-                    >
-                      {prefix}{compData.current.toLocaleString("pt-BR")}{suffix}
-                    </motion.div>
-                </div>
-              )}
+            <motion.div 
+              key={data.current}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-3xl font-black text-white tracking-tight"
+            >
+              {prefix}{data.current.toLocaleString("pt-BR")}{suffix}
+            </motion.div>
+            <div className="flex gap-2 mt-3 text-xs font-medium">
+              <Badge variant="outline" className={isMomPositive ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20" : "text-rose-400 bg-rose-400/10 border-rose-400/20"}>
+                {isMomPositive ? <ArrowUpRight className="mr-1 h-3 w-3" /> : <ArrowDownRight className="mr-1 h-3 w-3" />}
+                {Math.abs(mom).toFixed(1)}% MoM
+              </Badge>
+              <Badge variant="outline" className={isYoyPositive ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20" : "text-rose-400 bg-rose-400/10 border-rose-400/20"}>
+                {isYoyPositive ? <ArrowUpRight className="mr-1 h-3 w-3" /> : <ArrowDownRight className="mr-1 h-3 w-3" />}
+                {Math.abs(yoy).toFixed(1)}% YoY
+              </Badge>
             </div>
           </div>
         </Card>
@@ -121,232 +90,255 @@ export default function FootballDashboard() {
   };
 
   return (
-    <div className="h-screen w-full overflow-hidden bg-[#0a0a0a] text-neutral-50 flex flex-col font-sans selection:bg-neutral-800">
+    <div className="h-screen w-full overflow-hidden bg-[#050505] text-neutral-50 flex flex-col font-sans selection:bg-neutral-800">
       
-      {/* Header Compacto com Filtros */}
+      {/* Header Premium */}
       <header 
-        className="flex-none px-4 py-3 border-b border-neutral-800/80 flex flex-col gap-2 transition-all duration-500"
-        style={{
-          background: comparisonTeam 
-            ? `linear-gradient(90deg, ${team.colors.primary}30 0%, #0a0a0a 50%, ${comparisonTeam.colors.primary}30 100%)`
-            : `linear-gradient(90deg, ${team.colors.primary}25 0%, #0a0a0a 40%)`
-        }}
+        className="flex-none px-6 py-4 flex items-center justify-between border-b border-white/5 relative"
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 w-1/3">
-            <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-lg p-1 flex items-center justify-center border border-white/5 relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={team.logo} alt={team.name} className="w-full h-full object-contain drop-shadow-md relative z-10" />
-              <div className="absolute -top-2 -right-2 bg-neutral-900 border border-neutral-700 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center z-20 shadow-md">
-                {team.position}
-              </div>
+        <div 
+          className="absolute inset-0 opacity-20 -z-10"
+          style={{
+            background: `linear-gradient(90deg, ${team.colors.primary} 0%, transparent 50%)`
+          }}
+        />
+        
+        <div className="flex items-center gap-4 w-1/3">
+          <motion.div 
+            key={team.logo}
+            initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-xl p-2 flex items-center justify-center border border-white/10 relative shadow-2xl"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={team.logo} alt={team.name} className="w-full h-full object-contain drop-shadow-lg relative z-10" />
+            <div className="absolute -top-2 -right-2 bg-neutral-900 border border-neutral-700 text-xs font-black w-6 h-6 rounded-full flex items-center justify-center z-20 shadow-xl">
+              {team.position}
             </div>
-            <div>
-              <h1 className="text-xl font-black tracking-tight text-white leading-tight">{team.name}</h1>
-              <div className="flex gap-1 mt-0.5">
-                <Badge variant="outline" className="text-[9px] px-1 py-0 border-neutral-700 text-neutral-400">Série A</Badge>
-              </div>
+          </motion.div>
+          <div>
+            <motion.h1 
+              key={team.name}
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              className="text-2xl font-black tracking-tight text-white leading-none mb-1"
+            >
+              {team.name}
+            </motion.h1>
+            <div className="flex gap-2 items-center">
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-neutral-800 text-neutral-300 border-neutral-700 hover:bg-neutral-700">
+                Série A
+              </Badge>
+              <span className="text-neutral-500 text-xs font-medium">Dashboard Executivo</span>
             </div>
           </div>
-          
-          <div className="flex items-center gap-2 justify-center w-1/3">
-            <Select value={year} onValueChange={setYear}>
-              <SelectTrigger className="w-[90px] h-7 bg-neutral-950/80 border-neutral-800 text-xs text-neutral-300">
-                <SelectValue placeholder="Ano" />
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-white">
-                <SelectItem value="2024">2024</SelectItem>
-                <SelectItem value="2023">2023</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={month} onValueChange={setMonth}>
-              <SelectTrigger className="w-[100px] h-7 bg-neutral-950/80 border-neutral-800 text-xs text-neutral-300">
-                <SelectValue placeholder="Mês" />
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-white max-h-[200px]">
-                <SelectItem value="Todos">Ano Todo</SelectItem>
-                <SelectItem value="01">Jan</SelectItem>
-                <SelectItem value="02">Fev</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={championship} onValueChange={setChampionship}>
-              <SelectTrigger className="w-[130px] h-7 bg-neutral-950/80 border-neutral-800 text-xs text-neutral-300">
-                <SelectValue placeholder="Camp" />
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-white">
-                <SelectItem value="Todos">Todos</SelectItem>
-                <SelectItem value="Brasileirao">Brasileirão</SelectItem>
-                <SelectItem value="CdB">Copa do Brasil</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        </div>
+        
+        <div className="flex items-center gap-2 justify-center w-1/3">
+          <Select value={year} onValueChange={(val) => setYear(val || "2024")}>
+            <SelectTrigger className="w-[100px] h-9 bg-neutral-900/50 border-neutral-800 text-sm text-neutral-300 focus:ring-1 focus:ring-neutral-700">
+              <SelectValue placeholder="Ano" />
+            </SelectTrigger>
+            <SelectContent className="bg-neutral-900 border-neutral-800 text-white">
+              <SelectItem value="2024">2024</SelectItem>
+              <SelectItem value="2023">2023</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={month} onValueChange={(val) => setMonth(val || "Todos")}>
+            <SelectTrigger className="w-[110px] h-9 bg-neutral-900/50 border-neutral-800 text-sm text-neutral-300 focus:ring-1 focus:ring-neutral-700">
+              <SelectValue placeholder="Mês" />
+            </SelectTrigger>
+            <SelectContent className="bg-neutral-900 border-neutral-800 text-white max-h-[200px]">
+              <SelectItem value="Todos">Ano Todo</SelectItem>
+              <SelectItem value="01">Jan</SelectItem>
+              <SelectItem value="02">Fev</SelectItem>
+              <SelectItem value="03">Mar</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={championship} onValueChange={(val) => setChampionship(val || "Todos")}>
+            <SelectTrigger className="w-[140px] h-9 bg-neutral-900/50 border-neutral-800 text-sm text-neutral-300 focus:ring-1 focus:ring-neutral-700">
+              <SelectValue placeholder="Camp" />
+            </SelectTrigger>
+            <SelectContent className="bg-neutral-900 border-neutral-800 text-white">
+              <SelectItem value="Todos">Todos Campeonatos</SelectItem>
+              <SelectItem value="Brasileirao">Brasileirão</SelectItem>
+              <SelectItem value="CdB">Copa do Brasil</SelectItem>
+              <SelectItem value="Libertadores">Libertadores</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-          <div className="flex items-center gap-2 justify-end w-1/3">
+        <div className="flex items-center justify-end w-1/3">
+          <div className="bg-neutral-900/80 p-1 rounded-lg border border-neutral-800 flex items-center">
             <Select value={selectedTeamId} onValueChange={(val) => val && setSelectedTeamId(val)}>
-              <SelectTrigger className="w-[160px] h-9 bg-neutral-950/80 border-neutral-700 text-sm">
-                <SelectValue placeholder="Selecione..." />
+              <SelectTrigger className="w-[220px] h-10 bg-transparent border-0 shadow-none focus:ring-0 text-sm font-semibold">
+                <SelectValue placeholder="Alternar Clube..." />
               </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-white max-h-[300px]">
+              <SelectContent className="bg-neutral-900 border-neutral-800 text-white max-h-[400px]">
                 {footballTeams.map((t) => (
-                  <SelectItem key={t.id} value={t.id} className="cursor-pointer py-1.5">
-                    <div className="flex items-center gap-2">
+                  <SelectItem key={t.id} value={t.id} className="cursor-pointer py-2 focus:bg-neutral-800">
+                    <div className="flex items-center gap-3">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={t.logo} alt={t.name} className="w-5 h-5 object-contain" />
-                      <span className="font-semibold text-sm truncate">{t.name}</span>
+                      <img src={t.logo} alt={t.name} className="w-6 h-6 object-contain" />
+                      <span className="font-bold text-sm truncate">{t.name}</span>
                     </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-
-            <div className="text-neutral-500 font-bold px-1 text-xs">VS</div>
-            
-            <Select value={comparisonTeamId || "none"} onValueChange={(val) => setComparisonTeamId(val === "none" ? null : val)}>
-              <SelectTrigger className="w-[160px] h-9 bg-neutral-950/80 border-neutral-700 text-sm">
-                <SelectValue placeholder="Comparar com..." />
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-white max-h-[300px]">
-                <SelectItem value="none" className="text-neutral-500 italic">Nenhum</SelectItem>
-                {footballTeams.filter(t => t.id !== selectedTeamId).map((t) => (
-                  <SelectItem key={t.id} value={t.id} className="cursor-pointer py-1.5">
-                    <div className="flex items-center gap-2">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={t.logo} alt={t.name} className="w-5 h-5 object-contain" />
-                      <span className="font-semibold text-sm truncate">{t.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            
-            {comparisonTeam && (
-              <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-lg p-1 flex items-center justify-center border border-white/5 ml-2 relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={comparisonTeam.logo} alt={comparisonTeam.name} className="w-full h-full object-contain drop-shadow-md z-10" />
-                <div className="absolute -top-2 -right-2 bg-neutral-900 border border-neutral-700 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center z-20 shadow-md">
-                  {comparisonTeam.position}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-2 md:p-3 flex flex-col gap-2 md:gap-3 overflow-hidden">
+      <main className="flex-1 p-4 md:p-6 flex flex-col gap-4 md:gap-6 overflow-hidden bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]">
         
         {/* KPIs Row */}
-        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 h-24">
-          {renderKPI("Receita Total (Bruta)", team.revenue, comparisonTeam?.revenue, "R$ ", " M", <DollarSign className="h-4 w-4 text-emerald-500" />)}
-          {renderKPI("Despesas Operacionais", team.expenses, comparisonTeam?.expenses, "R$ ", " M", <Activity className="h-4 w-4 text-rose-500" />)}
-          {renderKPI("Sócio Torcedor", team.members, comparisonTeam?.members, "", "", <Users className="h-4 w-4 text-blue-500" />)}
-          {renderKPI("Público Pagante", team.attendance, comparisonTeam?.attendance, "", "", <Ticket className="h-4 w-4 text-amber-500" />)}
+        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-4 h-32 z-10">
+          {renderKPI("Receita Bruta (Acumulado)", team.revenue, "R$ ", " M", <DollarSign className="h-5 w-5 text-emerald-400" />, 0.1)}
+          {renderKPI("Despesas Operacionais", team.expenses, "R$ ", " M", <Activity className="h-5 w-5 text-rose-400" />, 0.2)}
+          {renderKPI("Sócio Torcedor Ativo", team.members, "", "", <Users className="h-5 w-5 text-blue-400" />, 0.3)}
+          {renderKPI("Média de Público Pagante", team.attendance, "", "", <Ticket className="h-5 w-5 text-amber-400" />, 0.4)}
         </div>
 
-        {/* Charts & Players Row */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-3 min-h-0">
+        {/* Charts & Players Grid */}
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 min-h-0 z-10">
           
-          {/* Main Chart */}
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }} className="lg:col-span-5 flex flex-col">
-            <Card className="bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col h-full">
-              <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
-                <CardTitle className="text-sm font-bold text-white flex justify-between">
-                  Evolução Mensal (Receita)
-                  {comparisonTeam && <span className="text-xs font-normal text-neutral-400">Comparativo</span>}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1 p-1 min-h-0">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={mergedChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
-                    <XAxis dataKey="month" stroke="#737373" fontSize={10} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#737373" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
-                    <Tooltip 
-                      cursor={{fill: '#262626'}}
-                      contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '12px' }}
-                      itemStyle={{ color: '#fff' }}
-                    />
-                    <Legend wrapperStyle={{ fontSize: '10px' }} />
-                    <Bar dataKey={`${team.name} Rec`} fill={team.colors.primary} radius={[2, 2, 0, 0]} maxBarSize={40} />
-                    {comparisonTeam ? (
-                      <Bar dataKey={`${comparisonTeam.name} Rec`} fill={comparisonTeam.colors.primary} radius={[2, 2, 0, 0]} maxBarSize={40} />
-                    ) : (
-                      <Bar dataKey={`${team.name} Desp`} fill="#ef4444" radius={[2, 2, 0, 0]} maxBarSize={40} />
-                    )}
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </motion.div>
-
           {/* Radar Chart (Team Strength) */}
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="lg:col-span-4 flex flex-col">
-            <Card className="bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col h-full">
-              <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
-                <CardTitle className="text-sm font-bold text-white flex items-center gap-1.5">
-                  <Shield className="w-4 h-4 text-neutral-400" />
-                  Força do Clube (Atributos)
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="lg:col-span-3 flex flex-col">
+            <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
+              <CardHeader className="py-4 px-5 flex-none border-b border-neutral-800/50">
+                <CardTitle className="text-base font-black text-white flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-neutral-400" />
+                  Atributos do Clube
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 p-0 min-h-0 relative">
+              <CardContent className="flex-1 p-2 min-h-0 relative">
                 <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="65%" data={radarData}>
-                    <PolarGrid stroke="#333" />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#a3a3a3', fontSize: 10 }} />
+                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                    <PolarGrid stroke="#262626" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#a3a3a3', fontSize: 11, fontWeight: 'bold' }} />
                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '12px' }}
-                      itemStyle={{ color: '#fff' }}
+                      contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '13px', borderRadius: '8px' }}
+                      itemStyle={{ color: '#fff', fontWeight: 'bold' }}
                     />
-                    <Radar name={team.name} dataKey={team.name} stroke={team.colors.primary} fill={team.colors.primary} fillOpacity={0.4} />
-                    {comparisonTeam && (
-                      <Radar name={comparisonTeam.name} dataKey={comparisonTeam.name} stroke={comparisonTeam.colors.primary} fill={comparisonTeam.colors.primary} fillOpacity={0.4} />
-                    )}
-                    <Legend wrapperStyle={{ fontSize: '10px' }} />
+                    <Radar name={team.name} dataKey={team.name} stroke={team.colors.primary} strokeWidth={2} fill={team.colors.primary} fillOpacity={0.5} />
                   </RadarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
           </motion.div>
 
-          {/* Top Players */}
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }} className="lg:col-span-3 flex flex-col">
-            <Card className="bg-neutral-900/50 border-neutral-800 backdrop-blur-sm flex flex-col h-full">
-              <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
-                <CardTitle className="text-sm font-bold text-white flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                  Destaques (Top 3)
+          {/* Main Chart */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="lg:col-span-6 flex flex-col">
+            <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
+              <CardHeader className="py-4 px-5 flex-none border-b border-neutral-800/50">
+                <CardTitle className="text-base font-black text-white flex justify-between items-center">
+                  Evolução Financeira (R$ Milhões)
+                  <div className="flex gap-4">
+                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: team.colors.primary}}></div><span className="text-xs text-neutral-400 font-medium">Receita</span></div>
+                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-rose-500"></div><span className="text-xs text-neutral-400 font-medium">Despesas</span></div>
+                  </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 p-0 overflow-y-auto min-h-0">
-                <div className="divide-y divide-neutral-800">
-                  {team.topPlayers?.slice(0, 3).map((player: any, idx: number) => (
-                    <motion.div 
-                      key={player.name + team.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 * idx }}
-                      className="p-2 md:p-3 hover:bg-neutral-800/50 transition-colors flex items-center gap-2 md:gap-3"
-                    >
-                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-neutral-800 flex items-center justify-center text-sm md:text-base font-bold text-neutral-400 border border-neutral-700">
-                        {player.name.charAt(0)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm md:text-base font-bold text-white truncate">{player.name}</p>
-                        <p className="text-[10px] md:text-xs text-neutral-500 uppercase tracking-wider">{player.pos}</p>
-                      </div>
-                      <div className="flex items-center gap-1 bg-neutral-950 px-2 py-1 rounded-md border border-neutral-800">
-                        <span className="text-xs md:text-sm font-bold text-emerald-400">{player.rating}</span>
-                      </div>
-                    </motion.div>
-                  ))}
-                  {team.topPlayers?.length === 0 && (
-                    <div className="p-4 text-center text-neutral-500 text-sm">Nenhum jogador em destaque.</div>
-                  )}
-                </div>
+              <CardContent className="flex-1 p-4 min-h-0">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={team.historicalRevenue} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+                    <XAxis dataKey="month" stroke="#737373" fontSize={11} tickLine={false} axisLine={false} dy={10} />
+                    <YAxis stroke="#737373" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
+                    <Tooltip 
+                      cursor={{fill: '#262626'}}
+                      contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '13px', borderRadius: '8px' }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                    <Bar dataKey="expenses" name="Despesas" fill="#ef4444" radius={[4, 4, 0, 0]} maxBarSize={50} />
+                    <Bar dataKey="revenue" name="Receita" fill={team.colors.primary} radius={[4, 4, 0, 0]} maxBarSize={50} />
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </motion.div>
+
+          {/* Right Column: Top Players & Categories */}
+          <div className="lg:col-span-3 flex flex-col gap-4 md:gap-6 min-h-0">
+            {/* Top Players */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="flex-1 flex flex-col min-h-0">
+              <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
+                <CardHeader className="py-3 px-4 flex-none border-b border-neutral-800/50">
+                  <CardTitle className="text-sm font-black text-white flex items-center gap-2">
+                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    Principais Destaques
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 p-0 overflow-y-auto min-h-0">
+                  <div className="divide-y divide-neutral-800/50">
+                    {team.topPlayers?.slice(0, 3).map((player: any, idx: number) => (
+                      <div key={player.name + team.id} className="p-3 hover:bg-neutral-800/30 transition-colors flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-base font-black text-white border border-neutral-700 shadow-inner">
+                          {player.name.charAt(0)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-white truncate">{player.name}</p>
+                          <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-semibold">{player.pos}</p>
+                        </div>
+                        <div className="flex items-center gap-1 bg-neutral-950 px-2.5 py-1 rounded-lg border border-neutral-800">
+                          <span className="text-sm font-black text-emerald-400">{player.rating}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Revenue Categories */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="flex-1 flex flex-col min-h-0">
+              <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
+                <CardHeader className="py-3 px-4 flex-none border-b border-neutral-800/50">
+                  <CardTitle className="text-sm font-black text-white flex items-center gap-2">
+                    <PieChartIcon className="w-4 h-4 text-purple-400" />
+                    Distribuição de Receitas
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 p-2 min-h-0 relative flex items-center justify-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={team.categories}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius="50%"
+                        outerRadius="80%"
+                        paddingAngle={5}
+                        dataKey="value"
+                        stroke="none"
+                      >
+                        {team.categories?.map((entry: any, index: number) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '12px', borderRadius: '8px' }}
+                        itemStyle={{ color: '#fff', fontWeight: 'bold' }}
+                        formatter={(val: number) => [`${val}%`, 'Fatia']}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  {/* Legend overlay */}
+                  <div className="absolute top-1/2 -translate-y-1/2 right-4 flex flex-col gap-1.5">
+                    {team.categories?.map((cat: any, i: number) => (
+                      <div key={cat.name} className="flex items-center gap-2 text-[10px] font-semibold text-neutral-300">
+                        <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                        {cat.name}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
           
         </div>
       </main>
