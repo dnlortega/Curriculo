@@ -99,7 +99,7 @@ export default function FootballDashboard() {
         <div 
           className="absolute inset-0 opacity-20 -z-10"
           style={{
-            background: \`linear-gradient(90deg, \${team.colors.primary} 0%, transparent 50%)\`
+            background: `linear-gradient(90deg, ${team.colors.primary} 0%, transparent 50%)`
           }}
         />
         
@@ -269,7 +269,7 @@ export default function FootballDashboard() {
                   <BarChart data={team.historicalRevenue} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
                     <XAxis dataKey="month" stroke="#737373" fontSize={8} tickLine={false} axisLine={false} dy={5} />
-                    <YAxis stroke="#737373" fontSize={8} tickLine={false} axisLine={false} tickFormatter={(val) => \`R$\${val}\`} />
+                    <YAxis stroke="#737373" fontSize={8} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
                     <Tooltip 
                       cursor={{fill: '#262626'}}
                       contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '10px', borderRadius: '4px', padding: '3px 6px' }}
@@ -338,13 +338,13 @@ export default function FootballDashboard() {
                         stroke="none"
                       >
                         {team.categories?.map((entry: any, index: number) => (
-                          <Cell key={\`cell-\${index}\`} fill={COLORS[index % COLORS.length]} />
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
                       <Tooltip 
                         contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '9px', borderRadius: '4px', padding: '3px 6px' }}
                         itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                        formatter={(value: any, name: any) => [\`\${value}%\`, name]}
+                        formatter={(value: any, name: any) => [`${value}%`, name]}
                       />
                     </PieChart>
                   </ResponsiveContainer>
