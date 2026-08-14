@@ -98,10 +98,11 @@ const generateMockData = (team, index) => {
     { subject: "Engajamento", value: Math.floor(Math.random() * 30) + 65 }
   ];
 
+  const ext = team.logo.toLowerCase().endsWith('.svg') ? '.svg' : '.png';
   return "  {\n" +
     "    id: \"" + team.id + "\",\n" +
     "    name: \"" + team.name + "\",\n" +
-    "    logo: \"/logos/" + team.id + ".png\",\n" +
+    "    logo: \"/escudos-serie-a/" + team.id + ext + "\",\n" +
     "    position: " + (index + 1) + ",\n" +
     "    colors: { primary: \"" + team.color1 + "\", secondary: \"" + team.color2 + "\" },\n" +
     "    revenue: { current: " + currentRevenue + ", previousMonth: " + previousMonthRevenue + ", previousYear: " + previousYearRevenue + " },\n" +
