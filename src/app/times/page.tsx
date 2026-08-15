@@ -311,7 +311,7 @@ export default function FootballDashboard() {
                     Principais Destaques
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-0 min-h-0 overflow-y-auto flex flex-col justify-center">
+                <CardContent className="flex-1 p-0 min-h-0 overflow-y-auto">
                   <div className="divide-y divide-neutral-800/50 flex flex-col">
                     {team.topPlayers?.slice(0, 3).map((player: any, idx: number) => (
                       <div key={player.name + team.id} className="p-3 hover:bg-neutral-800/30 transition-colors flex items-center gap-3">
