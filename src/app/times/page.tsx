@@ -301,29 +301,29 @@ export default function FootballDashboard() {
           </motion.div>
 
           {/* Right Column: Top Players & Categories */}
-          <div className="lg:col-span-3 flex flex-col gap-3 md:gap-5 min-h-0">
+          <div className="lg:col-span-3 flex flex-col gap-2 min-h-0">
             {/* Top Players */}
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="flex-none flex flex-col">
               <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
-                <CardHeader className="py-2 lg:py-3 px-3 lg:px-4 flex-none border-b border-neutral-800/50">
-                  <CardTitle className="text-[11px] lg:text-sm font-black text-white flex items-center gap-1.5">
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
+                  <CardTitle className="text-[10px] lg:text-[11px] font-black text-white flex items-center gap-1.5">
+                    <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
                     Principais Destaques
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-none p-0 overflow-hidden">
                   <div className="divide-y divide-neutral-800/50 flex flex-col">
                     {team.topPlayers?.slice(0, 3).map((player: any, idx: number) => (
-                      <div key={player.name + team.id} className="py-2 px-3 hover:bg-neutral-800/30 transition-colors flex items-center gap-2.5">
-                        <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-neutral-800 flex items-center justify-center text-xs lg:text-sm font-black text-white border border-neutral-700 shadow-inner">
+                      <div key={player.name + team.id} className="py-1.5 px-3 hover:bg-neutral-800/30 transition-colors flex items-center gap-2">
+                        <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-neutral-800 flex items-center justify-center text-[10px] lg:text-xs font-black text-white border border-neutral-700 shadow-inner">
                           {player.name.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[11px] lg:text-sm font-bold text-white truncate">{player.name}</p>
-                          <p className="text-[9px] lg:text-[10px] text-neutral-500 uppercase tracking-widest font-semibold">{player.pos}</p>
+                          <p className="text-[10px] lg:text-xs font-bold text-white truncate leading-tight">{player.name}</p>
+                          <p className="text-[8px] lg:text-[9px] text-neutral-500 uppercase tracking-widest font-semibold leading-tight">{player.pos}</p>
                         </div>
-                        <div className="flex items-center gap-1 bg-neutral-950 px-2 py-1 rounded-md border border-neutral-800">
-                          <span className="text-[11px] lg:text-sm font-black text-emerald-400">{player.rating}</span>
+                        <div className="flex items-center gap-1 bg-neutral-950 px-1.5 py-0.5 rounded border border-neutral-800">
+                          <span className="text-[10px] lg:text-xs font-black text-emerald-400">{player.rating}</span>
                         </div>
                       </div>
                     ))}
@@ -335,18 +335,18 @@ export default function FootballDashboard() {
             {/* Revenue Categories */}
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="flex-1 flex flex-col min-h-0">
               <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
-                <CardHeader className="py-3 px-4 flex-none border-b border-neutral-800/50">
-                  <CardTitle className="text-[11px] lg:text-sm font-black text-white flex items-center gap-1.5">
-                    <PieChartIcon className="w-4 h-4 text-purple-400" />
+                <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
+                  <CardTitle className="text-[10px] lg:text-[11px] font-black text-white flex items-center gap-1.5">
+                    <PieChartIcon className="w-3.5 h-3.5 text-purple-400" />
                     Distribuição (Receitas)
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-2 min-h-0 relative flex items-center justify-center">
+                <CardContent className="flex-1 p-1 min-h-0 relative flex items-center justify-center">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={team.categories}
-                        cx="40%"
+                        cx="35%"
                         cy="50%"
                         innerRadius="45%"
                         outerRadius="80%"
@@ -359,18 +359,18 @@ export default function FootballDashboard() {
                         ))}
                       </Pie>
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '11px', borderRadius: '6px', padding: '4px 8px' }}
+                        contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '10px', borderRadius: '4px', padding: '2px 6px' }}
                         itemStyle={{ color: '#fff', fontWeight: 'bold' }}
                         formatter={(value: any, name: any) => [`${value}%`, name]}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                   {/* Legend overlay */}
-                  <div className="absolute top-1/2 -translate-y-1/2 right-4 flex flex-col gap-1.5">
+                  <div className="absolute top-1/2 -translate-y-1/2 right-2 flex flex-col gap-0.5">
                     {team.categories?.map((cat: any, i: number) => (
-                      <div key={cat.name} className="flex items-center gap-2 text-[9px] lg:text-[10px] font-semibold text-neutral-400">
-                        <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        {cat.name}
+                      <div key={cat.name} className="flex items-center gap-1 text-[8px] lg:text-[9px] font-semibold text-neutral-400 leading-tight">
+                        <div className="w-1.5 h-1.5 rounded-full shadow-sm flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                        <span className="truncate max-w-[75px]">{cat.name}</span>
                       </div>
                     ))}
                   </div>
