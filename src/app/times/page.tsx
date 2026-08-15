@@ -110,14 +110,7 @@ export default function FootballDashboard() {
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             className="w-12 h-12 lg:w-14 lg:h-14 bg-white/10 backdrop-blur-xl rounded-xl p-1.5 flex items-center justify-center border border-white/10 relative shadow-2xl overflow-hidden"
           >
-            <span className="absolute inset-0 flex items-center justify-center text-white/30 font-black text-xl z-0">{team.name.charAt(0)}</span>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              src={team.logo} 
-              alt={team.name} 
-              className="w-full h-full object-contain drop-shadow-lg relative z-10" 
-              onError={(e) => { e.currentTarget.style.display = 'none'; }} 
-            />
+            <span className="absolute inset-0 flex items-center justify-center text-white/80 font-black text-2xl z-0">{team.name.charAt(0)}</span>
             <div className="absolute -top-1.5 -right-1.5 bg-neutral-900 border border-neutral-700 text-[10px] lg:text-xs font-black w-5 h-5 lg:w-6 lg:h-6 rounded-full flex items-center justify-center z-20 shadow-xl">
               {team.position}
             </div>
@@ -184,13 +177,9 @@ export default function FootballDashboard() {
                 {footballTeams.map((t) => (
                   <SelectItem key={t.id} value={t.id} className="cursor-pointer py-1.5 focus:bg-neutral-800">
                     <div className="flex items-center gap-2 lg:gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src={t.logo} 
-                        alt={t.name} 
-                        className="w-5 h-5 object-contain" 
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                      />
+                      <div className="w-5 h-5 rounded flex items-center justify-center bg-neutral-800 text-[10px] font-bold text-neutral-400">
+                        {t.name.charAt(0)}
+                      </div>
                       <span className="font-bold text-[11px] lg:text-sm truncate">{t.name}</span>
                     </div>
                   </SelectItem>
@@ -203,27 +192,23 @@ export default function FootballDashboard() {
 
       {/* Horizontal Team Logos Strip */}
       <div className="w-full overflow-x-auto flex-none border-b border-white/5 bg-neutral-950/30 backdrop-blur-md [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="flex items-center gap-2 lg:gap-4 px-4 py-2.5 min-w-max">
+        <div className="flex items-center gap-2 lg:gap-3 px-4 py-3 min-w-max">
           {footballTeams.map((t) => (
             <button
               key={t.id}
               onClick={() => setSelectedTeamId(t.id)}
-              className={`relative group w-10 h-10 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
+              className={`relative group px-4 py-2 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
                 selectedTeamId === t.id 
-                  ? 'bg-white/10 border border-white/20 scale-110 shadow-lg z-10' 
+                  ? 'bg-white/10 border border-white/20 scale-105 shadow-lg z-10' 
                   : 'bg-transparent border border-transparent hover:bg-white/5 hover:scale-105'
               }`}
               title={t.name}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={t.logo} 
-                alt={t.name} 
-                className={`w-6 h-6 lg:w-7 lg:h-7 object-contain transition-all duration-300 ${
-                  selectedTeamId === t.id ? 'opacity-100 grayscale-0 drop-shadow-md' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'
-                }`}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
+              <span className={`text-[11px] lg:text-sm font-bold transition-all duration-300 ${
+                selectedTeamId === t.id ? 'text-white' : 'text-neutral-500 group-hover:text-neutral-300'
+              }`}>
+                {t.name}
+              </span>
               {selectedTeamId === t.id && (
                 <motion.div
                   layoutId="activeTeamLogo"
@@ -239,15 +224,11 @@ export default function FootballDashboard() {
       {/* Main Content Area */}
       <main className="flex-1 p-3 md:p-6 flex flex-col gap-3 md:gap-5 overflow-hidden relative">
         
-        {/* Watermark Logo */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-[0.03] pointer-events-none transition-all duration-1000">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={team.logo} 
-            alt="" 
-            className="w-full h-[150%] max-w-[700px] max-h-[700px] object-contain grayscale" 
-            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-          />
+        {/* Watermark Logo removed */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-[0.02] pointer-events-none transition-all duration-1000">
+          <span className="text-[400px] font-black tracking-tighter" style={{ color: team.colors.primary }}>
+            {team.name.charAt(0)}
+          </span>
         </div>
 
         {/* KPIs Row */}
