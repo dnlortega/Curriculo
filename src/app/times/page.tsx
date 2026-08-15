@@ -201,6 +201,41 @@ export default function FootballDashboard() {
         </div>
       </header>
 
+      {/* Horizontal Team Logos Strip */}
+      <div className="w-full overflow-x-auto flex-none border-b border-white/5 bg-neutral-950/30 backdrop-blur-md [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="flex items-center gap-2 lg:gap-4 px-4 py-2.5 min-w-max">
+          {footballTeams.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setSelectedTeamId(t.id)}
+              className={`relative group w-10 h-10 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
+                selectedTeamId === t.id 
+                  ? 'bg-white/10 border border-white/20 scale-110 shadow-lg z-10' 
+                  : 'bg-transparent border border-transparent hover:bg-white/5 hover:scale-105'
+              }`}
+              title={t.name}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={t.logo} 
+                alt={t.name} 
+                className={`w-6 h-6 lg:w-7 lg:h-7 object-contain transition-all duration-300 ${
+                  selectedTeamId === t.id ? 'opacity-100 grayscale-0 drop-shadow-md' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'
+                }`}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+              {selectedTeamId === t.id && (
+                <motion.div
+                  layoutId="activeTeamLogo"
+                  className="absolute -bottom-1 w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: t.colors.primary, boxShadow: `0 0 8px ${t.colors.primary}` }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Main Content Area */}
       <main className="flex-1 p-3 md:p-6 flex flex-col gap-3 md:gap-5 overflow-hidden relative">
         
@@ -295,11 +330,11 @@ export default function FootballDashboard() {
                     Principais Destaques
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-0 min-h-0">
-                  <div className="divide-y divide-neutral-800/50 flex flex-col h-full">
+                <CardContent className="flex-1 p-0 min-h-0 overflow-y-auto flex flex-col justify-center">
+                  <div className="divide-y divide-neutral-800/50 flex flex-col">
                     {team.topPlayers?.slice(0, 3).map((player: any, idx: number) => (
-                      <div key={player.name + team.id} className="px-3 py-1 lg:py-2 hover:bg-neutral-800/30 transition-colors flex-1 flex items-center gap-3">
-                        <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-black text-white border border-neutral-700 shadow-inner">
+                      <div key={player.name + team.id} className="p-3 hover:bg-neutral-800/30 transition-colors flex items-center gap-3">
+                        <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-black text-white border border-neutral-700 shadow-inner">
                           {player.name.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
