@@ -90,11 +90,26 @@ export default function FootballDashboard() {
   };
 
   useEffect(() => {
+    // Escala dinâmica para encaixar perfeitamente em telas como 1366x768
+    const fitToScreen = () => {
+      // Se a tela for menor que 1400 de largura ou 800 de altura (padrão de laptops 1366x768)
+      if (window.innerWidth <= 1366 || window.innerHeight <= 800) {
+        document.documentElement.style.fontSize = '12px'; // 12px melhora a legibilidade sem estourar o tamanho
+      } else {
+        document.documentElement.style.fontSize = '16px';
+      }
+    };
+
+    fitToScreen();
+    window.addEventListener('resize', fitToScreen);
+    
     setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 400);
     
     return () => {
       clearTimeout(timer);
+      window.removeEventListener('resize', fitToScreen);
+      document.documentElement.style.fontSize = ''; // Remove a formatação ao sair
     };
   }, [selectedTeamId, year, month, championship]);
 
@@ -329,10 +344,10 @@ export default function FootballDashboard() {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-3 md:p-4 lg:p-6 flex flex-col gap-3 md:gap-5 overflow-y-auto lg:overflow-hidden relative min-h-0" ref={dashboardRef}>
+      <main className="flex-1 p-3 md:p-3 lg:p-4 flex flex-col gap-3 md:gap-3 lg:gap-4 overflow-y-auto lg:overflow-hidden relative min-h-0" ref={dashboardRef}>
         
         {/* KPIs Row */}
-        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 z-10 relative">
+        <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-3 lg:gap-4 z-10 relative">
           {renderKPI("Receita Bruta (Acumulado)", team.revenue, "R$ ", " M", <DollarSign className="h-5 w-5 text-emerald-400" />, 0.1)}
           {renderKPI("Despesas Operacionais", team.expenses, "R$ ", " M", <Activity className="h-5 w-5 text-rose-400" />, 0.2)}
           {renderKPI("Sócio Torcedor", team.members, "", "", <Users className="h-5 w-5 text-blue-400" />, 0.3)}
@@ -340,7 +355,7 @@ export default function FootballDashboard() {
         </div>
 
         {/* Charts & Players Grid */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-5 z-10 min-h-0">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-3 lg:gap-4 z-10 min-h-0">
           
           {/* Top Row: Main Chart (8 cols) */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="lg:col-span-8 flex flex-col min-h-0">
