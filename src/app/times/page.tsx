@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { footballTeams, calculateGrowth } from "@/lib/data/football-data";
 import { ArrowUpRight, ArrowDownRight, Users, DollarSign, Activity, Ticket, Star, Shield, PieChart as PieChartIcon } from "lucide-react";
 import {
@@ -33,6 +34,13 @@ export default function FootballDashboard() {
   const [year, setYear] = useState<string>("2024");
   const [month, setMonth] = useState<string>("Todos");
   const [championship, setChampionship] = useState<string>("Todos");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => setIsLoading(false), 400);
+    return () => clearTimeout(timer);
+  }, [selectedTeamId, year, month, championship]);
 
   const team = useMemo(() => {
     const baseTeam = footballTeams.find((t) => t.id === selectedTeamId) || footballTeams[0];
@@ -95,31 +103,43 @@ export default function FootballDashboard() {
       >
         <Card className="flex flex-col bg-neutral-900/50 border-neutral-800 backdrop-blur-sm h-full justify-between p-3 lg:p-5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
+          
           <div className="flex flex-row items-center justify-between pb-1 lg:pb-2">
             <span className="text-sm lg:text-sm font-semibold text-neutral-400">{title}</span>
             <div className="p-1.5 lg:p-2 bg-neutral-800/50 rounded-lg">{icon}</div>
           </div>
-          <div className="mt-1 flex flex-col justify-end flex-1">
-            <motion.div 
-              key={data.current}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="text-xl lg:text-3xl font-black text-white tracking-tight"
-            >
-              {prefix}{data.current.toLocaleString("pt-BR")}{suffix}
-            </motion.div>
-            <div className="flex gap-2 mt-2 lg:mt-3 text-xs lg:text-xs font-medium">
-              <Badge variant="outline" className={isMomPositive ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20 px-2 py-0" : "text-rose-400 bg-rose-400/10 border-rose-400/20 px-2 py-0"}>
-                {isMomPositive ? <ArrowUpRight className="mr-0.5 h-3 w-3" /> : <ArrowDownRight className="mr-0.5 h-3 w-3" />}
-                {Math.abs(mom).toFixed(1)}% MoM
-              </Badge>
-              <Badge variant="outline" className={isYoyPositive ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20 px-2 py-0" : "text-rose-400 bg-rose-400/10 border-rose-400/20 px-2 py-0"}>
-                {isYoyPositive ? <ArrowUpRight className="mr-0.5 h-3 w-3" /> : <ArrowDownRight className="mr-0.5 h-3 w-3" />}
-                {Math.abs(yoy).toFixed(1)}% YoY
-              </Badge>
+          
+          {isLoading ? (
+            <div className="mt-1 flex flex-col justify-end flex-1 gap-2">
+              <Skeleton className="h-8 w-2/3 bg-neutral-800/80" />
+              <div className="flex gap-2 mt-1">
+                <Skeleton className="h-5 w-16 bg-neutral-800/80" />
+                <Skeleton className="h-5 w-16 bg-neutral-800/80" />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mt-1 flex flex-col justify-end flex-1">
+              <motion.div 
+                key={data.current}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="text-xl lg:text-3xl font-black text-white tracking-tight"
+              >
+                {prefix}{data.current.toLocaleString("pt-BR")}{suffix}
+              </motion.div>
+              <div className="flex gap-2 mt-2 lg:mt-3 text-xs lg:text-xs font-medium">
+                <Badge variant="outline" className={isMomPositive ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20 px-2 py-0" : "text-rose-400 bg-rose-400/10 border-rose-400/20 px-2 py-0"}>
+                  {isMomPositive ? <ArrowUpRight className="mr-0.5 h-3 w-3" /> : <ArrowDownRight className="mr-0.5 h-3 w-3" />}
+                  {Math.abs(mom).toFixed(1)}% MoM
+                </Badge>
+                <Badge variant="outline" className={isYoyPositive ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20 px-2 py-0" : "text-rose-400 bg-rose-400/10 border-rose-400/20 px-2 py-0"}>
+                  {isYoyPositive ? <ArrowUpRight className="mr-0.5 h-3 w-3" /> : <ArrowDownRight className="mr-0.5 h-3 w-3" />}
+                  {Math.abs(yoy).toFixed(1)}% YoY
+                </Badge>
+              </div>
+            </div>
+          )}
         </Card>
       </motion.div>
     );
@@ -267,18 +287,24 @@ export default function FootballDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex-1 p-2 lg:p-4 min-h-0 relative">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                    <PolarGrid stroke="#262626" />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#a3a3a3', fontSize: 10, fontWeight: 'bold' }} />
-                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '11px', borderRadius: '6px', padding: '4px 8px' }}
-                      itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                    />
-                    <Radar name={team.name} dataKey={team.name} stroke={team.colors.primary} strokeWidth={2} fill={team.colors.primary} fillOpacity={0.5} />
-                  </RadarChart>
-                </ResponsiveContainer>
+                {isLoading ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Skeleton className="w-[80%] h-[80%] rounded-full bg-neutral-800/50" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                      <PolarGrid stroke="#262626" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fill: '#a3a3a3', fontSize: 10, fontWeight: 'bold' }} />
+                      <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '11px', borderRadius: '6px', padding: '4px 8px' }}
+                        itemStyle={{ color: '#fff', fontWeight: 'bold' }}
+                      />
+                      <Radar name={team.name} dataKey={team.name} stroke={team.colors.primary} strokeWidth={2} fill={team.colors.primary} fillOpacity={0.5} />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -296,21 +322,31 @@ export default function FootballDashboard() {
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 p-2 lg:p-4 min-h-0">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={team.historicalRevenue} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
-                    <XAxis dataKey="month" stroke="#737373" fontSize={10} tickLine={false} axisLine={false} dy={10} />
-                    <YAxis stroke="#737373" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
-                    <Tooltip 
-                      cursor={{fill: '#262626'}}
-                      contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '11px', borderRadius: '6px', padding: '6px 10px' }}
-                      itemStyle={{ color: '#fff' }}
-                    />
-                    <Bar dataKey="expenses" name="Despesas" fill="#525252" radius={[3, 3, 0, 0]} maxBarSize={35} />
-                    <Bar dataKey="revenue" name="Receita" fill={team.colors.primary} radius={[3, 3, 0, 0]} maxBarSize={35} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <CardContent className="flex-1 p-2 lg:p-4 min-h-0 relative">
+                {isLoading ? (
+                  <div className="absolute inset-0 flex items-end justify-center gap-2 p-4">
+                    <Skeleton className="w-8 h-[30%] bg-neutral-800/50 rounded-t" />
+                    <Skeleton className="w-8 h-[60%] bg-neutral-800/50 rounded-t" />
+                    <Skeleton className="w-8 h-[40%] bg-neutral-800/50 rounded-t" />
+                    <Skeleton className="w-8 h-[80%] bg-neutral-800/50 rounded-t" />
+                    <Skeleton className="w-8 h-[50%] bg-neutral-800/50 rounded-t" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={team.historicalRevenue} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+                      <XAxis dataKey="month" stroke="#737373" fontSize={10} tickLine={false} axisLine={false} dy={10} />
+                      <YAxis stroke="#737373" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
+                      <Tooltip 
+                        cursor={{fill: '#262626'}}
+                        contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '11px', borderRadius: '6px', padding: '6px 10px' }}
+                        itemStyle={{ color: '#fff' }}
+                      />
+                      <Bar dataKey="expenses" name="Despesas" fill="#525252" radius={[3, 3, 0, 0]} maxBarSize={35} />
+                      <Bar dataKey="revenue" name="Receita" fill={team.colors.primary} radius={[3, 3, 0, 0]} maxBarSize={35} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
               </CardContent>
             </Card>
           </motion.div>
