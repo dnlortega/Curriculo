@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { footballTeams, calculateGrowth } from "@/lib/data/football-data";
-import { ArrowUpRight, ArrowDownRight, Users, DollarSign, Activity, Ticket, Star, Shield, PieChart as PieChartIcon } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Users, DollarSign, Activity, Ticket, Star, Shield, PieChart as PieChartIcon, Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import {
   BarChart,
   Bar,
@@ -29,24 +31,70 @@ import { motion } from "framer-motion";
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const revenue = payload.find((p: any) => p.dataKey === 'revenue')?.value || 0;
+    const expenses = payload.find((p: any) => p.dataKey === 'expenses')?.value || 0;
+    const profit = revenue - expenses;
+    const margin = revenue > 0 ? ((profit / revenue) * 100).toFixed(1) : "0.0";
+
+    return (
+      <div className="bg-neutral-900 border border-neutral-800 p-2 rounded-lg shadow-xl text-xs z-50">
+        <p className="font-bold text-neutral-300 mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex items-center justify-between gap-4 py-0.5">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+              <span className="text-neutral-400 font-medium">{entry.name}</span>
+            </div>
+            <span className="font-bold text-white">R$ {entry.value}M</span>
+          </div>
+        ))}
+        <div className="mt-2 pt-2 border-t border-neutral-800 flex justify-between gap-4">
+          <span className="text-neutral-500 font-medium">Margem Operacional</span>
+          <span className={`font-bold ${profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{margin}%</span>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 export default function FootballDashboard() {
   const [selectedTeamId, setSelectedTeamId] = useState<string>("flamengo");
   const [year, setYear] = useState<string>("2024");
   const [month, setMonth] = useState<string>("Todos");
   const [championship, setChampionship] = useState<string>("Todos");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dashboardRef = useRef<HTMLDivElement>(null);
+
+  const exportPDF = async () => {
+    if (!dashboardRef.current) return;
+    try {
+      setIsLoading(true);
+      const canvas = await html2canvas(dashboardRef.current, { scale: 2, backgroundColor: '#050505', useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      const safeName = team?.name?.replace(/\s+/g, '_') || 'Dashboard';
+      pdf.save(`Dashboard_${safeName}_${month}_${year}.pdf`);
+    } catch (error) {
+      console.error("Failed to export PDF", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Altera a fonte raiz apenas nesta página para escalar todos os rems para 11px base
-    document.documentElement.style.fontSize = '11px';
-    
     setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 400);
     
     return () => {
       clearTimeout(timer);
-      // Reverte para vazio (que usará o padrão do CSS) ao sair da página
-      document.documentElement.style.fontSize = '';
     };
   }, [selectedTeamId, year, month, championship]);
 
@@ -220,7 +268,15 @@ export default function FootballDashboard() {
           </Select>
         </div>
 
-        <div className="flex items-center justify-end w-1/3">
+        <div className="flex items-center justify-end w-1/3 gap-2">
+          <button 
+            onClick={exportPDF}
+            aria-label="Exportar para PDF"
+            className="hidden lg:flex items-center gap-1.5 bg-neutral-900/80 hover:bg-neutral-800 text-neutral-300 hover:text-white p-1.5 px-3 rounded-lg border border-neutral-800 transition-colors text-xs font-semibold"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Exportar PDF
+          </button>
           <div className="bg-neutral-900/80 p-1 lg:p-1.5 rounded-lg border border-neutral-800 flex items-center">
             <Select value={selectedTeamId} onValueChange={(val) => val && setSelectedTeamId(val)}>
               <SelectTrigger className="w-[180px] lg:w-[220px] h-8 lg:h-10 bg-transparent border-0 shadow-none focus:ring-0 text-sm lg:text-sm font-semibold">
@@ -246,6 +302,7 @@ export default function FootballDashboard() {
           {footballTeams.map((t) => (
             <button
               key={t.id}
+              aria-label={`Selecionar time ${t.name}`}
               onClick={() => setSelectedTeamId(t.id)}
               className={`relative group px-4 py-2 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
                 selectedTeamId === t.id 
@@ -272,7 +329,7 @@ export default function FootballDashboard() {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-3 md:p-4 lg:p-6 flex flex-col gap-3 md:gap-5 overflow-y-auto lg:overflow-hidden relative min-h-0">
+      <main className="flex-1 p-3 md:p-4 lg:p-6 flex flex-col gap-3 md:gap-5 overflow-y-auto lg:overflow-hidden relative min-h-0" ref={dashboardRef}>
         
         {/* KPIs Row */}
         <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 z-10 relative">
@@ -285,8 +342,72 @@ export default function FootballDashboard() {
         {/* Charts & Players Grid */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-5 z-10 min-h-0">
           
-          {/* Radar Chart (Team Strength) */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="lg:col-span-3 flex flex-col min-h-0">
+          {/* Top Row: Main Chart (8 cols) */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="lg:col-span-8 flex flex-col min-h-0">
+            <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
+              <CardHeader className="py-3 px-4 flex-none border-b border-neutral-800/50">
+                <CardTitle className="text-sm lg:text-sm font-black text-white flex justify-between items-center">
+                  Evolução Financeira (R$ M)
+                  <div className="flex gap-3">
+                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: team.colors.primary}}></div><span className="text-xs lg:text-sm text-neutral-400 font-medium">Receita</span></div>
+                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-neutral-600"></div><span className="text-xs lg:text-sm text-neutral-400 font-medium">Despesas</span></div>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 p-2 lg:p-4 min-h-0 relative">
+                {isLoading ? (
+                  <div className="absolute inset-0 flex items-end justify-center gap-2 p-4">
+                    <Skeleton className="w-8 h-[30%] bg-neutral-800/50 rounded-t" />
+                    <Skeleton className="w-8 h-[60%] bg-neutral-800/50 rounded-t" />
+                    <Skeleton className="w-8 h-[40%] bg-neutral-800/50 rounded-t" />
+                    <Skeleton className="w-8 h-[80%] bg-neutral-800/50 rounded-t" />
+                    <Skeleton className="w-8 h-[50%] bg-neutral-800/50 rounded-t" />
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={team.historicalRevenue} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+                      <XAxis dataKey="month" stroke="#737373" fontSize={10} tickLine={false} axisLine={false} dy={10} />
+                      <YAxis stroke="#737373" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
+                      <Tooltip content={<CustomTooltip />} cursor={{fill: '#262626'}} />
+                      <Bar dataKey="expenses" name="Despesas" fill="#525252" radius={[3, 3, 0, 0]} maxBarSize={35} />
+                      <Bar dataKey="revenue" name="Receita" fill={team.colors.primary} radius={[3, 3, 0, 0]} maxBarSize={35} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Top Row Right: Top Players (4 cols) */}
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="lg:col-span-4 flex flex-col min-h-0">
+            <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
+              <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
+                <CardTitle className="text-xs lg:text-sm font-black text-white flex items-center gap-1.5">
+                  <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                  Principais Destaques
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 p-0 overflow-y-auto custom-scrollbar">
+                <div className="divide-y divide-neutral-800/50 flex flex-col">
+                  {team.topPlayers?.slice(0, 4).map((player: any, idx: number) => (
+                    <div key={player.name + team.id} className="py-3 px-4 hover:bg-neutral-800/30 transition-colors flex items-center gap-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-white truncate leading-tight">{player.name}</p>
+                        <p className="text-xs text-neutral-500 uppercase tracking-widest font-semibold leading-tight mt-0.5">{player.pos}</p>
+                      </div>
+                      <div className="flex items-center gap-1 bg-neutral-950 px-2.5 py-1 rounded border border-neutral-800">
+                        <span className="text-sm font-black text-emerald-400">{player.rating}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Bottom Row: Radar Chart (6 cols) */}
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="lg:col-span-6 flex flex-col min-h-0">
             <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
               <CardHeader className="py-3 px-4 flex-none border-b border-neutral-800/50">
                 <CardTitle className="text-sm lg:text-sm font-black text-white flex items-center gap-1.5">
@@ -317,123 +438,50 @@ export default function FootballDashboard() {
             </Card>
           </motion.div>
 
-          {/* Main Chart */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="lg:col-span-6 flex flex-col min-h-0">
+          {/* Bottom Row: Pie Chart (6 cols) */}
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }} className="lg:col-span-6 flex flex-col min-h-0">
             <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
               <CardHeader className="py-3 px-4 flex-none border-b border-neutral-800/50">
-                <CardTitle className="text-sm lg:text-sm font-black text-white flex justify-between items-center">
-                  Evolução Financeira (R$ M)
-                  <div className="flex gap-3">
-                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: team.colors.primary}}></div><span className="text-xs lg:text-sm text-neutral-400 font-medium">Receita</span></div>
-                    {/* Fixed Despesas to always be Neutral Gray so it doesn't clash with red teams */}
-                    <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-neutral-600"></div><span className="text-xs lg:text-sm text-neutral-400 font-medium">Despesas</span></div>
-                  </div>
+                <CardTitle className="text-sm lg:text-sm font-black text-white flex items-center gap-1.5">
+                  <PieChartIcon className="w-4 h-4 text-purple-400" />
+                  Distribuição (Receitas)
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 p-2 lg:p-4 min-h-0 relative">
-                {isLoading ? (
-                  <div className="absolute inset-0 flex items-end justify-center gap-2 p-4">
-                    <Skeleton className="w-8 h-[30%] bg-neutral-800/50 rounded-t" />
-                    <Skeleton className="w-8 h-[60%] bg-neutral-800/50 rounded-t" />
-                    <Skeleton className="w-8 h-[40%] bg-neutral-800/50 rounded-t" />
-                    <Skeleton className="w-8 h-[80%] bg-neutral-800/50 rounded-t" />
-                    <Skeleton className="w-8 h-[50%] bg-neutral-800/50 rounded-t" />
-                  </div>
-                ) : (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={team.historicalRevenue} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
-                      <XAxis dataKey="month" stroke="#737373" fontSize={10} tickLine={false} axisLine={false} dy={10} />
-                      <YAxis stroke="#737373" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val}`} />
-                      <Tooltip 
-                        cursor={{fill: '#262626'}}
-                        contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '11px', borderRadius: '6px', padding: '6px 10px' }}
-                        itemStyle={{ color: '#fff' }}
-                      />
-                      <Bar dataKey="expenses" name="Despesas" fill="#525252" radius={[3, 3, 0, 0]} maxBarSize={35} />
-                      <Bar dataKey="revenue" name="Receita" fill={team.colors.primary} radius={[3, 3, 0, 0]} maxBarSize={35} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                )}
+              <CardContent className="flex-1 p-2 min-h-0 relative flex items-center justify-center">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={team.categories}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius="50%"
+                      outerRadius="80%"
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {team.categories?.map((entry: any, index: number) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '11px', borderRadius: '6px', padding: '4px 8px' }}
+                      itemStyle={{ color: '#fff', fontWeight: 'bold' }}
+                      formatter={(value: any, name: any) => [`${value}%`, name]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="absolute top-1/2 -translate-y-1/2 right-4 flex flex-col gap-1.5">
+                  {team.categories?.map((cat: any, i: number) => (
+                    <div key={cat.name} className="flex items-center gap-2 text-xs lg:text-xs font-semibold text-neutral-400">
+                      <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                      <span className="truncate">{cat.name}</span>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </motion.div>
-
-          {/* Right Column: Top Players & Categories */}
-          <div className="lg:col-span-3 flex flex-col gap-2 min-h-0">
-            {/* Top Players */}
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="flex-none flex flex-col">
-              <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
-                <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
-                  <CardTitle className="text-xs lg:text-sm font-black text-white flex items-center gap-1.5">
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    Principais Destaques
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-none p-0 overflow-hidden">
-                  <div className="divide-y divide-neutral-800/50 flex flex-col">
-                    {team.topPlayers?.slice(0, 3).map((player: any, idx: number) => (
-                      <div key={player.name + team.id} className="py-2 px-3 hover:bg-neutral-800/30 transition-colors flex items-center gap-2">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs lg:text-xs font-bold text-white truncate leading-tight">{player.name}</p>
-                          <p className="text-xs lg:text-xs text-neutral-500 uppercase tracking-widest font-semibold leading-tight">{player.pos}</p>
-                        </div>
-                        <div className="flex items-center gap-1 bg-neutral-950 px-2 py-0.5 rounded border border-neutral-800">
-                          <span className="text-xs lg:text-xs font-black text-emerald-400">{player.rating}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Revenue Categories */}
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="flex-1 flex flex-col min-h-0">
-              <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
-                <CardHeader className="py-2 px-3 flex-none border-b border-neutral-800/50">
-                  <CardTitle className="text-xs lg:text-sm font-black text-white flex items-center gap-1.5">
-                    <PieChartIcon className="w-4 h-4 text-purple-400" />
-                    Distribuição (Receitas)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 p-2 min-h-[150px] relative flex items-center justify-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={team.categories}
-                        cx="35%"
-                        cy="50%"
-                        innerRadius="45%"
-                        outerRadius="80%"
-                        paddingAngle={5}
-                        dataKey="value"
-                        stroke="none"
-                      >
-                        {team.categories?.map((entry: any, index: number) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', color: '#fff', fontSize: '10px', borderRadius: '4px', padding: '2px 6px' }}
-                        itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                        formatter={(value: any, name: any) => [`${value}%`, name]}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  {/* Legend overlay */}
-                  <div className="absolute top-1/2 -translate-y-1/2 right-2 flex flex-col gap-0.5">
-                    {team.categories?.map((cat: any, i: number) => (
-                      <div key={cat.name} className="flex items-center gap-1 text-xs lg:text-xs font-semibold text-neutral-400 leading-tight">
-                        <div className="w-1.5 h-1.5 rounded-full shadow-sm flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="truncate max-w-[75px]">{cat.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
           
         </div>
       </main>
