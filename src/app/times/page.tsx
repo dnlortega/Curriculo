@@ -104,17 +104,6 @@ export default function FootballDashboard() {
         />
         
         <div className="flex items-center gap-3 w-1/3">
-          <motion.div 
-            key={team.logo}
-            initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
-            animate={{ scale: 1, opacity: 1, rotate: 0 }}
-            className="w-12 h-12 lg:w-14 lg:h-14 bg-white/10 backdrop-blur-xl rounded-xl p-1.5 flex items-center justify-center border border-white/10 relative shadow-2xl overflow-hidden"
-          >
-            <span className="absolute inset-0 flex items-center justify-center text-white/80 font-black text-2xl z-0">{team.name.charAt(0)}</span>
-            <div className="absolute -top-1.5 -right-1.5 bg-neutral-900 border border-neutral-700 text-xs lg:text-xs font-black w-5 h-5 lg:w-6 lg:h-6 rounded-full flex items-center justify-center z-20 shadow-xl">
-              {team.position}
-            </div>
-          </motion.div>
           <div>
             <motion.h1 
               key={team.name}
@@ -177,9 +166,6 @@ export default function FootballDashboard() {
                 {footballTeams.map((t) => (
                   <SelectItem key={t.id} value={t.id} className="cursor-pointer py-2 focus:bg-neutral-800">
                     <div className="flex items-center gap-2 lg:gap-3">
-                      <div className="w-5 h-5 rounded flex items-center justify-center bg-neutral-800 text-xs font-bold text-neutral-400">
-                        {t.name.charAt(0)}
-                      </div>
                       <span className="font-bold text-sm lg:text-sm truncate">{t.name}</span>
                     </div>
                   </SelectItem>
@@ -224,13 +210,6 @@ export default function FootballDashboard() {
       {/* Main Content Area */}
       <main className="flex-1 p-3 md:p-6 flex flex-col gap-3 md:gap-5 overflow-y-auto relative custom-scrollbar">
         
-        {/* Watermark Logo removed */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center opacity-[0.02] pointer-events-none transition-all duration-1000">
-          <span className="text-[400px] font-black tracking-tighter" style={{ color: team.colors.primary }}>
-            {team.name.charAt(0)}
-          </span>
-        </div>
-
         {/* KPIs Row */}
         <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 z-10 relative">
           {renderKPI("Receita Bruta (Acumulado)", team.revenue, "R$ ", " M", <DollarSign className="h-5 w-5 text-emerald-400" />, 0.1)}
@@ -315,9 +294,6 @@ export default function FootballDashboard() {
                   <div className="divide-y divide-neutral-800/50 flex flex-col">
                     {team.topPlayers?.slice(0, 3).map((player: any, idx: number) => (
                       <div key={player.name + team.id} className="py-2 px-3 hover:bg-neutral-800/30 transition-colors flex items-center gap-2">
-                        <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-neutral-800 flex items-center justify-center text-xs lg:text-xs font-black text-white border border-neutral-700 shadow-inner">
-                          {player.name.charAt(0)}
-                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs lg:text-xs font-bold text-white truncate leading-tight">{player.name}</p>
                           <p className="text-xs lg:text-xs text-neutral-500 uppercase tracking-widest font-semibold leading-tight">{player.pos}</p>
