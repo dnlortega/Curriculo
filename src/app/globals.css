@@ -131,11 +131,11 @@
   }
   html {
     @apply font-sans;
-    font-size: 11px;
+    font-size: 16px;
   }
   @media (min-width: 1024px) {
     html {
-      font-size: 11px;
+      font-size: 17px;
     }
   }
 }
