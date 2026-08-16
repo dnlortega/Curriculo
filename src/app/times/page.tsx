@@ -208,7 +208,7 @@ export default function FootballDashboard() {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-3 md:p-6 flex flex-col gap-3 md:gap-5 overflow-y-auto relative custom-scrollbar">
+      <main className="flex-1 p-3 md:p-4 lg:p-6 flex flex-col gap-3 md:gap-5 overflow-hidden relative min-h-0">
         
         {/* KPIs Row */}
         <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 z-10 relative">
@@ -219,10 +219,10 @@ export default function FootballDashboard() {
         </div>
 
         {/* Charts & Players Grid */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-5 z-10">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-5 z-10 min-h-0">
           
           {/* Radar Chart (Team Strength) */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="lg:col-span-3 flex flex-col">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="lg:col-span-3 flex flex-col min-h-0">
             <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
               <CardHeader className="py-3 px-4 flex-none border-b border-neutral-800/50">
                 <CardTitle className="text-sm lg:text-sm font-black text-white flex items-center gap-1.5">
@@ -248,7 +248,7 @@ export default function FootballDashboard() {
           </motion.div>
 
           {/* Main Chart */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="lg:col-span-6 flex flex-col">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="lg:col-span-6 flex flex-col min-h-0">
             <Card className="bg-neutral-900/40 border-neutral-800/80 backdrop-blur-md flex flex-col h-full shadow-xl">
               <CardHeader className="py-3 px-4 flex-none border-b border-neutral-800/50">
                 <CardTitle className="text-sm lg:text-sm font-black text-white flex justify-between items-center">
