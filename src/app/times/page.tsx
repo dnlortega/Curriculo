@@ -37,9 +37,17 @@ export default function FootballDashboard() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    // Altera a fonte raiz apenas nesta página para escalar todos os rems para 11px base
+    document.documentElement.style.fontSize = '11px';
+    
     setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 400);
-    return () => clearTimeout(timer);
+    
+    return () => {
+      clearTimeout(timer);
+      // Reverte para vazio (que usará o padrão do CSS) ao sair da página
+      document.documentElement.style.fontSize = '';
+    };
   }, [selectedTeamId, year, month, championship]);
 
   const team = useMemo(() => {
