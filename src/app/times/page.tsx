@@ -34,7 +34,43 @@ export default function FootballDashboard() {
   const [month, setMonth] = useState<string>("Todos");
   const [championship, setChampionship] = useState<string>("Todos");
 
-  const team = useMemo(() => footballTeams.find((t) => t.id === selectedTeamId) || footballTeams[0], [selectedTeamId]);
+  const team = useMemo(() => {
+    const baseTeam = footballTeams.find((t) => t.id === selectedTeamId) || footballTeams[0];
+    
+    // Lógica para simular a aplicação dos filtros nos dados
+    let historicalRevenue = [...baseTeam.historicalRevenue];
+    let revenueCurrent = baseTeam.revenue.current;
+    let expensesCurrent = baseTeam.expenses.current;
+    
+    if (month !== "Todos") {
+      const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+      const targetMonth = monthNames[parseInt(month) - 1];
+      const monthData = historicalRevenue.find(h => h.month === targetMonth);
+      if (monthData) {
+        historicalRevenue = [monthData];
+        revenueCurrent = monthData.revenue;
+        expensesCurrent = monthData.expenses;
+      }
+    }
+
+    // Modificador simples para dar variação visual aos dados quando mudamos o ano ou campeonato
+    let modifier = 1;
+    if (year === "2023") modifier *= 0.8;
+    if (championship !== "Todos") modifier *= 0.45;
+
+    return {
+      ...baseTeam,
+      historicalRevenue: historicalRevenue.map(h => ({
+        ...h,
+        revenue: Math.round(h.revenue * modifier),
+        expenses: Math.round(h.expenses * modifier)
+      })),
+      revenue: { ...baseTeam.revenue, current: Math.round(revenueCurrent * modifier) },
+      expenses: { ...baseTeam.expenses, current: Math.round(expensesCurrent * modifier) },
+      members: { ...baseTeam.members, current: Math.round(baseTeam.members.current * modifier) },
+      attendance: { ...baseTeam.attendance, current: Math.round(baseTeam.attendance.current * modifier) },
+    };
+  }, [selectedTeamId, year, month, championship]);
 
   const radarData = useMemo(() => {
     if (!team.stats) return [];
