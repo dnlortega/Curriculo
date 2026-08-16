@@ -208,7 +208,7 @@ export default function FootballDashboard() {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-3 md:p-4 lg:p-6 flex flex-col gap-3 md:gap-5 overflow-hidden relative min-h-0">
+      <main className="flex-1 p-3 md:p-4 lg:p-6 flex flex-col gap-3 md:gap-5 overflow-y-auto lg:overflow-hidden relative min-h-0">
         
         {/* KPIs Row */}
         <div className="flex-none grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 z-10 relative">
