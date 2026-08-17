@@ -5,6 +5,7 @@ import { Language } from "@/i18n";
 import { Navbar } from "@/components/layout/navbar";
 import { HeroSection } from "@/components/sections/hero-section";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Tracker } from "@/components/Tracker";
 // import { Chatbot } from "@/components/Chatbot";
@@ -23,11 +24,37 @@ export default function Home() {
   const [lang, setLang] = useState<Language>('en');
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
 
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Easter Egg: Konami Code para o /system
+  useEffect(() => {
+    let keys = "";
+    const targetKeys = ["arquiteto", "solo"];
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keys += e.key.toLowerCase();
+      // Keep only the last 15 characters to prevent string from growing indefinitely
+      if (keys.length > 15) keys = keys.slice(-15);
+      
+      if (targetKeys.some(target => keys.endsWith(target))) {
+        keys = ""; // Reset
+        // Redireciona com um efeito de piscar a tela (pode ser adicionado na navegação)
+        document.body.style.transition = "background-color 0.5s ease";
+        document.body.style.backgroundColor = "#000";
+        setTimeout(() => {
+          router.push("/system");
+        }, 500);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [router]);
 
   return (
     <main className="min-h-screen relative selection:bg-primary/30 overflow-x-hidden flex flex-col items-center">

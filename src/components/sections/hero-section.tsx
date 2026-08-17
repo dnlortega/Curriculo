@@ -9,6 +9,8 @@ import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { translations, Language } from "@/i18n";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface HeroSectionProps {
   lang: Language;
@@ -16,6 +18,20 @@ interface HeroSectionProps {
 
 export function HeroSection({ lang }: HeroSectionProps) {
   const t = translations[lang];
+  const [clickCount, setClickCount] = useState(0);
+  const router = useRouter();
+
+  const handleImageClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    if (newCount === 5) {
+      document.body.style.transition = "background-color 0.5s ease";
+      document.body.style.backgroundColor = "#000";
+      setTimeout(() => {
+        router.push("/system");
+      }, 500);
+    }
+  };
 
   const staggerContainer: Variants = {
     hidden: { opacity: 0 },
@@ -117,8 +133,10 @@ export function HeroSection({ lang }: HeroSectionProps) {
               alt="Daniel Ortega Pereira"
               width={320}
               height={320}
-              className="relative rounded-full border-4 border-background object-cover shadow-2xl z-10 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 ring-4 ring-primary/10 hover:ring-primary/40 transition-all duration-300 group-hover:scale-105"
+              className="relative rounded-full border-4 border-background object-cover shadow-2xl z-10 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 ring-4 ring-primary/10 hover:ring-primary/40 transition-all duration-300 group-hover:scale-105 cursor-pointer"
               priority
+              onClick={handleImageClick}
+              title={clickCount > 0 ? `Cliques: ${clickCount}/5` : ""}
             />
           </motion.div>
         </motion.div>
