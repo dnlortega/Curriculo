@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSystem } from "@/components/system/system-context";
 
 interface StatRowProps {
   label: string;
@@ -47,10 +48,29 @@ const CLASS_DATA: Record<ClassType, ClassStats> = {
 };
 
 export function StatusWindow() {
+  const { level, exp, maxExp, justLeveledUp, setJustLeveledUp } = useSystem();
   const [playerClass, setPlayerClass] = useState<ClassType>("Desperto");
   const [showClassSelector, setShowClassSelector] = useState(false);
 
-  const stats = CLASS_DATA[playerClass];
+  const baseStats = CLASS_DATA[playerClass];
+  
+  // Status escalam com o nível (ex: +2 por level)
+  const levelBonus = (level - 1) * 2;
+  const stats = {
+    forca: baseStats.forca + levelBonus,
+    agilidade: baseStats.agilidade + levelBonus,
+    inteligencia: baseStats.inteligencia + levelBonus,
+    senso: baseStats.senso + levelBonus,
+    vitalidade: baseStats.vitalidade + levelBonus,
+    color: baseStats.color
+  };
+
+  useEffect(() => {
+    if (justLeveledUp) {
+      const timer = setTimeout(() => setJustLeveledUp(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [justLeveledUp, setJustLeveledUp]);
 
   return (
     <>
@@ -68,10 +88,12 @@ export function StatusWindow() {
         <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-system-blue rounded-br-lg" />
 
         <div className="text-center mb-8 border-b border-system-blue/20 pb-4 relative">
-          <h2 className="text-3xl font-mono text-system-blue tracking-[0.2em] font-bold mb-2">STATUS DO JOGADOR</h2>
-          <div className="flex justify-center gap-8 text-sm font-mono text-gray-400 items-center">
+          <h2 className="text-3xl font-mono text-system-blue tracking-[0.2em] font-bold mb-2">
+            {justLeveledUp ? <span className="text-system-gold animate-pulse glow-yellow drop-shadow-[0_0_15px_rgba(251,191,36,1)]">LEVEL UP!</span> : "STATUS DO JOGADOR"}
+          </h2>
+          <div className="flex justify-center gap-8 text-sm font-mono text-gray-400 items-center mb-4">
             <p>NOME: <span className="text-white">DANIEL ORTEGA</span></p>
-            <p>NÍVEL: <span className="text-system-gold">99</span></p>
+            <p>NÍVEL: <span className="text-system-gold text-lg animate-pulse glow-yellow drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">{level}</span></p>
             <p className="flex items-center gap-2">
               CLASSE: 
               <span className={`font-bold ${stats.color}`}>{playerClass.toUpperCase()}</span>
@@ -82,6 +104,22 @@ export function StatusWindow() {
                 TROCAR
               </button>
             </p>
+          </div>
+
+          {/* Barra de EXP */}
+          <div className="w-full max-w-md mx-auto">
+            <div className="flex justify-between text-xs font-mono text-gray-400 mb-1">
+              <span>EXPERIÊNCIA (EXP)</span>
+              <span>{exp} / {maxExp}</span>
+            </div>
+            <div className="h-2 bg-gray-800 rounded-sm overflow-hidden border border-system-gold/30">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${(exp / maxExp) * 100}%` }}
+                transition={{ duration: 0.5 }}
+                className="h-full bg-system-gold shadow-[0_0_10px_rgba(251,191,36,0.8)]" 
+              />
+            </div>
           </div>
         </div>
 

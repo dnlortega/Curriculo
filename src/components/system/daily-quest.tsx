@@ -4,19 +4,24 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { SystemMessage } from "@/components/system/system-message";
+import { useSystem } from "@/components/system/system-context";
 
 export function DailyQuest() {
+  const { addExp, playSystemVoice } = useSystem();
   const [completed, setCompleted] = useState(false);
   const [penalty, setPenalty] = useState(false);
   const [showReward, setShowReward] = useState(false);
 
   const handleComplete = () => {
     setCompleted(true);
+    addExp(500); // Dá EXP ao jogador
+    playSystemVoice("quest-complete");
     setTimeout(() => setShowReward(true), 1000);
   };
 
   const handlePenalty = () => {
     setPenalty(true);
+    playSystemVoice("penalty-activated");
     // Apply a red flash to the body
     document.body.style.transition = "background-color 0.1s ease";
     document.body.style.backgroundColor = "#450a0a";

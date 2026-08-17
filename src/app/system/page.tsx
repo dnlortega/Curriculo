@@ -6,6 +6,15 @@ import { ParticlesBackground } from "@/components/system/particles-background";
 import { DailyQuest } from "@/components/system/daily-quest";
 import { Inventory } from "@/components/system/inventory";
 import { ShadowArmy } from "@/components/system/shadow-army";
+import { SystemShop } from "@/components/system/system-shop";
+import { RaidMinigame } from "@/components/system/raid-minigame";
+import { SkillTree } from "@/components/system/skill-tree";
+import { FatigueSystem } from "@/components/system/fatigue-system";
+import { ArchitectChat } from "@/components/system/architect-chat";
+import { RedGate } from "@/components/system/red-gate";
+import { GithubAura } from "@/components/system/github-aura";
+import { AchievementsSystem } from "@/components/system/achievements-system";
+import { SystemProvider } from "@/components/system/system-context";
 
 export const metadata: Metadata = {
   title: "Console do Sistema",
@@ -14,11 +23,18 @@ export const metadata: Metadata = {
 
 export default function SystemPage() {
   return (
-    <div className="min-h-screen bg-system-bg text-white font-sans selection:bg-system-blue/30 selection:text-system-blue overflow-x-hidden relative pb-20">
+    <SystemProvider>
+      <div className="min-h-screen bg-system-bg text-white font-sans selection:bg-system-blue/30 selection:text-system-blue overflow-x-hidden relative pb-20">
       
       {/* Background Particles Effect */}
       <ParticlesBackground />
       
+      {/* UI Flutuante */}
+      <FatigueSystem />
+      <RedGate />
+      <GithubAura />
+      <AchievementsSystem />
+
       {/* Glow effect in the center */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-system-blue/5 rounded-full blur-[120px] z-0 pointer-events-none" />
 
@@ -45,8 +61,20 @@ export default function SystemPage() {
           {/* Inventory */}
           <Inventory />
 
+          {/* System Shop */}
+          <SystemShop />
+
+          {/* Skill Tree */}
+          <SkillTree />
+
           {/* Shadow Army (Arise) */}
           <ShadowArmy />
+
+          {/* Masmorra */}
+          <RaidMinigame />
+
+          {/* O Arquiteto */}
+          <ArchitectChat />
         </div>
 
         {/* System initial message */}
@@ -68,5 +96,6 @@ export default function SystemPage() {
         />
       </main>
     </div>
+    </SystemProvider>
   );
 }

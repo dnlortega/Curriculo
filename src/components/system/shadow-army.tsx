@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skull, UserCheck } from "lucide-react";
+import { useSystem } from "@/components/system/system-context";
 
 interface Shadow {
   id: string;
@@ -20,11 +21,13 @@ const SHADOWS: Shadow[] = [
 ];
 
 export function ShadowArmy() {
+  const { playSystemVoice } = useSystem();
   const [arisen, setArisen] = useState(false);
   const [isCasting, setIsCasting] = useState(false);
 
   const handleArise = () => {
     setIsCasting(true);
+    playSystemVoice("ergam-se");
     // Treme a tela levemente
     document.body.style.animation = "shake 0.5s ease-in-out";
     

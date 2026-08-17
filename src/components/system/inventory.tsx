@@ -1,8 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { Box, Code, Cpu, Database, Globe, Layers, Server, Shield, Smartphone } from "lucide-react";
+import { useSystem } from "@/components/system/system-context";
+import { SystemMessage } from "@/components/system/system-message";
 
 interface Item {
   id: string;
@@ -27,7 +29,28 @@ const INVENTORY_ITEMS: Item[] = [
 ];
 
 export function Inventory() {
+  const { inventory, newItemGained, setNewItemGained, addExp, playSystemVoice } = useSystem();
   const [hoveredItem, setHoveredItem] = useState<Item | null>(null);
+  const [usedItemMessage, setUsedItemMessage] = useState<string | null>(null);
+
+  const handleUseItem = (item: Item) => {
+    // Logica de uso baseada no ID do item
+    if (item.id === "1") {
+      setUsedItemMessage("Você equipou a Espada Longa do React. +50 Dano de Frontend.");
+      playSystemVoice("equip-sword");
+    } else if (item.id === "5") {
+      setUsedItemMessage("Poção de Node consumida. Fadiga restaurada e I/O acelerado.");
+      playSystemVoice("use-potion");
+    } else {
+      setUsedItemMessage(`Você usou: ${item.name}.`);
+      playSystemVoice("use-item");
+    }
+    
+    // Animação/Piscar
+    document.body.style.animation = "shake 0.3s ease";
+    setTimeout(() => { document.body.style.animation = ""; }, 300);
+    setTimeout(() => setUsedItemMessage(null), 3000);
+  };
 
   const rankColors = {
     E: "text-gray-500 border-gray-500",
@@ -50,14 +73,17 @@ export function Inventory() {
         {/* Grid de Itens */}
         <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 flex-1">
           {Array.from({ length: 20 }).map((_, i) => {
-            const item = INVENTORY_ITEMS[i];
+            const hasItem = i < inventory.length;
+            const itemId = hasItem ? inventory[i] : null;
+            const item = itemId ? INVENTORY_ITEMS.find((it) => it.id === itemId) : null;
+            
             return (
               <motion.div
                 key={i}
                 whileHover={{ scale: item ? 1.05 : 1 }}
                 onMouseEnter={() => item && setHoveredItem(item)}
                 onMouseLeave={() => setHoveredItem(null)}
-                className={`aspect-square bg-black/40 border ${item ? 'border-system-blue/50 cursor-pointer' : 'border-gray-800'} rounded-md flex items-center justify-center relative overflow-hidden group`}
+                className={`aspect-square bg-black/40 border ${item ? 'border-system-blue/50 cursor-pointer shadow-[0_0_10px_rgba(59,130,246,0.2)]' : 'border-gray-800'} rounded-md flex items-center justify-center relative overflow-hidden group`}
               >
                 {item ? (
                   <>
@@ -86,11 +112,18 @@ export function Inventory() {
               <h3 className="font-bold text-white text-lg font-mono tracking-tight mb-1">{hoveredItem.name}</h3>
               <p className="text-xs text-system-blue font-mono mb-4">{hoveredItem.type}</p>
               
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto mb-4">
                 <p className="text-gray-300 text-sm font-sans leading-relaxed">
                   {hoveredItem.description}
                 </p>
               </div>
+
+              <button
+                onClick={() => handleUseItem(hoveredItem)}
+                className="w-full mt-auto bg-system-blue/20 hover:bg-system-blue border border-system-blue text-system-blue hover:text-white font-mono py-2 rounded transition-all shadow-[0_0_10px_var(--color-system-blue-glow)]"
+              >
+                [ USAR ITEM ]
+              </button>
             </div>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-center">
@@ -99,6 +132,30 @@ export function Inventory() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {usedItemMessage && (
+          <SystemMessage 
+            title="SISTEMA DE INVENTÁRIO" 
+            message={usedItemMessage} 
+            type="info"
+            duration={3}
+            onComplete={() => setUsedItemMessage(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {newItemGained && (
+          <SystemMessage 
+            title="NOVO ITEM ADQUIRIDO" 
+            message={`Você obteve um novo item no inventário!`} 
+            type="info"
+            duration={4}
+            onComplete={() => setNewItemGained(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
