@@ -172,7 +172,7 @@ export default function FootballDashboard() {
         transition={{ duration: 0.4, delay }}
         className="h-full"
       >
-        <Card className="flex flex-col bg-neutral-900/50 border-neutral-800 backdrop-blur-sm h-full justify-between p-3 lg:p-5 relative overflow-hidden group">
+        <Card className="flex flex-col bg-neutral-900/50 border-neutral-800 backdrop-blur-sm h-full p-3 lg:p-5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110" />
           
           <div className="flex flex-row items-center justify-between">
@@ -181,7 +181,7 @@ export default function FootballDashboard() {
           </div>
           
           {isLoading ? (
-            <div className="flex flex-col justify-end flex-1 gap-2">
+            <div className="flex flex-col gap-2 mt-2">
               <Skeleton className="h-8 w-2/3 bg-neutral-800/80" />
               <div className="flex gap-2 mt-1">
                 <Skeleton className="h-5 w-16 bg-neutral-800/80" />
@@ -189,7 +189,7 @@ export default function FootballDashboard() {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col justify-end flex-1">
+            <div className="flex flex-col mt-2">
               <motion.div 
                 key={data.current}
                 initial={{ scale: 0.9, opacity: 0 }}
