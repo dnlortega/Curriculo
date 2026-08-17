@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Github } from "lucide-react";
+import { GitCommit } from "lucide-react";
 
 export function GithubAura() {
   const [hasCommits, setHasCommits] = useState<boolean | null>(null);
@@ -40,7 +40,7 @@ export function GithubAura() {
 
   return (
     <div className="fixed bottom-4 left-4 z-50 flex items-center gap-2 bg-black/80 border border-gray-800 px-3 py-2 rounded-full backdrop-blur-md">
-      <Github className={`w-4 h-4 ${hasCommits ? 'text-system-blue animate-pulse shadow-[0_0_10px_var(--color-system-blue-glow)]' : 'text-gray-500'}`} />
+      <GitCommit className={`w-4 h-4 ${hasCommits ? 'text-system-blue animate-pulse shadow-[0_0_10px_var(--color-system-blue-glow)]' : 'text-gray-500'}`} />
       <span className="font-mono text-[10px] uppercase tracking-widest text-gray-400">
         {hasCommits ? "Aura de Contribuição Ativa" : "Sem código hoje (Aura Fraca)"}
       </span>
